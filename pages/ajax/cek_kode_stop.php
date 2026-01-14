@@ -11,18 +11,20 @@ if (isset($_POST['stopcode']) && isset($_POST['nokk'])) {
     $stopcode = $_POST['stopcode'];
     $nokk = $_POST['nokk'];
 
-    // Query untuk cek kode_stop berdasarkan nokk
-    $sqlCek = mysqli_query($cona, "SELECT * FROM tbl_stoppage WHERE nokk='$nokk' AND kode_stop='$stopcode' ORDER BY id DESC LIMIT 1");
-    $cek = mysqli_num_rows($sqlCek);
+    $sqlCek = sqlsrv_query(
+        $cona,
+        "SELECT TOP 1 * FROM db_adm.tbl_stoppage WHERE nokk = ? AND kode_stop = ? ORDER BY id DESC",
+        [$nokk, $stopcode]
+    );
 
-    if ($cek > 0) {
-        $rcek = mysqli_fetch_array($sqlCek);
+    $rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
 
+    if ($rcek !== false) {
         echo json_encode([
             "success" => true,
-            "stop_mulai_jam" => $rcek['stop_mulai_jam'], 
+            "stop_mulai_jam" => $rcek['stop_mulai_jam'],
             "stop_mulai_tgl" => $rcek['stop_mulai_tgl'],
-			"stop_selesai_jam" => $rcek['stop_selesai_jam'], 
+            "stop_selesai_jam" => $rcek['stop_selesai_jam'],
             "stop_selesai_tgl" => $rcek['stop_selesai_tgl']
         ]);
     } else {
