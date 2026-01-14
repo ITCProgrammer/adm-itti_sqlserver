@@ -10,8 +10,8 @@ $Awal = $_GET['awal'];
 $Akhir = $_GET['akhir'];
 $Dept = $_GET['dept'];
 $Cancel = $_GET['cancel'];
-$qTgl = mysqli_query($cona, "SELECT DATE_FORMAT(now(),'%Y-%m-%d') as tgl_skrg,DATE_FORMAT(now(),'%H:%i:%s') as jam_skrg");
-$rTgl = mysqli_fetch_array($qTgl);
+$qTgl = sqlsrv_query($cona, "SELECT CONVERT(varchar(10), GETDATE(), 120) AS tgl_skrg, CONVERT(varchar(8),  GETDATE(), 108) AS jam_skrg");
+$rTgl = sqlsrv_fetch_array($qTgl, SQLSRV_FETCH_ASSOC);
 if ($Awal != "") {
   $tgl = substr($Awal, 0, 10);
   $jam = $Awal;
@@ -19,11 +19,29 @@ if ($Awal != "") {
   $tgl = $rTgl['tgl_skrg'];
   $jam = $rTgl['jam_skrg'];
 }
-$qry = mysqli_query($cona, "SELECT a.*,t_jawab,t_jawab1,t_jawab2,alasan,b.warna1,b.warna2,b.warna3,b.kg1,b.kg2,b.kg3,b.pjg1,b.pjg2,b.pjg3,b.satuan1,b.satuan2,b.satuan3,b.sebab,a.sebab as sebab_analisa_old,
-	b.akar_penyebab as sebab_analisa,b.analisa,b.pencegahan,b.nokk1,b.nokk2,b.nokk3 FROM tbl_gantikain a
-INNER JOIN tbl_bonkain b ON a.id=b.id_nsp
-WHERE b.no_bon='$_GET[no_bon]'");
-$r = mysqli_fetch_array($qry);
+$noBon = $_GET['no_bon'];
+
+$qry = sqlsrv_query($cona, "
+  SELECT
+    a.*,
+    a.t_jawab, a.t_jawab1, a.t_jawab2,
+    b.alasan,
+    b.warna1, b.warna2, b.warna3,
+    b.kg1, b.kg2, b.kg3,
+    b.pjg1, b.pjg2, b.pjg3,
+    b.satuan1, b.satuan2, b.satuan3,
+    b.sebab,
+    a.sebab AS sebab_analisa_old,
+    b.akar_penyebab AS sebab_analisa,
+    b.analisa, b.pencegahan,
+    b.nokk1, b.nokk2, b.nokk3
+  FROM db_adm.tbl_gantikain a
+  INNER JOIN db_adm.tbl_bonkain b ON a.id = b.id_nsp
+  WHERE b.no_bon = ?
+", [$noBon]);
+
+if ($qry === false) { die(print_r(sqlsrv_errors(), true)); }
+$r = sqlsrv_fetch_array($qry, SQLSRV_FETCH_ASSOC);
 ?>
 <!DOCTYPE html
 	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -489,8 +507,8 @@ $nmBln = array(1 => "JANUARI", "FEBUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI
 								= <span style="font-size: 8px;"><?php echo $r['warna1']; ?> <br><?php if(!empty($r['warna1'])){ echo $r['no_warna'];} ?>
 								<br><?php echo $r['nokk']; ?>
 								<br><?php echo $r['nodemand']; ?></span><br>
-								<br /><?php $qr1 = mysqli_query($cona, "SELECT * FROM tbl_gantikain WHERE nokk='$r[nokk1]'");
-                $rk1 = mysqli_fetch_array($qr1); ?>
+								<br /><?php $qr1 = sqlsrv_query($cona, "SELECT * FROM db_adm.tbl_gantikain WHERE nokk='$r[nokk1]'");
+                $rk1 = sqlsrv_fetch_array($qr1, SQLSRV_FETCH_ASSOC); ?>
 								O: <?php echo $rk1['qty_order']; ?><br>
 								K: <?php echo $rk1['qty_kirim']; ?><br>
 								E: <?php echo $rk1['qty_foc']; ?>
@@ -503,8 +521,8 @@ $nmBln = array(1 => "JANUARI", "FEBUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI
 							<td colspan="2" valign="top" style="height: 0.8in; border-right:0px #000000 solid;">2. Warna
 								= <span style="font-size: 8px;"><?php echo $r['warna2']; ?><br><?php if(!empty($r['warna2'])){ echo $r['no_warna'];} ?></span><br>
 								<br />
-								<?php $qr2 = mysqli_query($cona, "SELECT * FROM tbl_gantikain WHERE nokk='$r[nokk2]'");
-                $rk2 = mysqli_fetch_array($qr2); ?>
+								<?php $qr2 = sqlsrv_query($cona, "SELECT * FROM db_adm.tbl_gantikain WHERE nokk='$r[nokk2]'");
+                $rk2 = sqlsrv_fetch_array($qr2, SQLSRV_FETCH_ASSOC); ?>
 								O: <?php echo $rk2['qty_order']; ?><br>
 								K: <?php echo $rk2['qty_kirim']; ?><br>
 								E: <?php echo $rk2['qty_foc']; ?>
@@ -525,8 +543,8 @@ $nmBln = array(1 => "JANUARI", "FEBUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI
 									style="height: 0.8in; border-right:0px #000000 solid;">3. Warna = <span
 										style="font-size: 8px;"><?php echo $r['warna3']; ?><br><?php if(!empty($r['warna3'])){ echo $r['no_warna'];} ?></span><br>
 									<br />
-									<?php $qr3 = mysqli_query($cona, "SELECT * FROM tbl_gantikain WHERE nokk='$r[nokk3]'");
-                  $rk3 = mysqli_fetch_array($qr3); ?>
+									<?php $qr3 = sqlsrv_query($cona, "SELECT * FROM db_adm.tbl_gantikain WHERE nokk='$r[nokk3]'");
+                  $rk3 = sqlsrv_fetch_array($qr3, SQLSRV_FETCH_ASSOC); ?>
 									O: <?php echo $rk3['qty_order']; ?><br>
 									K: <?php echo $rk3['qty_kirim']; ?><br>
 									E: <?php echo $rk3['qty_foc']; ?></td>

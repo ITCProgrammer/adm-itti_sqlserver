@@ -3,7 +3,7 @@ ini_set("error_reporting", 1);
 session_start();
 include "koneksi.php";
 include_once("classes/class.phpmailer.php");
-/*
+
 if (!function_exists('sendEmailApproved')) {
   function sendEmailApproved($to, $subject, $bodyHtml, $fromEmail = 'dept.it@indotaichen.com', $fromName = 'DEPT IT', $cc = [], $bcc = [], $attachments = [])
   {
@@ -40,7 +40,7 @@ if (!function_exists('sendEmailApproved')) {
       $mail->Body    = $bodyHtml;
       $mail->Hostname = 'mail.indotaichen.com';
       $mail->Helo = 'mail.indotaichen.com';
-      $mail->send();
+      // $mail->send();
       $GLOBAL_LAST_MAILER_ERROR = '';
       return true;
     } catch (Exception $e) {
@@ -55,7 +55,6 @@ if (!function_exists('sendEmailApproved')) {
     return $GLOBAL_LAST_MAILER_ERROR;
   }
 }
-*/
 $qryCek = sqlsrv_query($cona, "SELECT * FROM db_adm.tbl_gantikain WHERE id=?", [$_GET['id']]);
 $rCek = sqlsrv_fetch_array($qryCek, SQLSRV_FETCH_ASSOC);
 ?>
@@ -79,9 +78,7 @@ function no_urut($x)
   $sql = sqlsrv_query($cona, "SELECT TOP 1 no_bon FROM db_adm.tbl_bonkain WHERE LEFT(no_bon,10) LIKE '".$format."%' ORDER BY no_bon DESC") or die(print_r(sqlsrv_errors(), true));
   $r = sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC);
   $d = ($r !== false) ? 1 : 0;
-  // $d = mysqli_num_rows($sql);
   if ($d > 0) {
-    // $r = mysqli_fetch_array($sql);
     $d = $r['no_bon'];
     $str = substr($d, 8, 3);
     $Urut = (int)$str;
@@ -110,9 +107,7 @@ function orderno($x, $odr)
   $sql = sqlsrv_query($cona, "SELECT no_order FROM db_adm.tbl_bonkain WHERE no_order='$format' ORDER BY no_order DESC LIMIT 1") or die(print_r(sqlsrv_errors(), true));
   $r = sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC);
   $d = ($r !== false) ? 1 : 0;
-  // $d = mysqli_num_rows($sql);
   if ($d > 0) {
-    // $r = mysqli_fetch_array($sql);
     $d = $r['no_bon'];
     $str = substr($d, 8, 3);
     $Urut = (int)$str;
@@ -198,67 +193,18 @@ if (isset($_POST['save'])) {
 
   if ($qry1) {
     echo "<script>swal({
-  title: 'Data Telah diSimpan',   
-  text: 'Klik Ok untuk input data kembali',
-  type: 'success',
-  }).then((result) => {
-  if (result.value) {
-      window.open('pages/cetak/cetak_bon_ganti.php?no_bon=$bon','_blank');
-      window.location.href='index1.php?p=input-bon-kain&id=$_GET[id]';
-   
-  }
-});</script>";
+      title: 'Data Telah diSimpan',   
+      text: 'Klik Ok untuk input data kembali',
+      type: 'success',
+      }).then((result) => {
+      if (result.value) {
+          window.open('pages/cetak/cetak_bon_ganti.php?no_bon=$bon','_blank');
+          window.location.href='index1.php?p=input-bon-kain&id=$_GET[id]';
+      }
+    });</script>";
   }
 }
 
-// Handle Approve Bon Ganti Kain
-/*
-  if (isset($_POST['approve_bon']) && $_POST['approve_bon'] == '1') {
-    include "koneksi.php";
-    $id_bon = mysqli_real_escape_string($cona, $_POST['id_bon']);
-    // Update status bon menjadi Approved
-    $now = date("Y-m-d H:i:s");
-    $emailTambahan = isset($_POST['email']) ? mysqli_real_escape_string($cona, $_POST['email']) : '';
-    $namaTambahan = '';
-    if ($emailTambahan != '') {
-      $qEmail = mysqli_query($cona, "SELECT nama FROM master_email WHERE email='$emailTambahan' LIMIT 1");
-      if ($rowEmail = mysqli_fetch_assoc($qEmail)) {
-        $namaTambahan = $rowEmail['nama'];
-      }
-    }
-    $qry = mysqli_query($cona, "UPDATE tbl_bonkain SET approved_buat='$now', personil_buat='" . $_SESSION['nama10'] . "', personil_ppc='$namaTambahan' WHERE id='$id_bon'");
-    if ($qry) {
-      // Ambil data bon untuk isi email
-      $bon = mysqli_fetch_assoc(mysqli_query($cona, "SELECT * FROM tbl_bonkain WHERE id='$id_bon'"));
-      // Default penerima
-      // $to = ['deden.kurnia@indotaichen.com', 'tobias.sulistiyo@indotaichen.com', 'usman.as@indotaichen.com'];
-      // Jika user memilih email di modal, tambahkan ke penerima
-      if (!empty($emailTambahan)) {
-        $to[] = $emailTambahan;
-      }
-      $subject = "Bon Ganti Kain Telah Di-Approve";
-      // Link ke halaman input_stok_ppc (di folder pages)
-      $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'];
-      $linkInputStok = $baseUrl . "/adm-itti/pages/input_stok_ppc.php?id=" . urlencode($bon['id']);
-      $bodyHtml = "Bon dengan No: <b>" . $bon['no_bon'] . "</b> telah di-approve oleh " . $_SESSION['nama10'] . " pada " . $now . ".<br>"
-        . "Silakan cek aplikasi untuk detail.<br>"
-        . "<a href='" . $linkInputStok . "' target='_blank' style='color: #337ab7; text-decoration: underline;'>Input Stok PPC</a>";
-      $sendMailResult = sendEmailApproved($to, $subject, $bodyHtml);
-      if (!$sendMailResult) {
-        echo "<script>alert('Gagal mengirim email notifikasi! Pesan: " . getLastMailerError() . "');</script>";
-      }
-      echo "<script>swal({
-        title: 'Bon Telah di-Approve',
-        text: 'Status bon sudah Approved',
-        type: 'success',
-      }).then((result) => {
-        if (result.value) {
-          window.location.href='index1.php?p=input-bon-kain&id=" . $_GET['id'] . "';
-        }
-      });</script>";
-    }
-  }
-*/
 if (isset($_POST['approve_bon']) && $_POST['approve_bon'] == '1') {
   include "koneksi.php";
   $id_bon = $_POST['id_bon'];
@@ -272,8 +218,6 @@ if (isset($_POST['approve_bon']) && $_POST['approve_bon'] == '1') {
     $rowEmail = sqlsrv_fetch_array($qEmail, SQLSRV_FETCH_ASSOC);
     if ($rowEmail) $namaTambahan = $rowEmail['nama'];
   }
-
-  // $now = date("Y-m-d H:i:s");
 
   $qry = sqlsrv_query($cona, "
     UPDATE db_adm.tbl_bonkain
@@ -350,7 +294,7 @@ if (!function_exists('sendEmailApproved')) {
       $mail->Body    = $bodyHtml;
       $mail->Hostname = 'mail.indotaichen.com';
       $mail->Helo = 'mail.indotaichen.com';
-      $mail->send();
+      // $mail->send();
       $GLOBAL_LAST_MAILER_ERROR = '';
       return true;
     } catch (Exception $e) {
