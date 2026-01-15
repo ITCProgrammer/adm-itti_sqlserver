@@ -409,48 +409,68 @@ include "../../koneksi.php";
 
               // print_r($filterStatus);
               if($posisi_terakhir != "") {
-                $qry1 = mysqli_query($cond, "SELECT
-                                                t1.*,
-                                                DATEDIFF(t1.tgl_rencana, CURDATE()) AS lama,
-                                                DATEDIFF(CURDATE(), t1.tgl_rencana) AS delay
-                                            FROM
-                                                tbl_ncp_qcf_now t1
-                                            JOIN (
-                                                SELECT 
-                                                    no_ncp, 
-                                                    MAX(tgl_update) AS max_tgl_update
-                                                FROM 
-                                                    tbl_ncp_qcf_now
-                                                WHERE
-                                                    " . $filterStatus . $where . $where1 . $where2 . $where3 . $where6 . $where7 . "
-                                                GROUP BY 
-                                                    no_ncp
-                                            ) t2
-                                            ON t1.no_ncp = t2.no_ncp AND t1.tgl_update = t2.max_tgl_update
-                                            WHERE
-                                                " . $filterStatusT1 . $whereT1 . $where1T1 . $where2T1 . $where3T1 . $where6T1 . $where7T1 . "
-                                            ORDER BY
-                                                t1.id ASC, t1.no_ncp ASC, t1.tgl_update DESC;");
+                $qry1 = sqlsrv_query($cond, "SELECT
+                    t1.*,
+                    DATEDIFF(day, CAST(GETDATE() AS date), CAST(t1.tgl_rencana AS date)) AS lama,
+                    DATEDIFF(day, CAST(t1.tgl_rencana AS date), CAST(GETDATE() AS date)) AS delay
+                FROM
+                    db_qc.tbl_ncp_qcf_now t1
+                JOIN (
+                    SELECT 
+                        no_ncp, 
+                        MAX(tgl_update) AS max_tgl_update
+                    FROM 
+                        db_qc.tbl_ncp_qcf_now
+                    WHERE
+                        " . $filterStatus . $where . $where1 . $where2 . $where3 . $where6 . $where7 . "
+                    GROUP BY 
+                        no_ncp
+                ) t2
+                ON t1.no_ncp = t2.no_ncp AND t1.tgl_update = t2.max_tgl_update
+                WHERE
+                    " . $filterStatusT1 . $whereT1 . $where1T1 . $where2T1 . $where3T1 . $where6T1 . $where7T1 . "
+                ORDER BY
+                    t1.id ASC, t1.no_ncp ASC, t1.tgl_update DESC;");
               } else {
-                $qry1 = mysqli_query($cond, "select
-                                              *,
-                                              DATEDIFF(tgl_rencana, DATE_FORMAT(now(), '%Y-%m-%d')) as lama,
-                                              DATEDIFF(DATE_FORMAT(now(), '%Y-%m-%d'), tgl_rencana) as delay
-                                            from
-                                              tbl_ncp_qcf_now
-                                            where
-                                              " . $filterStatus . $where . $where1 . $where2 . $where3 . $where6 . $where7 . "
-                                            order by
-                                              id asc");
+                $qry1 = sqlsrv_query($cond, "select
+                    *,
+                    DATEDIFF(day, CAST(GETDATE() AS date), CAST(tgl_rencana AS date)) AS lama,
+                    DATEDIFF(day, CAST(tgl_rencana AS date), CAST(GETDATE() AS date)) AS delay
+                  from
+                    db_qc.tbl_ncp_qcf_now
+                  where
+                    " . $filterStatus . $where . $where1 . $where2 . $where3 . $where6 . $where7 . "
+                  order by
+                    id asc");
               }
-              while ($row1 = mysqli_fetch_array($qry1)) {
+              while ($row1 = sqlsrv_fetch_array($qry1)) {
                 if ($row1['nokk_salinan'] != "") {
                   $nokk1 = $row1['nokk_salinan'];
                 } else {
-                  $nokk1 = $row1['nokk'];
+                    $nokk1 = $row1['nokk'];
                 }
-                $sql = mysqli_query($cond, "SELECT COUNT(*) jml,tgl_terima,id FROM `tbl_qcf_ncp_tolak_new` WHERE id_qcf_ncp='$row1[id]' ORDER BY id DESC");
-                $r1 = mysqli_fetch_array($sql);
+
+                $sql = sqlsrv_query(
+                    $cond,
+                    "SELECT TOP 1
+                        COUNT(*) OVER() AS jml,
+                        tgl_terima,
+                        id
+                    FROM db_qc.tbl_qcf_ncp_tolak_new
+                    WHERE id_qcf_ncp = ?
+                    ORDER BY id DESC",
+                    [$row1['id']]
+                );
+
+                if ($sql === false) {
+                    die(print_r(sqlsrv_errors(), true));
+                }
+
+                $r1 = sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC);
+
+                if ($r1 === false) {
+                    $r1 = ['jml' => 0, 'tgl_terima' => null, 'id' => null];
+                }
                 ?>
                 <tr bgcolor="<?php echo $bgcolor; ?>">
                   <td align="center">
@@ -460,7 +480,14 @@ include "../../koneksi.php";
                   </td>
                   <td align="center">
                     <font size="-1">
-                      <?php echo $row1['tgl_buat']; ?>
+                      <?php
+                        $tglBuat = $row1['tgl_buat'] ?? null;
+                        if ($tglBuat instanceof DateTime) {
+                            echo $tglBuat->format('Y-m-d H:i:s');
+                        } else {
+                            echo htmlspecialchars((string)($tglBuat ?? ''), ENT_QUOTES, 'UTF-8');
+                        }
+                      ?>
                     </font><br>
                     <div class="btn-group"><a href="pages/cetak/cetak_ncp_now.php?id=<?php echo $row1['id']; ?>" class="btn btn-xs btn-danger <?php if ($_SESSION['dept10'] != "QCF") {
                          echo "disabled";
@@ -537,7 +564,9 @@ include "../../koneksi.php";
                   </td>
                   <td>
                     <font size="-1">
-                      <?php echo $row1['tgl_rencana']; ?>
+                      <?php
+                        $tgl = $row1['tgl_rencana'] ?? null; echo ($tgl instanceof DateTime) ? $tgl->format('Y-m-d') : htmlspecialchars((string)($tgl ?? ''), ENT_QUOTES, 'UTF-8');
+                      ?>
                     </font>
                   </td>
                   <td>
