@@ -376,6 +376,7 @@ if(!empty($Suffix)){
             <th rowspan="2"><div align="center">Jenis Resep</div></th>
             <th rowspan="2"><div align="center">Status</div></th>
             <th rowspan="2"><div align="center">Acc Keluar Kain</div></th>
+            <th rowspan="2"><div align="center">Penanggung Jawab Buyer</div></th>
             <th rowspan="2"><div align="center">Prod Order</div></th>
             <th rowspan="2"><div align="center">No Warna</div></th>
             <th rowspan="2"><div align="center">Acuan Quality</div></th>
@@ -476,6 +477,7 @@ if(!empty($Suffix)){
                   <!-- kolom ini nanti editable -->
               <td><?= $row1['sts'] ?></td>
               <td><?= $row1['acc_keluar'] ?></td>
+              <td><?= $row1['penanggungjawabbuyer'] ?></td>
               <td><a href="https://online.indotaichen.com/laporan/ppc_filter.php?prod_order=<?= htmlspecialchars($row1['nokk']) ?>" target="_blank" rel="noopener noreferrer"><?= htmlspecialchars($row1['nokk']) ?></a></td>
               <td><?= $row1['no_warna'] ?></td>
               <td><?= $row1['no_hanger'] ?></td>

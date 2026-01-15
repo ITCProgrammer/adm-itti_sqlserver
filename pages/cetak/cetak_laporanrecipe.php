@@ -68,6 +68,7 @@
       <th rowspan="2" bgcolor="#99FF99">LAMA STOP</th>
       <th rowspan="2" bgcolor="#99FF99">KODE STOP</th>
       <th rowspan="2" bgcolor="#99FF99">Acc Keluar Kain</th>
+      <th rowspan="2" bgcolor="#99FF99">Penanggung Jawab Buyer</th>
       <th rowspan="2" bgcolor="#99FF99">Operator</th>
       <th rowspan="2" bgcolor="#99FF99">NoKK</th>
       <th rowspan="2" bgcolor="#99FF99">No Warna</th>
@@ -424,6 +425,7 @@
               echo $rowd['kd_stop'];
             } ?></td>
         <td><?php echo $rowd['acc_keluar']; ?></td>
+        <td><?php echo $rowd['penanggungjawabbuyer']; ?></td>
         <td><?php echo $rowd['operator_keluar']; ?></td>
         <td>'<?php echo $rowd['nokk']; ?></td>
         <td><?php echo $rowd['no_warna']; ?></td>
