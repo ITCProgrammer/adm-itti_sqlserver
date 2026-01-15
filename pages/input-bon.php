@@ -1,16 +1,17 @@
 <?php
-	ini_set("error_reporting", 1);
-	session_start();
-	include "koneksi.php";
-	if($_SESSION['dept10']=="CSR"){
-	$demand = $_GET['demand'];	
+ini_set("error_reporting", 1);
+session_start();
+include "koneksi.php";
+if ($_SESSION['dept10'] == "CSR") {
+	$demand = $_GET['demand'];
 	$child = $r['ChildLevel'];
-	if ($demand != "") {		
-	}	
-		$sqlCek = mysqli_query($cona, "SELECT * FROM tbl_gantikain WHERE nodemand='$demand' and nodemand<>'' ORDER BY id DESC LIMIT 1");
-		$cek = mysqli_num_rows($sqlCek);
-		$rcek = mysqli_fetch_array($sqlCek);	
-		
+	if ($demand != "") {
+	}
+	$sqlCek = sqlsrv_query($cona, "SELECT * FROM db_adm.tbl_gantikain WHERE nodemand='$demand' and nodemand<>'' ORDER BY id DESC LIMIT 1");
+	// $cek = mysqli_num_rows($sqlCek);
+	$rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
+	$cek = ($rcek !== false) ? 1 : 0;
+
 	$sql_ITXVIEWKK  = db2_exec($conn2, "SELECT
 												TRIM(PRODUCTIONORDERCODE) AS PRODUCTIONORDERCODE,
 												TRIM(DEAMAND) AS DEMAND,
@@ -28,20 +29,35 @@
 											FROM 
 												ITXVIEWKK 
 											WHERE 
-												DEAMAND = '$demand'");	
-	}
-	if($_SESSION['dept10']!="CSR"){
-	$nokk = $_GET['nokk'];	
+												DEAMAND = '$demand'");
+}
+if ($_SESSION['dept10'] != "CSR") {
+	$nokk = $_GET['nokk'];
 	$demandno = $_GET['demand'];
 	$child = $r['ChildLevel'];
-	if ($nokk != "") {		
+	if ($nokk != "") {
 	}
 	$dept_user = $_SESSION['dept10'];
-	$sqlCek = mysqli_query($cona, "SELECT * FROM tbl_gantikain WHERE nokk='$nokk' and nodemand='$demandno' and dept ='$dept_user' ORDER BY id DESC LIMIT 1");
-	$cek = mysqli_num_rows($sqlCek);
-	$rcek = mysqli_fetch_array($sqlCek);
+	// $sqlCek = sqlsrv_query($cona, "SELECT * FROM db_adm.tbl_gantikain WHERE nokk='$nokk' and nodemand='$demandno' and dept ='$dept_user' ORDER BY id DESC LIMIT 1");
+	// $cek = mysqli_num_rows($sqlCek);
+	// $rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
+	// $cek = ($rcek !== false) ? 1 : 0;
+
+	$sqlCek = sqlsrv_query($cona, "
+		SELECT TOP 1 *
+		FROM db_adm.tbl_gantikain
+		WHERE nodemand = ? AND nodemand <> ''
+		ORDER BY id DESC
+	", [$demand]);
+	if ($sqlCek === false) {
+		die(print_r(sqlsrv_errors(), true));
+	}
+
+	$rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
+	$cek  = ($rcek !== null && $rcek !== false) ? 1 : 0;
+
 	// NOW
-		$sql_ITXVIEWKK  = db2_exec($conn2, "SELECT
+	$sql_ITXVIEWKK  = db2_exec($conn2, "SELECT
 											TRIM(PRODUCTIONORDERCODE) AS PRODUCTIONORDERCODE,
 											TRIM(DEAMAND) AS DEMAND,
 											ORIGDLVSALORDERLINEORDERLINE,
@@ -58,47 +74,47 @@
 										FROM 
 											ITXVIEWKK 
 										WHERE 
-											PRODUCTIONORDERCODE = '$nokk' AND DEAMAND = '$demandno' ");	
-	}
-	
-	
-		$dt_ITXVIEWKK	= db2_fetch_assoc($sql_ITXVIEWKK);
+											PRODUCTIONORDERCODE = '$nokk' AND DEAMAND = '$demandno' ");
+}
 
-		if(!empty($_GET['demand'])){
-		$nokk=$dt_ITXVIEWKK['PRODUCTIONORDERCODE'];	
-		}else{
-		$nokk= $_GET['nokk'];
-		}
 
-		$sql_pelanggan_buyer 	= db2_exec($conn2, "SELECT TRIM(LANGGANAN) AS PELANGGAN, TRIM(BUYER) AS BUYER FROM ITXVIEW_PELANGGAN 
+$dt_ITXVIEWKK	= db2_fetch_assoc($sql_ITXVIEWKK);
+
+if (!empty($_GET['demand'])) {
+	$nokk = $dt_ITXVIEWKK['PRODUCTIONORDERCODE'];
+} else {
+	$nokk = $_GET['nokk'];
+}
+
+$sql_pelanggan_buyer 	= db2_exec($conn2, "SELECT TRIM(LANGGANAN) AS PELANGGAN, TRIM(BUYER) AS BUYER FROM ITXVIEW_PELANGGAN 
 													WHERE ORDPRNCUSTOMERSUPPLIERCODE = '$dt_ITXVIEWKK[ORDPRNCUSTOMERSUPPLIERCODE]' AND CODE = '$dt_ITXVIEWKK[PROJECTCODE]'");
-		$dt_pelanggan_buyer		= db2_fetch_assoc($sql_pelanggan_buyer);
+$dt_pelanggan_buyer		= db2_fetch_assoc($sql_pelanggan_buyer);
 
-		$sql_demand		= db2_exec($conn2, "SELECT LISTAGG(TRIM(DEAMAND), ', ') AS DEMAND,
+$sql_demand		= db2_exec($conn2, "SELECT LISTAGG(TRIM(DEAMAND), ', ') AS DEMAND,
 												LISTAGG(''''|| TRIM(ORIGDLVSALORDERLINEORDERLINE) ||'''', ', ')  AS ORIGDLVSALORDERLINEORDERLINE
 										FROM ITXVIEWKK 
 										WHERE PRODUCTIONORDERCODE = '$nokk'");
-		$dt_demand		= db2_fetch_assoc($sql_demand);
+$dt_demand		= db2_fetch_assoc($sql_demand);
 
-		if (!empty($dt_demand['ORIGDLVSALORDERLINEORDERLINE'])) {
-		$orderline	= $dt_demand['ORIGDLVSALORDERLINEORDERLINE'];
-		} else {
-		$orderline	= '0';
-		}
+if (!empty($dt_demand['ORIGDLVSALORDERLINEORDERLINE'])) {
+	$orderline	= $dt_demand['ORIGDLVSALORDERLINEORDERLINE'];
+} else {
+	$orderline	= '0';
+}
 
-		$sql_po			= db2_exec($conn2, "SELECT TRIM(EXTERNALREFERENCE) AS NO_PO FROM ITXVIEW_KGBRUTO 
+$sql_po			= db2_exec($conn2, "SELECT TRIM(EXTERNALREFERENCE) AS NO_PO FROM ITXVIEW_KGBRUTO 
 										WHERE PROJECTCODE = '$dt_ITXVIEWKK[PROJECTCODE]' AND ORIGDLVSALORDERLINEORDERLINE IN ($orderline)");
-		$dt_po    		= db2_fetch_assoc($sql_po);
+$dt_po    		= db2_fetch_assoc($sql_po);
 
-		$sql_noitem     = db2_exec($conn2, "SELECT * FROM ORDERITEMORDERPARTNERLINK WHERE ORDPRNCUSTOMERSUPPLIERCODE = '$dt_ITXVIEWKK[ORDPRNCUSTOMERSUPPLIERCODE]' 
+$sql_noitem     = db2_exec($conn2, "SELECT * FROM ORDERITEMORDERPARTNERLINK WHERE ORDPRNCUSTOMERSUPPLIERCODE = '$dt_ITXVIEWKK[ORDPRNCUSTOMERSUPPLIERCODE]' 
 										AND SUBCODE01 = '$dt_ITXVIEWKK[SUBCODE01]' AND SUBCODE02 = '$dt_ITXVIEWKK[SUBCODE02]' 
 										AND SUBCODE03 = '$dt_ITXVIEWKK[SUBCODE03]' AND SUBCODE04 = '$dt_ITXVIEWKK[SUBCODE04]' 
 										AND SUBCODE05 = '$dt_ITXVIEWKK[SUBCODE05]' AND SUBCODE06 = '$dt_ITXVIEWKK[SUBCODE06]'
 										AND SUBCODE07 = '$dt_ITXVIEWKK[SUBCODE07]' AND SUBCODE08 ='$dt_ITXVIEWKK[SUBCODE08]'
 										AND SUBCODE09 = '$dt_ITXVIEWKK[SUBCODE09]' AND SUBCODE10 ='$dt_ITXVIEWKK[SUBCODE10]'");
-		$dt_item        = db2_fetch_assoc($sql_noitem);
+$dt_item        = db2_fetch_assoc($sql_noitem);
 
-		$sql_lebargramasi	= db2_exec($conn2, "SELECT i.LEBAR,
+$sql_lebargramasi	= db2_exec($conn2, "SELECT i.LEBAR,
 											CASE
 												WHEN i2.GRAMASI_KFF IS NULL THEN i2.GRAMASI_FKF
 												ELSE i2.GRAMASI_KFF
@@ -108,9 +124,9 @@
 											LEFT JOIN ITXVIEWGRAMASI i2 ON i2.SALESORDERCODE = '$dt_ITXVIEWKK[PROJECTCODE]' AND i2.ORDERLINE = '$dt_ITXVIEWKK[ORIGDLVSALORDERLINEORDERLINE]'
 											WHERE 
 												i.SALESORDERCODE = '$dt_ITXVIEWKK[PROJECTCODE]' AND i.ORDERLINE = '$dt_ITXVIEWKK[ORIGDLVSALORDERLINEORDERLINE]'");
-		$dt_lg				= db2_fetch_assoc($sql_lebargramasi);
+$dt_lg				= db2_fetch_assoc($sql_lebargramasi);
 
-		$sql_warna		= db2_exec($conn2, "SELECT DISTINCT TRIM(WARNA) AS WARNA FROM ITXVIEWCOLOR 
+$sql_warna		= db2_exec($conn2, "SELECT DISTINCT TRIM(WARNA) AS WARNA FROM ITXVIEWCOLOR 
 											WHERE ITEMTYPECODE = '$dt_ITXVIEWKK[ITEMTYPEAFICODE]' 
 											AND SUBCODE01 = '$dt_ITXVIEWKK[SUBCODE01]' 
 											AND SUBCODE02 = '$dt_ITXVIEWKK[SUBCODE02]'
@@ -122,9 +138,9 @@
 											AND SUBCODE08 = '$dt_ITXVIEWKK[SUBCODE08]'
 											AND SUBCODE09 = '$dt_ITXVIEWKK[SUBCODE09]' 
 											AND SUBCODE10 = '$dt_ITXVIEWKK[SUBCODE10]'");
-		$dt_warna		= db2_fetch_assoc($sql_warna);
+$dt_warna		= db2_fetch_assoc($sql_warna);
 
-		$sql_qtyorder   = db2_exec($conn2, "SELECT DISTINCT
+$sql_qtyorder   = db2_exec($conn2, "SELECT DISTINCT
 						INITIALUSERPRIMARYQUANTITY AS QTY_ORDER,
 						USERSECONDARYQUANTITY AS QTY_ORDER_YARD,
 						CASE
@@ -136,15 +152,15 @@
 						ITXVIEW_RESERVATION 
 					WHERE 
 						PRODUCTIONORDERCODE = '$dt_ITXVIEWKK[PRODUCTIONORDERCODE]' AND ITEMTYPEAFICODE = 'RFD'");
-		$dt_qtyorder    = db2_fetch_assoc($sql_qtyorder);
+$dt_qtyorder    = db2_fetch_assoc($sql_qtyorder);
 
-		$sql_roll		= db2_exec($conn2, "SELECT count(*) AS ROLL, s2.PRODUCTIONORDERCODE
+$sql_roll		= db2_exec($conn2, "SELECT count(*) AS ROLL, s2.PRODUCTIONORDERCODE
 											FROM STOCKTRANSACTION s2 
 											WHERE s2.ITEMTYPECODE ='KGF' AND s2.PRODUCTIONORDERCODE = '$dt_ITXVIEWKK[PRODUCTIONORDERCODE]'
 											GROUP BY s2.PRODUCTIONORDERCODE");
-		$dt_roll   		= db2_fetch_assoc($sql_roll);
+$dt_roll   		= db2_fetch_assoc($sql_roll);
 
-		$sql_mesinknt	= db2_exec($conn2, "SELECT DISTINCT
+$sql_mesinknt	= db2_exec($conn2, "SELECT DISTINCT
 											s.LOTCODE,
 											CASE
 												WHEN a.VALUESTRING IS NULL THEN '-'
@@ -154,9 +170,9 @@
 										LEFT JOIN PRODUCTIONDEMAND p ON p.CODE = s.LOTCODE 
 										LEFT JOIN ADSTORAGE a ON a.UNIQUEID = p.ABSUNIQUEID AND a.NAMENAME = 'MachineNo'
 										WHERE s.PRODUCTIONORDERCODE = '$nokk'");
-		$dt_mesinknt	= db2_fetch_assoc($sql_mesinknt);
+$dt_mesinknt	= db2_fetch_assoc($sql_mesinknt);
 
-		$sql_bonresep1	= db2_exec($conn2, "SELECT
+$sql_bonresep1	= db2_exec($conn2, "SELECT
 											TRIM(PRODUCTIONRESERVATION.PRODUCTIONORDERCODE) AS PRODUCTIONORDERCODE,
 											TRIM(PRODUCTIONRESERVATION.PRODUCTIONORDERCODE) || '-' || TRIM(PRODUCTIONRESERVATION.GROUPLINE) AS BONRESEP1,
 											TRIM(SUFFIXCODE) AS SUFFIXCODE
@@ -167,9 +183,9 @@
 											AND NOT SUFFIXCODE = '001'
 										ORDER BY
 											PRODUCTIONRESERVATION.GROUPLINE ASC LIMIT 1");
-		$dt_bonresep1	= db2_fetch_assoc($sql_bonresep1);
+$dt_bonresep1	= db2_fetch_assoc($sql_bonresep1);
 
-		$sql_bonresep2	= db2_exec($conn2, "SELECT
+$sql_bonresep2	= db2_exec($conn2, "SELECT
 											TRIM( PRODUCTIONRESERVATION.PRODUCTIONORDERCODE ) AS PRODUCTIONORDERCODE,
 											TRIM(PRODUCTIONRESERVATION.PRODUCTIONORDERCODE) || '-' || TRIM(PRODUCTIONRESERVATION.GROUPLINE) AS BONRESEP2,
 											TRIM(SUFFIXCODE) AS SUFFIXCODE
@@ -180,8 +196,8 @@
 											AND NOT SUFFIXCODE = '001'
 										ORDER BY
 											PRODUCTIONRESERVATION.GROUPLINE DESC LIMIT 1");
-		$dt_bonresep2	= db2_fetch_assoc($sql_bonresep2);
-	// NOW
+$dt_bonresep2	= db2_fetch_assoc($sql_bonresep2);
+// NOW
 ?>
 <form class="form-horizontal" action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
 	<div class="box box-info">
@@ -193,51 +209,53 @@
 		</div>
 		<div class="box-body">
 			<div class="col-md-6">
-				<?php if($_SESSION['dept10']!="CSR") { ?>
-				<div class="form-group">
-					<label for="nokk" class="col-sm-3 control-label">Production Order</label>
-					<div class="col-sm-4">
-						<input name="nokk" type="text" class="form-control" id="nokk" onchange="window.location='?p=Input-Bon&nokk='+this.value" value="<?php echo $_GET['nokk']; ?>" placeholder="Production Order" required>
+				<?php if ($_SESSION['dept10'] != "CSR") { ?>
+					<div class="form-group">
+						<label for="nokk" class="col-sm-3 control-label">Production Order</label>
+						<div class="col-sm-4">
+							<input name="nokk" type="text" class="form-control" id="nokk" onchange="window.location='?p=Input-Bon&nokk='+this.value" value="<?php echo $_GET['nokk']; ?>" placeholder="Production Order" required>
+						</div>
 					</div>
-				</div>
-				<?php
+					<?php
 					// Ubah string menjadi array
 					$data = $dt_demand['DEMAND'];
 					$arrayData = explode(', ', $data);
-					?> 
-				<div class="form-group">
-					<label for="demand" class="col-sm-3 control-label">Production Demand</label>
-					<div class="col-sm-4" hidden="hidden">
-						<input name="demand" type="text" class="form-control" id="demand" value="<?= $dt_demand['DEMAND']; ?><?php if ($cek > 0) {
-																											echo $rcek['nodemand'];
-																										} ?>" placeholder="Production Demand">
+					?>
+					<div class="form-group">
+						<label for="demand" class="col-sm-3 control-label">Production Demand</label>
+						<div class="col-sm-4" hidden="hidden">
+							<input name="demand" type="text" class="form-control" id="demand" value="<?= $dt_demand['DEMAND']; ?><?php if ($cek > 0) {
+																																		echo $rcek['nodemand'];
+																																	} ?>" placeholder="Production Demand">
+						</div>
+						<div class="col-sm-4">
+							<select class="form-control select2" name="demand" onchange="window.location='?p=Input-Bon&nokk=<?php echo $_GET['nokk']; ?>&demand='+this.value" required>
+								<option value="">-Pilih-</option>
+								<?php foreach ($arrayData as $value): ?>
+									<option value="<?= htmlspecialchars($value) ?>" <?php if ($_GET['demand'] == htmlspecialchars($value)) {
+																						echo "SELECTED";
+																					} ?>><?= htmlspecialchars($value) ?></option>
+								<?php endforeach; ?>
+							</select>
+						</div>
 					</div>
-					<div class="col-sm-4">
-					<select class="form-control select2" name="demand" onchange="window.location='?p=Input-Bon&nokk=<?php echo $_GET['nokk']; ?>&demand='+this.value" required>
-						<option value="">-Pilih-</option>
-						<?php foreach ($arrayData as $value): ?>
-							<option value="<?= htmlspecialchars($value) ?>" <?php if($_GET['demand']==htmlspecialchars($value)){ echo "SELECTED"; }?>><?= htmlspecialchars($value) ?></option>
-						<?php endforeach; ?>
-					</select>
-					</div>
-				</div>
-				
+
 				<?php } ?>
-				<?php if($_SESSION['dept10']=="CSR") { ?>
-				<div class="form-group">
-					<label for="demand" class="col-sm-3 control-label">Production Demand</label>
-					<div class="col-sm-8">
-						<input name="demand" type="text" class="form-control" id="demand" onchange="window.location='?p=Input-Bon&demand='+this.value" value="<?php echo $_GET['demand']; ?>" placeholder="Production Demand">
+				<?php if ($_SESSION['dept10'] == "CSR") { ?>
+					<div class="form-group">
+						<label for="demand" class="col-sm-3 control-label">Production Demand</label>
+						<div class="col-sm-8">
+							<input name="demand" type="text" class="form-control" id="demand" onchange="window.location='?p=Input-Bon&demand='+this.value" value="<?php echo $_GET['demand']; ?>" placeholder="Production Demand">
+						</div>
 					</div>
-				</div>
-				<div class="form-group">
-					<label for="nokk" class="col-sm-3 control-label">Production Order</label>
-					<div class="col-sm-4">
-						<input name="nokk" type="text" class="form-control" id="nokk" value="<?= $dt_ITXVIEWKK['PRODUCTIONORDERCODE']; ?><?php if ($cek > 0) {
-																											echo $rcek['nokk'];
-																										} ?>" placeholder="Production Order" required>
+					<div class="form-group">
+						<label for="nokk" class="col-sm-3 control-label">Production Order</label>
+						<div class="col-sm-4">
+							<input name="nokk" type="text" class="form-control" id="nokk" value="<?= $dt_ITXVIEWKK['PRODUCTIONORDERCODE']; ?><?php if ($cek > 0) {
+																																					echo $rcek['nokk'];
+																																				} ?>" placeholder="Production Order" required>
+						</div>
 					</div>
-				</div>
 				<?php } ?>
 				<div class="form-group">
 					<label for="no_order" class="col-sm-3 control-label">No Order</label>
@@ -261,11 +279,15 @@
 					<label for="no_hanger" class="col-sm-3 control-label">No Hanger / No Item</label>
 					<div class="col-sm-3">
 						<input name="no_hanger" type="text" class="form-control" id="no_hanger" value="<?= $dt_ITXVIEWKK['NO_HANGER'] ?>" placeholder="No Hanger">
-					</div>						
+					</div>
 					<div class="col-sm-3">
 						<input name="no_item" type="text" class="form-control" id="no_item" value="<?= $dt_item['EXTERNALITEMCODE'] ?>
-																								   <?php if ($rcek['no_item'] != "") {echo $rcek['no_item'];} else { echo $r['ProductCode'];}?>" placeholder="No Item">
-				    </div>
+																								   <?php if ($rcek['no_item'] != "") {
+																										echo $rcek['no_item'];
+																									} else {
+																										echo $r['ProductCode'];
+																									} ?>" placeholder="No Item">
+					</div>
 				</div>
 				<div class="form-group">
 					<label for="jns_kain" class="col-sm-3 control-label">Jenis Kain</label>
@@ -294,11 +316,11 @@
 				</div>
 				<div class="form-group">
 					<label for="tgl_delivery" class="col-sm-3 control-label">Tgl Delivery</label>
-					<div class="col-sm-3">						
-					<div class="input-group date">
-						<div class="input-group-addon"> <i class="fa fa-calendar"></i> </div>
-						<input name="tgl_delivery" type="text" class="form-control" id="datepicker" placeholder="Tanggal Delivery" value="<?= $dt_ITXVIEWKK['DELIVERYDATE']; ?>" autocomplete="off"/>
-					</div>
+					<div class="col-sm-3">
+						<div class="input-group date">
+							<div class="input-group-addon"> <i class="fa fa-calendar"></i> </div>
+							<input name="tgl_delivery" type="text" class="form-control" id="datepicker" placeholder="Tanggal Delivery" value="<?= $dt_ITXVIEWKK['DELIVERYDATE']; ?>" autocomplete="off" />
+						</div>
 					</div>
 					<!-- /.input group -->
 				</div>
@@ -357,7 +379,7 @@
 												} ?>>External</option>
 							<option value="2" <?php if ($rcek['kategori'] == "2") {
 													echo "SELECTED";
-												} ?>>FOC</option>							
+												} ?>>FOC</option>
 						</select>
 					</div>
 				</div>
@@ -728,23 +750,33 @@
 				</div>
 
 				<div class="form-group">
-				<label for="penyebab" class="col-sm-3 control-label">Penyebab</label>
-					<?php 
-					  $dtArr=$rcek['sebab'];
-					  $data = explode(",",$dtArr);
+					<label for="penyebab" class="col-sm-3 control-label">Penyebab</label>
+					<?php
+					$dtArr = $rcek['sebab'];
+					$data = explode(",", $dtArr);
 					?>
-					  <div class="col-sm-8">
-						  <label><input type="checkbox" class="minimal" name="sebab[]" value="Man" <?php if(in_array("Man",$data)){echo "checked";} ?>> Man &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-						  </label>
-						  <label><input type="checkbox" class="minimal" name="sebab[]" value="Methode" <?php if(in_array("Methode",$data)){echo "checked";} ?>> Methode &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-						  </label>
-						  <label><input type="checkbox" class="minimal" name="sebab[]" value="Machine" <?php if(in_array("Machine",$data)){echo "checked";} ?>> Machine &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-						  </label>
-						  <label><input type="checkbox" class="minimal" name="sebab[]" value="Material" <?php if(in_array("Material",$data)){echo "checked";} ?>> Material &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-						  </label>
-						  <label><input type="checkbox" class="minimal" name="sebab[]" value="Environment" <?php if(in_array("Environment",$data)){echo "checked";} ?>> Environment
-						  </label>
-					</div>  
+					<div class="col-sm-8">
+						<label><input type="checkbox" class="minimal" name="sebab[]" value="Man" <?php if (in_array("Man", $data)) {
+																										echo "checked";
+																									} ?>> Man &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+						</label>
+						<label><input type="checkbox" class="minimal" name="sebab[]" value="Methode" <?php if (in_array("Methode", $data)) {
+																											echo "checked";
+																										} ?>> Methode &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+						</label>
+						<label><input type="checkbox" class="minimal" name="sebab[]" value="Machine" <?php if (in_array("Machine", $data)) {
+																											echo "checked";
+																										} ?>> Machine &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+						</label>
+						<label><input type="checkbox" class="minimal" name="sebab[]" value="Material" <?php if (in_array("Material", $data)) {
+																											echo "checked";
+																										} ?>> Material &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+						</label>
+						<label><input type="checkbox" class="minimal" name="sebab[]" value="Environment" <?php if (in_array("Environment", $data)) {
+																												echo "checked";
+																											} ?>> Environment
+						</label>
+					</div>
 				</div>
 
 				<div class="form-group">
@@ -795,51 +827,116 @@ if ($_POST['save'] == "save") {
 	} else {
 		$sts = "0";
 	}
-	$checkbox1=$_POST['sebab'];
-  	$chkp="";
-    foreach($checkbox1 as $chk1)  
-   		  {  
-      		$chkp .= $chk1.",";  
-        }
-	
-	$sqlData = mysqli_query($cona, "INSERT INTO tbl_gantikain SET 
-		  nokk='$_POST[nokk]',
-		  nodemand='$_POST[demand]',
-		  langganan='$_POST[pelanggan]',
-		  no_order='$_POST[no_order]',
-		  no_hanger='$_POST[no_hanger]',
-		  no_item='$_POST[no_item]',
-		  po='$po',
-		  jenis_kain='$jns',
-		  lebar='$_POST[lebar]',
-		  gramasi='$_POST[grms]',
-		  lot='$lot',
-		  tgl_delivery='$_POST[tgl_delivery]',
-		  warna='$warna',
-		  no_warna='$nowarna',
-		  masalah='$masalah',
-		  sebab='$chkp',
-		  qty_order='$_POST[qty_order]',
-		  t_jawab='$_POST[t_jawab]',
-		  t_jawab1='$_POST[t_jawab1]',
-		  t_jawab2='$_POST[t_jawab2]',
-		  t_jawab3='$_POST[t_jawab3]',
-		  t_jawab4='$_POST[t_jawab4]',
-		  persen='$_POST[persen]',
-		  persen1='$_POST[persen1]',
-		  persen2='$_POST[persen2]',
-		  persen3='$_POST[persen3]',
-		  persen4='$_POST[persen4]',
-		  satuan_o='$_POST[satuan_o]',
-		  personil='$_POST[personil]',
-		  shift='$_POST[shift]',
-		  penyebab='$_POST[penyebab]',
-		  sts='$sts',
-		  ket='$ket',
-		  kategori='$_POST[kategori]',
-		  dept='$_SESSION[dept10]',
-		  tgl_buat=now(),
-		  tgl_update=now()");
+	$checkbox1 = $_POST['sebab'];
+	$chkp = "";
+	foreach ($checkbox1 as $chk1) {
+		$chkp .= $chk1 . ",";
+	}
+
+	// $sqlData = mysqli_query($cona, "INSERT INTO tbl_gantikain SET 
+	// 	  nokk='$_POST[nokk]',
+	// 	  nodemand='$_POST[demand]',
+	// 	  langganan='$_POST[pelanggan]',
+	// 	  no_order='$_POST[no_order]',
+	// 	  no_hanger='$_POST[no_hanger]',
+	// 	  no_item='$_POST[no_item]',
+	// 	  po='$po',
+	// 	  jenis_kain='$jns',
+	// 	  lebar='$_POST[lebar]',
+	// 	  gramasi='$_POST[grms]',
+	// 	  lot='$lot',
+	// 	  tgl_delivery='$_POST[tgl_delivery]',
+	// 	  warna='$warna',
+	// 	  no_warna='$nowarna',
+	// 	  masalah='$masalah',
+	// 	  sebab='$chkp',
+	// 	  qty_order='$_POST[qty_order]',
+	// 	  t_jawab='$_POST[t_jawab]',
+	// 	  t_jawab1='$_POST[t_jawab1]',
+	// 	  t_jawab2='$_POST[t_jawab2]',
+	// 	  t_jawab3='$_POST[t_jawab3]',
+	// 	  t_jawab4='$_POST[t_jawab4]',
+	// 	  persen='$_POST[persen]',
+	// 	  persen1='$_POST[persen1]',
+	// 	  persen2='$_POST[persen2]',
+	// 	  persen3='$_POST[persen3]',
+	// 	  persen4='$_POST[persen4]',
+	// 	  satuan_o='$_POST[satuan_o]',
+	// 	  personil='$_POST[personil]',
+	// 	  shift='$_POST[shift]',
+	// 	  penyebab='$_POST[penyebab]',
+	// 	  sts='$sts',
+	// 	  ket='$ket',
+	// 	  kategori='$_POST[kategori]',
+	// 	  dept='$_SESSION[dept10]',
+	// 	  tgl_buat=now(),
+	// 	  tgl_update=now()");
+
+	$sqlData = sqlsrv_query($cona, "
+    INSERT INTO db_adm.tbl_gantikain (
+        nokk, nodemand, langganan, no_order, no_hanger, no_item,
+        po, jenis_kain, lebar, gramasi, lot, tgl_delivery,
+        warna, no_warna, masalah, sebab, qty_order,
+        t_jawab, t_jawab1, t_jawab2, t_jawab3, t_jawab4,
+        persen, persen1, persen2, persen3, persen4,
+        satuan_o, personil, shift, penyebab, sts, ket,
+        kategori, dept, tgl_buat, tgl_update
+    ) VALUES (
+        ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?,
+        ?, ?, GETDATE(), GETDATE()
+    )
+", [
+		$_POST['nokk'] ?? '',
+		$_POST['demand'] ?? '',
+		$_POST['pelanggan'] ?? '',
+		$_POST['no_order'] ?? '',
+		$_POST['no_hanger'] ?? '',
+		$_POST['no_item'] ?? '',
+
+		$po ?? '',
+		$jns ?? '',
+		$_POST['lebar'] ?? '',
+		$_POST['grms'] ?? '',
+		$lot ?? '',
+		$_POST['tgl_delivery'] ?? '',
+
+		$warna ?? '',
+		$nowarna ?? '',
+		$masalah ?? '',
+		$chkp ?? '',
+		$_POST['qty_order'] ?? '',
+
+		$_POST['t_jawab'] ?? '',
+		$_POST['t_jawab1'] ?? '',
+		$_POST['t_jawab2'] ?? '',
+		$_POST['t_jawab3'] ?? '',
+		$_POST['t_jawab4'] ?? '',
+
+		$_POST['persen'] ?? '',
+		$_POST['persen1'] ?? '',
+		$_POST['persen2'] ?? '',
+		$_POST['persen3'] ?? '',
+		$_POST['persen4'] ?? '',
+
+		$_POST['satuan_o'] ?? '',
+		$_POST['personil'] ?? '',
+		$_POST['shift'] ?? '',
+		$_POST['penyebab'] ?? '',
+		$sts ?? '',
+		$ket ?? '',
+
+		$_POST['kategori'] ?? '',
+		$_SESSION['dept10'] ?? ''
+	]);
+
+	if ($sqlData === false) {
+		die(print_r(sqlsrv_errors(), true));
+	}
 
 	if ($sqlData) {
 

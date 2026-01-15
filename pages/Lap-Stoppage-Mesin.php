@@ -158,40 +158,56 @@ function formatJamMenit1($decimalMinutes) {
         </thead>
         <tbody>
           <?php
-	$no=1;
-			if($Awal!="" and $Dept!=""){ $Where =" WHERE DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' AND dept= '$Dept' "; }
-			else
-			if($Awal!=""){ $Where =" WHERE DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' "; }
-			else
-			if($Dept!=""){ $Where =" WHERE dept= '$Dept'"; }
-			
-			else
-			if($Awal=="" and $Order=="" and $Dept==""){ $Where =" WHERE DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' "; }
-			$qry1=mysqli_query($cona,"SELECT * FROM tbl_stoppage $Where ORDER BY id ASC");
-			while($row1=mysqli_fetch_array($qry1)){				
-		 ?>
-          <tr bgcolor="<?php echo $bgcolor; ?>">
-            <td align="center"><?php echo $no; ?></td>
-            <td align="center"><?php echo $row1['tgl_buat'];?></td>
-            <td><?php echo $row1['nokk'];?></td>
-            <td><?php echo $row1['nodemand'];?></td>
-            <td><?php echo $row1['buyer'];?></td>
-            <td><?php echo $row1['langganan'];?></td>
-            <td align="center"><?php echo $row1['po'];?></td>
-            <td align="center"><?php echo $row1['no_order'];?></td>
-            <td align="center" valign="top"><?php echo $row1['no_hanger'];?></td>
-            <td><?php echo $row1['jenis_kain'];?></td>
-            <td align="center"><?php echo $row1['lebar']."x".$row1['gramasi'];?></td>
-            <td align="center"><?php echo $row1['lot'];?></td>
-            <td align="center"><?php echo $row1['tgl_delivery'];?></td>
-            <td align="center"><?php echo $row1['warna'];?></td>
-            <td align="right"><?php echo $row1['qty_order'];?></td>
-            <td align="center"><?php echo formatJamMenit($row1['durasi_jam_stop']);?></td>            
-            <td align="center"><?php echo $row1['kode_stop'];?></td>
-			<td align="center"><?php echo $row1['mesin'];?></td>  
-			<td align="center"><?php echo $row1['operator'];?></td>  
-            </tr>
-          <?php	$no++;  } ?>
+          $no = 1;
+
+          $Where = "";
+          if ($Awal != "" && $Dept != "") {
+              $Where = " WHERE CONVERT(date, tgl_buat) BETWEEN '$Awal' AND '$Akhir' AND dept = '$Dept' ";
+          } else if ($Awal != "") {
+              $Where = " WHERE CONVERT(date, tgl_buat) BETWEEN '$Awal' AND '$Akhir' ";
+          } else if ($Dept != "") {
+              $Where = " WHERE dept = '$Dept' ";
+          } else if ($Awal == "" && $Order == "" && $Dept == "") {
+              $Where = " WHERE CONVERT(date, tgl_buat) BETWEEN '$Awal' AND '$Akhir' ";
+          }
+
+          $sql  = "SELECT * FROM db_adm.tbl_stoppage $Where ORDER BY id ASC";
+          $stmt = sqlsrv_query($cona, $sql);
+          if ($stmt === false) {
+              die(print_r(sqlsrv_errors(), true));
+          }
+
+          while ($row1 = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+
+              $tgl_buat = ($row1['tgl_buat'] instanceof DateTime) ? $row1['tgl_buat']->format('Y-m-d H:i:s') : $row1['tgl_buat'];
+              $tgl_delivery = ($row1['tgl_delivery'] instanceof DateTime) ? $row1['tgl_delivery']->format('Y-m-d') : $row1['tgl_delivery'];
+          ?>
+              <tr bgcolor="<?php echo $bgcolor; ?>">
+                  <td align="center"><?php echo $no; ?></td>
+                  <td align="center"><?php echo $tgl_buat; ?></td>
+                  <td><?php echo $row1['nokk']; ?></td>
+                  <td><?php echo $row1['nodemand']; ?></td>
+                  <td><?php echo $row1['buyer']; ?></td>
+                  <td><?php echo $row1['langganan']; ?></td>
+                  <td align="center"><?php echo $row1['po']; ?></td>
+                  <td align="center"><?php echo $row1['no_order']; ?></td>
+                  <td align="center" valign="top"><?php echo $row1['no_hanger']; ?></td>
+                  <td><?php echo $row1['jenis_kain']; ?></td>
+                  <td align="center"><?php echo $row1['lebar']."x".$row1['gramasi']; ?></td>
+                  <td align="center"><?php echo $row1['lot']; ?></td>
+                  <td align="center"><?php echo $tgl_delivery; ?></td>
+                  <td align="center"><?php echo $row1['warna']; ?></td>
+                  <td align="right"><?php echo $row1['qty_order']; ?></td>
+                  <td align="center"><?php echo formatJamMenit($row1['durasi_jam_stop']); ?></td>
+                  <td align="center"><?php echo $row1['kode_stop']; ?></td>
+                  <td align="center"><?php echo $row1['mesin']; ?></td>
+                  <td align="center"><?php echo $row1['operator']; ?></td>
+              </tr>
+          <?php
+              $no++;
+          }
+          sqlsrv_free_stmt($stmt);
+          ?>
         </tbody>
       </table>
       </div>
@@ -224,44 +240,58 @@ function formatJamMenit1($decimalMinutes) {
         </thead>
         <tbody>
           <?php
-	$no=1;
-			if($Awal!="" and $Dept!=""){ $Where =" WHERE DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' AND dept= '$Dept' "; }
-			else
-			if($Awal!=""){ $Where =" WHERE DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' "; }
-			else
-			if($Dept!=""){ $Where =" WHERE dept= '$Dept'"; }
-			
-			else
-			if($Awal=="" and $Order=="" and $Dept==""){ $Where =" WHERE DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' "; }
-			$qry1=mysqli_query($cona,"SELECT 
-    ts.mesin,
-    SUM(CASE WHEN ts.kode_stop = 'KM' THEN ts.durasi_jam_stop ELSE 0 END) AS KM,
-    SUM(CASE WHEN ts.kode_stop = 'LM' THEN ts.durasi_jam_stop ELSE 0 END) AS LM,
-    SUM(CASE WHEN ts.kode_stop = 'KO' THEN ts.durasi_jam_stop ELSE 0 END) AS KO,
-    SUM(CASE WHEN ts.kode_stop = 'AP' THEN ts.durasi_jam_stop ELSE 0 END) AS AP,
-    SUM(CASE WHEN ts.kode_stop = 'PA' THEN ts.durasi_jam_stop ELSE 0 END) AS PA,
-    SUM(CASE WHEN ts.kode_stop = 'PM' THEN ts.durasi_jam_stop ELSE 0 END) AS PM,
-    SUM(CASE WHEN ts.kode_stop = 'GT' THEN ts.durasi_jam_stop ELSE 0 END) AS GT,
-    SUM(CASE WHEN ts.kode_stop = 'TG' THEN ts.durasi_jam_stop ELSE 0 END) AS TG
-FROM tbl_stoppage ts
-$Where
-GROUP BY ts.mesin");
-			while($row1=mysqli_fetch_array($qry1)){	
-	
-		 ?>
-          <tr bgcolor="<?php echo $bgcolor; ?>">
-            <td align="center"><?php echo $no; ?></td>
-            <td align="center"><?php echo $row1['mesin'];?></td>
-            <td align="center"><?php echo formatJamMenit($row1['LM']);?></td>
-            <td align="center"><?php echo formatJamMenit($row1['KM']);?></td>
-            <td align="center"><?php echo formatJamMenit($row1['KO']);?></td>
-            <td align="center"><?php echo formatJamMenit($row1['AP']);?></td>
-            <td align="center"><?php echo formatJamMenit($row1['PA']);?></td>
-            <td align="center"><?php echo formatJamMenit($row1['PM']);?></td>
-            <td align="center"><?php echo formatJamMenit($row1['GT']);?></td>
-            <td align="center"><?php echo formatJamMenit($row1['TG']);?></td>
+          $no = 1;
+
+          $Where = "";
+          if ($Awal != "" && $Dept != "") {
+              $Where = " WHERE CONVERT(date, ts.tgl_buat) BETWEEN '$Awal' AND '$Akhir' AND ts.dept = '$Dept' ";
+          } else if ($Awal != "") {
+              $Where = " WHERE CONVERT(date, ts.tgl_buat) BETWEEN '$Awal' AND '$Akhir' ";
+          } else if ($Dept != "") {
+              $Where = " WHERE ts.dept = '$Dept' ";
+          } else if ($Awal == "" && $Order == "" && $Dept == "") {
+              $Where = " WHERE CONVERT(date, ts.tgl_buat) BETWEEN '$Awal' AND '$Akhir' ";
+          }
+
+          $sql = "
+          SELECT 
+              ts.mesin,
+              SUM(CASE WHEN ts.kode_stop = 'KM' THEN ts.durasi_jam_stop ELSE 0 END) AS KM,
+              SUM(CASE WHEN ts.kode_stop = 'LM' THEN ts.durasi_jam_stop ELSE 0 END) AS LM,
+              SUM(CASE WHEN ts.kode_stop = 'KO' THEN ts.durasi_jam_stop ELSE 0 END) AS KO,
+              SUM(CASE WHEN ts.kode_stop = 'AP' THEN ts.durasi_jam_stop ELSE 0 END) AS AP,
+              SUM(CASE WHEN ts.kode_stop = 'PA' THEN ts.durasi_jam_stop ELSE 0 END) AS PA,
+              SUM(CASE WHEN ts.kode_stop = 'PM' THEN ts.durasi_jam_stop ELSE 0 END) AS PM,
+              SUM(CASE WHEN ts.kode_stop = 'GT' THEN ts.durasi_jam_stop ELSE 0 END) AS GT,
+              SUM(CASE WHEN ts.kode_stop = 'TG' THEN ts.durasi_jam_stop ELSE 0 END) AS TG
+          FROM db_adm.tbl_stoppage ts
+          $Where
+          GROUP BY ts.mesin
+          ";
+
+          $stmt = sqlsrv_query($cona, $sql);
+          if ($stmt === false) {
+              die(print_r(sqlsrv_errors(), true));
+          }
+          while ($row1 = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+          ?>
+            <tr bgcolor="<?php echo $bgcolor; ?>">
+              <td align="center"><?php echo $no; ?></td>
+              <td align="center"><?php echo $row1['mesin']; ?></td>
+              <td align="center"><?php echo formatJamMenit($row1['LM']); ?></td>
+              <td align="center"><?php echo formatJamMenit($row1['KM']); ?></td>
+              <td align="center"><?php echo formatJamMenit($row1['KO']); ?></td>
+              <td align="center"><?php echo formatJamMenit($row1['AP']); ?></td>
+              <td align="center"><?php echo formatJamMenit($row1['PA']); ?></td>
+              <td align="center"><?php echo formatJamMenit($row1['PM']); ?></td>
+              <td align="center"><?php echo formatJamMenit($row1['GT']); ?></td>
+              <td align="center"><?php echo formatJamMenit($row1['TG']); ?></td>
             </tr>
-          <?php	$no++;  } ?>
+          <?php
+            $no++;
+          }
+          sqlsrv_free_stmt($stmt);
+          ?>
         </tbody>
       </table>
       </div>
@@ -275,48 +305,66 @@ GROUP BY ts.mesin");
         <?php if($_POST['awal']!="") { ?><b>Periode: <?php echo $_POST['awal']." to ".$_POST['akhir']; ?></b>
 		<?php } ?>
       <div class="box-body">
-      <table class="table table-bordered table-hover table-striped nowrap" id="example4" style="width:100%">
-        <thead class="bg-blue">
-          <tr>
-            <th><div align="center">No</div></th>
-            <th><div align="center">Mesin</div></th>
-            <th><div align="center">Shift A</div></th>
-            <th><div align="center">Shift B</div></th>
-            <th><div align="center">Shift C</div></th>
+        <table class="table table-bordered table-hover table-striped nowrap" id="example4" style="width:100%">
+          <thead class="bg-blue">
+            <tr>
+              <th><div align="center">No</div></th>
+              <th><div align="center">Mesin</div></th>
+              <th><div align="center">Shift A</div></th>
+              <th><div align="center">Shift B</div></th>
+              <th><div align="center">Shift C</div></th>
             </tr>
-        </thead>
-        <tbody>
-          <?php
-	$no=1;
-			if($Awal!="" and $Dept!=""){ $Where =" WHERE DATE_FORMAT( ts.tgl_buat, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' AND ts.dept= '$Dept' "; }
-			else
-			if($Awal!=""){ $Where =" WHERE DATE_FORMAT( ts.tgl_buat, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' "; }
-			else
-			if($Dept!=""){ $Where =" WHERE ts.dept= '$Dept'"; }
-			
-			else
-			if($Awal=="" and $Order=="" and $Dept==""){ $Where =" WHERE DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' "; }
-			$qry1=mysqli_query($cona,"SELECT 
-					ts.mesin,
-					SUM(CASE WHEN tso.shift = 'A' THEN ts.durasi_jam_stop ELSE 0 END) AS A,
-					SUM(CASE WHEN tso.shift = 'B' THEN ts.durasi_jam_stop ELSE 0 END) AS B,
-					SUM(CASE WHEN tso.shift = 'C' THEN ts.durasi_jam_stop ELSE 0 END) AS C
-				FROM tbl_stoppage ts left join tbl_shift_operator tso on ts.operator = tso.nama
-				$Where
-				GROUP BY ts.mesin");
-			while($row1=mysqli_fetch_array($qry1)){	
-	
-		 ?>
-          <tr bgcolor="<?php echo $bgcolor; ?>">
-            <td align="center"><?php echo $no; ?></td>
-            <td align="center"><?php echo $row1['mesin'];?></td>
-            <td align="center"><?php echo formatJamMenit($row1['A']);?></td>
-            <td align="center"><?php echo formatJamMenit($row1['B']);?></td>
-            <td align="center"><?php echo formatJamMenit($row1['C']);?></td>
-            </tr>
-          <?php	$no++;  } ?>
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            <?php
+            $no = 1;
+
+            $Where = "";
+            if ($Awal != "" && $Dept != "") {
+              $Where = " WHERE CONVERT(date, ts.tgl_buat) BETWEEN '$Awal' AND '$Akhir' AND ts.dept = '$Dept' ";
+            } else if ($Awal != "") {
+              $Where = " WHERE CONVERT(date, ts.tgl_buat) BETWEEN '$Awal' AND '$Akhir' ";
+            } else if ($Dept != "") {
+              $Where = " WHERE ts.dept = '$Dept' ";
+            } else if ($Awal == "" && $Order == "" && $Dept == "") {
+              $Where = " WHERE CONVERT(date, ts.tgl_buat) BETWEEN '$Awal' AND '$Akhir' ";
+            }
+
+            $sql = "
+            SELECT
+              ts.mesin,
+              SUM(CASE WHEN tso.[shift] = 'A' THEN ts.durasi_jam_stop ELSE 0 END) AS shiftA,
+              SUM(CASE WHEN tso.[shift] = 'B' THEN ts.durasi_jam_stop ELSE 0 END) AS shiftB,
+              SUM(CASE WHEN tso.[shift] = 'C' THEN ts.durasi_jam_stop ELSE 0 END) AS shiftC
+            FROM db_adm.tbl_stoppage ts
+            LEFT JOIN db_adm.tbl_shift_operator tso ON ts.operator = tso.nama
+            $Where
+            GROUP BY ts.mesin
+            ";
+
+            $stmt = sqlsrv_query($cona, $sql);
+            if ($stmt === false) {
+              die(print_r(sqlsrv_errors(), true));
+            }
+
+            while ($row1 = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+            ?>
+                <tr bgcolor="<?php echo $bgcolor; ?>">
+                  <td align="center"><?php echo $no; ?></td>
+                  <td align="center"><?php echo $row1['mesin']; ?></td>
+                  <td align="center"><?php echo formatJamMenit($row1['shiftA']); ?></td>
+                  <td align="center"><?php echo formatJamMenit($row1['shiftB']); ?></td>
+                  <td align="center"><?php echo formatJamMenit($row1['shiftC']); ?></td>
+                </tr>
+            <?php
+              $no++;
+            }
+
+            sqlsrv_free_stmt($stmt);
+            ?>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

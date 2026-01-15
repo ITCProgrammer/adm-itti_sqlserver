@@ -3,6 +3,7 @@ ini_set("error_reporting", 1);
 session_start();
 include "koneksi.php";
 include_once("classes/class.phpmailer.php");
+
 if (!function_exists('sendEmailApproved')) {
   function sendEmailApproved($to, $subject, $bodyHtml, $fromEmail = 'dept.it@indotaichen.com', $fromName = 'DEPT IT', $cc = [], $bcc = [], $attachments = [])
   {
@@ -39,7 +40,7 @@ if (!function_exists('sendEmailApproved')) {
       $mail->Body    = $bodyHtml;
       $mail->Hostname = 'mail.indotaichen.com';
       $mail->Helo = 'mail.indotaichen.com';
-      $mail->send();
+      // $mail->send();
       $GLOBAL_LAST_MAILER_ERROR = '';
       return true;
     } catch (Exception $e) {
@@ -54,8 +55,8 @@ if (!function_exists('sendEmailApproved')) {
     return $GLOBAL_LAST_MAILER_ERROR;
   }
 }
-$qryCek = mysqli_query($cona, "SELECT * FROM tbl_gantikain WHERE `id`='$_GET[id]'");
-$rCek = mysqli_fetch_array($qryCek);
+$qryCek = sqlsrv_query($cona, "SELECT * FROM db_adm.tbl_gantikain WHERE id=?", [$_GET['id']]);
+$rCek = sqlsrv_fetch_array($qryCek, SQLSRV_FETCH_ASSOC);
 ?>
 <?php
 function no_urut($x)
@@ -74,10 +75,10 @@ function no_urut($x)
     $fk = "US";
   }
   $format = $fk . date("y/m/");
-  $sql = mysqli_query($cona, "SELECT no_bon FROM tbl_bonkain WHERE substr(no_bon,1,10) like '" . $format . "%' ORDER BY no_bon DESC LIMIT 1 ") or die(mysqli_error());
-  $d = mysqli_num_rows($sql);
+  $sql = sqlsrv_query($cona, "SELECT TOP 1 no_bon FROM db_adm.tbl_bonkain WHERE LEFT(no_bon,10) LIKE '".$format."%' ORDER BY no_bon DESC") or die(print_r(sqlsrv_errors(), true));
+  $r = sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC);
+  $d = ($r !== false) ? 1 : 0;
   if ($d > 0) {
-    $r = mysqli_fetch_array($sql);
     $d = $r['no_bon'];
     $str = substr($d, 8, 3);
     $Urut = (int)$str;
@@ -103,10 +104,10 @@ function orderno($x, $odr)
     $fk = "G";
   }
   $format = $odr;
-  $sql = mysqli_query($cona, "SELECT no_order FROM tbl_bonkain WHERE no_order='$format' ORDER BY no_order DESC LIMIT 1") or die(mysqli_error());
-  $d = mysqli_num_rows($sql);
+  $sql = sqlsrv_query($cona, "SELECT no_order FROM db_adm.tbl_bonkain WHERE no_order='$format' ORDER BY no_order DESC LIMIT 1") or die(print_r(sqlsrv_errors(), true));
+  $r = sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC);
+  $d = ($r !== false) ? 1 : 0;
   if ($d > 0) {
-    $r = mysqli_fetch_array($sql);
     $d = $r['no_bon'];
     $str = substr($d, 8, 3);
     $Urut = (int)$str;
@@ -162,73 +163,79 @@ if (isset($_POST['save'])) {
   $satuan1 = str_replace("'", "''", $_POST['satuan1']);
   $satuan2 = str_replace("'", "''", $_POST['satuan2']);
   $satuan3 = str_replace("'", "''", $_POST['satuan3']);
-  $qry1 = mysqli_query($cona, "INSERT INTO tbl_bonkain SET
-		`id_nsp`='$_GET[id]',
-		`no_bon`='$bon',
-		`no_order`='$order',
-		`alasan`='$alasan',
-		`analisa`='$analisa',
-		`akar_penyebab`='$akar_penyebab',
-		`pencegahan`='$pencegahan',
-		`nokk1`='$kk1',
-		`nokk2`='$kk2',
-		`nokk3`='$kk3',
-		`warna1`='$warna1',
-		`warna2`='$warna2',
-		`warna3`='$warna3',
-		`kg1`='$kg1',
-		`kg2`='$kg2',
-		`kg3`='$kg3',
-		`pjg1`='$pjg1',
-		`pjg2`='$pjg2',
-		`pjg3`='$pjg3',
-		`satuan1`='$satuan1',
-		`satuan2`='$satuan2',
-		`satuan3`='$satuan3',
-		`tgl_buat`=now(),
-		`tgl_update`=now()
-		");
+  $qry1 = sqlsrv_query($cona, "
+    INSERT INTO db_adm.tbl_bonkain (
+      id_nsp, no_bon, no_order, alasan, analisa, akar_penyebab, pencegahan,
+      nokk1, nokk2, nokk3, warna1, warna2, warna3,
+      kg1, kg2, kg3, pjg1, pjg2, pjg3, satuan1, satuan2, satuan3,
+      tgl_buat, tgl_update
+    ) VALUES (
+      ?, ?, ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?, ?, ?, ?, ?,
+      GETDATE(), GETDATE()
+    )
+  ", [
+    $_GET['id'],
+    $bon,
+    $order,
+    $alasan,
+    $analisa,
+    $akar_penyebab,
+    $pencegahan,
+    $kk1, $kk2, $kk3,
+    $warna1, $warna2, $warna3,
+    $kg1, $kg2, $kg3,
+    $pjg1, $pjg2, $pjg3,
+    $satuan1, $satuan2, $satuan3
+  ]);
+  if ($qry1 === false) { die(print_r(sqlsrv_errors(), true)); }
+
   if ($qry1) {
     echo "<script>swal({
-  title: 'Data Telah diSimpan',   
-  text: 'Klik Ok untuk input data kembali',
-  type: 'success',
-  }).then((result) => {
-  if (result.value) {
-      window.open('pages/cetak/cetak_bon_ganti.php?no_bon=$bon','_blank');
-      window.location.href='index1.php?p=input-bon-kain&id=$_GET[id]';
-   
-  }
-});</script>";
+      title: 'Data Telah diSimpan',   
+      text: 'Klik Ok untuk input data kembali',
+      type: 'success',
+      }).then((result) => {
+      if (result.value) {
+          window.open('pages/cetak/cetak_bon_ganti.php?no_bon=$bon','_blank');
+          window.location.href='index1.php?p=input-bon-kain&id=$_GET[id]';
+      }
+    });</script>";
   }
 }
 
-// Handle Approve Bon Ganti Kain
 if (isset($_POST['approve_bon']) && $_POST['approve_bon'] == '1') {
   include "koneksi.php";
-  $id_bon = mysqli_real_escape_string($cona, $_POST['id_bon']);
-  // Update status bon menjadi Approved
-  $now = date("Y-m-d H:i:s");
-  $emailTambahan = isset($_POST['email']) ? mysqli_real_escape_string($cona, $_POST['email']) : '';
+  $id_bon = $_POST['id_bon'];
+
+  $emailTambahan = isset($_POST['email']) ? $_POST['email'] : '';
   $namaTambahan = '';
+
   if ($emailTambahan != '') {
-    $qEmail = mysqli_query($cona, "SELECT nama FROM master_email WHERE email='$emailTambahan' LIMIT 1");
-    if ($rowEmail = mysqli_fetch_assoc($qEmail)) {
-      $namaTambahan = $rowEmail['nama'];
-    }
+    $qEmail = sqlsrv_query($cona, "SELECT TOP 1 nama FROM db_adm.master_email WHERE email = ?", [$emailTambahan]);
+    if ($qEmail === false) die(print_r(sqlsrv_errors(), true));
+    $rowEmail = sqlsrv_fetch_array($qEmail, SQLSRV_FETCH_ASSOC);
+    if ($rowEmail) $namaTambahan = $rowEmail['nama'];
   }
-  $qry = mysqli_query($cona, "UPDATE tbl_bonkain SET approved_buat='$now', personil_buat='" . $_SESSION['nama10'] . "', personil_ppc='$namaTambahan' WHERE id='$id_bon'");
+
+  $qry = sqlsrv_query($cona, "
+    UPDATE db_adm.tbl_bonkain
+    SET approved_buat = GETDATE(), personil_buat = ?, personil_ppc = ?
+    WHERE id = ?
+  ", [$_SESSION['nama10'], $namaTambahan, $id_bon]);
+
+  if ($qry === false) die(print_r(sqlsrv_errors(), true));
+
   if ($qry) {
-    // Ambil data bon untuk isi email
-    $bon = mysqli_fetch_assoc(mysqli_query($cona, "SELECT * FROM tbl_bonkain WHERE id='$id_bon'"));
-    // Default penerima
-    // $to = ['deden.kurnia@indotaichen.com', 'tobias.sulistiyo@indotaichen.com', 'usman.as@indotaichen.com'];
-    // Jika user memilih email di modal, tambahkan ke penerima
+    $qBon = sqlsrv_query($cona, "SELECT * FROM db_adm.tbl_bonkain WHERE id = ?", [$id_bon]);
+    if ($qBon === false) die(print_r(sqlsrv_errors(), true));
+    $bon = sqlsrv_fetch_array($qBon, SQLSRV_FETCH_ASSOC);
+
     if (!empty($emailTambahan)) {
       $to[] = $emailTambahan;
     }
     $subject = "Bon Ganti Kain Telah Di-Approve";
-    // Link ke halaman input_stok_ppc (di folder pages)
     $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'];
     $linkInputStok = $baseUrl . "/adm-itti/pages/input_stok_ppc.php?id=" . urlencode($bon['id']);
     $bodyHtml = "Bon dengan No: <b>" . $bon['no_bon'] . "</b> telah di-approve oleh " . $_SESSION['nama10'] . " pada " . $now . ".<br>"
@@ -248,6 +255,7 @@ if (isset($_POST['approve_bon']) && $_POST['approve_bon'] == '1') {
       }
     });</script>";
   }
+
 }
 // --- Pindahkan function ke atas sebelum blok approve ---
 if (!function_exists('sendEmailApproved')) {
@@ -286,7 +294,7 @@ if (!function_exists('sendEmailApproved')) {
       $mail->Body    = $bodyHtml;
       $mail->Hostname = 'mail.indotaichen.com';
       $mail->Helo = 'mail.indotaichen.com';
-      $mail->send();
+      // $mail->send();
       $GLOBAL_LAST_MAILER_ERROR = '';
       return true;
     } catch (Exception $e) {
@@ -349,9 +357,22 @@ if (!function_exists('sendEmailApproved')) {
           <select class="form-control select2" name="warna1" required>
             <option value="">Pilih</option>
             <?php
-            $sqlw1 = mysqli_query($cona, "SELECT warna, nokk FROM tbl_gantikain WHERE no_order='$rCek[no_order]' and no_hanger='$rCek[no_hanger]' GROUP BY warna ORDER BY warna");
-            while ($rwarna = mysqli_fetch_array($sqlw1)) { ?>
-              <option value="<?php echo $rwarna['warna'] . ";" . $rwarna['nokk']; ?>"><?php echo $rwarna['warna']; ?></option>
+            $sqlw1 = sqlsrv_query(
+              $cona,
+              "SELECT warna, nokk
+              FROM db_adm.tbl_gantikain
+              WHERE no_order = ? AND no_hanger = ?
+              GROUP BY warna, nokk
+              ORDER BY warna",
+              [ $rCek['no_order'], $rCek['no_hanger'] ]
+            );
+
+            if ($sqlw1 === false) { die(print_r(sqlsrv_errors(), true)); }
+
+            while ($rwarna = sqlsrv_fetch_array($sqlw1, SQLSRV_FETCH_ASSOC)) { ?>
+              <option value="<?php echo $rwarna['warna'] . ";" . $rwarna['nokk']; ?>">
+                <?php echo $rwarna['warna']; ?>
+              </option>
             <?php } ?>
           </select>
         </div>
@@ -390,9 +411,22 @@ if (!function_exists('sendEmailApproved')) {
           <select class="form-control select2" name="warna2">
             <option value="">Pilih</option>
             <?php
-            $sqlw1 = mysqli_query($cona, "SELECT warna, nokk FROM tbl_gantikain WHERE no_order='$rCek[no_order]' and no_hanger='$rCek[no_hanger]' GROUP BY warna ORDER BY warna");
-            while ($rwarna = mysqli_fetch_array($sqlw1)) { ?>
-              <option value="<?php echo $rwarna['warna'] . ";" . $rwarna['nokk']; ?>"><?php echo $rwarna['warna']; ?></option>
+            $sqlw1 = sqlsrv_query(
+              $cona,
+              "SELECT warna, nokk
+              FROM db_adm.tbl_gantikain
+              WHERE no_order = ? AND no_hanger = ?
+              GROUP BY warna, nokk
+              ORDER BY warna",
+              [ $rCek['no_order'], $rCek['no_hanger'] ]
+            );
+
+            if ($sqlw1 === false) { die(print_r(sqlsrv_errors(), true)); }
+
+            while ($rwarna = sqlsrv_fetch_array($sqlw1, SQLSRV_FETCH_ASSOC)) { ?>
+              <option value="<?php echo $rwarna['warna'] . ';' . $rwarna['nokk']; ?>">
+                <?php echo $rwarna['warna']; ?>
+              </option>
             <?php } ?>
           </select>
         </div>
@@ -431,9 +465,22 @@ if (!function_exists('sendEmailApproved')) {
           <select class="form-control select2" name="warna3">
             <option value="">Pilih</option>
             <?php
-            $sqlw1 = mysqli_query($cona, "SELECT warna, nokk FROM tbl_gantikain WHERE no_order='$rCek[no_order]' and no_hanger='$rCek[no_hanger]' GROUP BY warna ORDER BY warna");
-            while ($rwarna = mysqli_fetch_array($sqlw1)) { ?>
-              <option value="<?php echo $rwarna['warna'] . ";" . $rwarna['nokk']; ?>"><?php echo $rwarna['warna']; ?></option>
+            $sqlw1 = sqlsrv_query(
+              $cona,
+              "SELECT warna, nokk
+              FROM db_adm.tbl_gantikain
+              WHERE no_order = ? AND no_hanger = ?
+              GROUP BY warna, nokk
+              ORDER BY warna",
+              [ $rCek['no_order'], $rCek['no_hanger'] ]
+            );
+
+            if ($sqlw1 === false) { die(print_r(sqlsrv_errors(), true)); }
+
+            while ($rwarna = sqlsrv_fetch_array($sqlw1, SQLSRV_FETCH_ASSOC)) { ?>
+              <option value="<?php echo $rwarna['warna'] . ';' . $rwarna['nokk']; ?>">
+                <?php echo $rwarna['warna']; ?>
+              </option>
             <?php } ?>
           </select>
         </div>
@@ -537,8 +584,10 @@ if (!function_exists('sendEmailApproved')) {
           </thead>
           <tbody>
             <?php
-            $sql = mysqli_query($cona, " SELECT * FROM tbl_bonkain WHERE id_nsp='$_GET[id]' ORDER BY no_bon ASC");
-            while ($r = mysqli_fetch_array($sql)) {
+            $sql = sqlsrv_query($cona, "SELECT * FROM db_adm.tbl_bonkain WHERE id_nsp = ? ORDER BY no_bon ASC", [$_GET['id']]);
+            if ($sql === false) { die(print_r(sqlsrv_errors(), true)); }
+
+            while ($r = sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC)) {
 
               $no++;
               $bgcolor = ($col++ & 1) ? 'gainsboro' : 'antiquewhite';
@@ -640,10 +689,14 @@ if (!function_exists('sendEmailApproved')) {
             <select class="form-control" name="email" id="email">
               <option value="">Pilih Email</option>
               <?php
-              $queryEmail = mysqli_query($cona, "SELECT * FROM master_email");
-              while ($rowEmail = mysqli_fetch_assoc($queryEmail)) {
+              $queryEmail = sqlsrv_query($cona, "SELECT email FROM db_adm.master_email ORDER BY email ASC");
+              if ($queryEmail === false) { die(print_r(sqlsrv_errors(), true)); }
+
+              while ($rowEmail = sqlsrv_fetch_array($queryEmail, SQLSRV_FETCH_ASSOC)) {
                 echo "<option value='" . htmlspecialchars($rowEmail['email']) . "'>" . htmlspecialchars($rowEmail['email']) . "</option>";
               }
+
+              sqlsrv_free_stmt($queryEmail);
               ?>
             </select>
             <div class="modal-footer justify-content-between">

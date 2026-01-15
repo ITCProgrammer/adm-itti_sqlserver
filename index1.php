@@ -188,8 +188,8 @@ desired effect
     <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-                        <?php $qryNCP = mysqli_query($cond, "SELECT COUNT(*) as jml from tbl_ncp_qcf WHERE ISNULL(tgl_rencana) $Wdept AND status='Belum OK'");
-                        $rNCP = mysqli_fetch_array($qryNCP);
+                        <?php $qryNCP = sqlsrv_query($cond, "SELECT COUNT(*) as jml from db_qc.tbl_ncp_qcf WHERE tgl_rencana IS NULL $Wdept AND status='Belum OK'");
+                        $rNCP = sqlsrv_fetch_array($qryNCP, SQLSRV_FETCH_ASSOC);
                         ?>
 
                         <!-- Notifications Menu -->
@@ -205,8 +205,8 @@ desired effect
                                 <li>
                                     <!-- Inner Menu: contains the notifications -->
                                     <ul class="menu">
-                                        <?php $qryNCP1 = mysqli_query($cond, "SELECT no_ncp FROM tbl_ncp_qcf WHERE ISNULL(tgl_rencana) $Wdept AND status='Belum OK'");
-                                        while ($rNCP1 = mysqli_fetch_array($qryNCP1)) {
+                                        <?php $qryNCP1 = sqlsrv_query($cond, "SELECT no_ncp FROM db_qc.tbl_ncp_qcf WHERE tgl_rencana IS NULL $Wdept AND status='Belum OK'");
+                                        while ($rNCP1 = sqlsrv_fetch_array($qryNCP1, SQLSRV_FETCH_ASSOC)) {
                                             ?>
                                             <li><!-- start notification -->
                                                 <a href="?p=Status-NCP-New">
@@ -221,18 +221,18 @@ desired effect
                                 <li class="footer"><a href="?p=Status-NCP-New">Tampil Semua</a></li>
                             </ul>
                         </li>
-                        <?php $qryNCP2 = mysqli_query($cond, "SELECT
+                        <?php $qryNCP2 = sqlsrv_query($cond, "SELECT
                                                            
                                                                     COUNT(*) AS jml 
                                                                 FROM
-                                                                    tbl_ncp_qcf 
+                                                                    db_qc.tbl_ncp_qcf 
                                                                 WHERE
-                                                                    NOT ISNULL( tgl_rencana ) $Wdept 
+                                                                    tgl_rencana IS NOT NULL $Wdept 
                                                                     AND STATUS = 'Belum OK' 
                                                                     AND (
                                                                     penyelesaian = '' 
-                                                                    OR ISNULL( penyelesaian ))");
-                        $rNCP2 = mysqli_fetch_array($qryNCP2);
+                                                                    OR penyelesaian IS NULL)");
+                        $rNCP2 = sqlsrv_fetch_array($qryNCP2, SQLSRV_FETCH_ASSOC);
                         ?>
 
                         <!-- Tasks Menu -->
@@ -249,17 +249,17 @@ desired effect
                                 <li>
                                     <!-- Inner menu: contains the tasks -->
                                     <ul class="menu">
-                                        <?php $qryNCP3 = mysqli_query($cond, "SELECT
+                                        <?php $qryNCP3 = sqlsrv_query($cond, "SELECT
                                                                                     no_ncp 
                                                                                 FROM
-                                                                                    tbl_ncp_qcf 
+                                                                                    db_qc.tbl_ncp_qcf 
                                                                                 WHERE
-                                                                                    NOT ISNULL( tgl_rencana ) $Wdept 
+                                                                                    tgl_rencana IS NOT NULL $Wdept 
                                                                                     AND STATUS = 'Belum OK' 
                                                                                     AND (
                                                                                     penyelesaian = '' 
-                                                                                    OR ISNULL( penyelesaian ))");
-                                        while ($rNCP3 = mysqli_fetch_array($qryNCP3)) {
+                                                                                    OR penyelesaian IS NULL)");
+                                        while ($rNCP3 = sqlsrv_fetch_array($qryNCP3, SQLSRV_FETCH_ASSOC)) {
                                             ?>
                                             <li><!-- Task item -->
                                                 <a href="?p=Status-NCP-New">
@@ -292,15 +292,15 @@ desired effect
                                 </li>
                             </ul>
                         </li>
-                        <?php $qryNCP4 = mysqli_query($cond, "SELECT
+                        <?php $qryNCP4 = sqlsrv_query($cond, "SELECT
                                                                     COUNT(*) AS jml 
                                                                 FROM
-                                                                    tbl_ncp_qcf 
+                                                                    db_qc.tbl_ncp_qcf 
                                                                 WHERE
-                                                                    NOT ISNULL( tgl_rencana ) $Wdept 
+                                                                    tgl_rencana IS NULL $Wdept 
                                                                     AND STATUS = 'Belum OK' 
                                                                     AND NOT penyelesaian = ''");
-                        $rNCP4 = mysqli_fetch_array($qryNCP4);
+                        $rNCP4 = sqlsrv_fetch_array($qryNCP4, SQLSRV_FETCH_ASSOC);
                         ?>
                         <!-- Revisi Menu -->
                         <li class="dropdown tasks-menu">
@@ -316,15 +316,15 @@ desired effect
                                 <li>
                                     <!-- Inner menu: contains the tasks -->
                                     <ul class="menu">
-                                        <?php $qryNCP5 = mysqli_query($cond, "SELECT
+                                        <?php $qryNCP5 = sqlsrv_query($cond, "SELECT
                                                                                 no_ncp 
                                                                             FROM
-                                                                                tbl_ncp_qcf 
+                                                                                db_qc.tbl_ncp_qcf 
                                                                             WHERE
-                                                                                NOT ISNULL( tgl_rencana ) $Wdept 
+                                                                                tgl_rencana IS NOT NULL $Wdept 
                                                                                 AND STATUS = 'Belum OK' 
                                                                                 AND NOT penyelesaian = ''");
-                                        while ($rNCP5 = mysqli_fetch_array($qryNCP5)) { ?>
+                                        while ($rNCP5 = sqlsrv_fetch_array($qryNCP5, SQLSRV_FETCH_ASSOC)) { ?>
                                             <li><!-- Task item -->
                                                 <a href="?p=Status-NCP-New">
                                                     <!-- Task title and progress text -->
@@ -342,16 +342,16 @@ desired effect
                                 </li>
                             </ul>
                         </li>
-            <?php $qryNCP6 = mysqli_query($cond, "SELECT
+            <?php $qryNCP6 = sqlsrv_query($cond, "SELECT
                                                                     COUNT(*) AS jml 
                                                                 FROM
-                                                                    tbl_ncp_qcf_now 
+                                                                    db_qc.tbl_ncp_qcf_now 
                                                                 WHERE
                                   ncp_hitung = 'ya'
                                                                     $Wdept 
                                                                     AND STATUS = 'Belum OK' 
                                                                     AND penyelesaian = ''");
-                        $rNCP6 = mysqli_fetch_array($qryNCP6);
+                        $rNCP6 = sqlsrv_fetch_array($qryNCP6, SQLSRV_FETCH_ASSOC);
                         ?>
             <li class="dropdown tasks-menu">
                             <!-- Menu Toggle Button -->
@@ -365,16 +365,16 @@ desired effect
                                 <li>
                                     <!-- Inner menu: contains the tasks -->
                                     <ul class="menu">
-                                        <?php $qryNCP7 = mysqli_query($cond, "SELECT
+                                        <?php $qryNCP7 = sqlsrv_query($cond, "SELECT
                                                                                 no_ncp 
                                                                             FROM
-                                                                                tbl_ncp_qcf_now 
+                                                                                db_qc.tbl_ncp_qcf_now 
                                                                             WHERE
                                                                                 ncp_hitung = 'ya'
                                         $Wdept 
                                         AND STATUS = 'Belum OK' 
                                         AND penyelesaian = ''");
-                                        while ($rNCP7 = mysqli_fetch_array($qryNCP7)) { ?>
+                                        while ($rNCP7 = sqlsrv_fetch_array($qryNCP7, SQLSRV_FETCH_ASSOC)) { ?>
                                             <li><!-- Task item -->
                                                 <a href="?p=Status-NCP-New">
                                                     <!-- Task title and progress text -->

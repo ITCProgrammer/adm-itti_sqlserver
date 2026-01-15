@@ -7,9 +7,9 @@
 	$child = $r['ChildLevel'];
 	if ($demand != "") {		
 	}	
-		$sqlCek = mysqli_query($cona, "SELECT * FROM tbl_stoppage WHERE nodemand='$demand' and nodemand<>'' ORDER BY id DESC LIMIT 1");
-		$cek = mysqli_num_rows($sqlCek);
-		$rcek = mysqli_fetch_array($sqlCek);	
+		$sqlCek = sqlsrv_query($cona, "SELECT TOP 1 * FROM db_adm.tbl_stoppage WHERE nodemand = ? AND nodemand <> '' ORDER BY id DESC", [$demand]);
+		$rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
+		$cek = ($rcek !== false) ? 1 : 0;
 		
 	$sql_ITXVIEWKK  = db2_exec($conn2, "SELECT
 												TRIM(PRODUCTIONORDERCODE) AS PRODUCTIONORDERCODE,
@@ -37,9 +37,9 @@
 	if ($nokk != "") {		
 	}
 
-	$sqlCek = mysqli_query($cona, "SELECT * FROM tbl_stoppage WHERE nokk='$nokk' ORDER BY id DESC LIMIT 1");
-	$cek = mysqli_num_rows($sqlCek);
-	$rcek = mysqli_fetch_array($sqlCek);
+	$sqlCek = sqlsrv_query($cona, "SELECT TOP 1 * FROM db_adm.tbl_stoppage WHERE nokk = ? ORDER BY id DESC", [$nokk]);
+	$rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
+	$cek  = ($rcek !== false) ? 1 : 0;
 	// NOW
 		$sql_ITXVIEWKK  = db2_exec($conn2, "SELECT
 											TRIM(PRODUCTIONORDERCODE) AS PRODUCTIONORDERCODE,
@@ -60,7 +60,7 @@
 											ITXVIEWKK 
 										WHERE 
 											PRODUCTIONORDERCODE = '$nokk'");	
-	}
+}
 	
 	
 		$dt_ITXVIEWKK	= db2_fetch_assoc($sql_ITXVIEWKK);
@@ -656,15 +656,19 @@ $(document).ready(function() {
 					<div class="col-sm-4">
 						<select class="form-control select2" name="mesin_mulai" id="mesin_mulai" style="width: 100%;">
 							<option value="">Pilih</option>
-						<?php
-							$sql_mesin	= mysqli_query($cona, " SELECT nama,dept,deskripsi FROM tbl_mesin_now WHERE dept='".$_SESSION['dept10']."' and deskripsi like 'Raising%' ORDER BY deskripsi");
-							while($dt_mesin   = mysqli_fetch_array($sql_mesin)){	
+							<?php
+								$sql = "SELECT nama, dept, deskripsi FROM db_adm.tbl_mesin_now WHERE dept = ? AND deskripsi LIKE ? ORDER BY deskripsi";
+								$sql_mesin = sqlsrv_query($cona, $sql, [$_SESSION['dept10'], 'Raising%']);
+								if ($sql_mesin === false) { die(print_r(sqlsrv_errors(), true)); }
+								while ($dt_mesin = sqlsrv_fetch_array($sql_mesin, SQLSRV_FETCH_ASSOC)) {
 							?>
-							<option value="<?php echo $dt_mesin['nama'];?>"><?php echo $dt_mesin['nama']." || ".$dt_mesin['deskripsi']." || ".$dt_mesin['dept'];?></option>
+								<option value="<?php echo $dt_mesin['nama']; ?>">
+								<?php echo $dt_mesin['nama']." || ".$dt_mesin['deskripsi']." || ".$dt_mesin['dept']; ?>
+								</option>
 							<?php } ?>
 						</select>
 					</div>
-					<?php if($cek>0){ echo $rcek['mesin']; } ?>
+					<?php if ($cek > 0) { echo $rcek['mesin']; } ?>
 				</div>   
 				<div class="form-group"> 					 
 				  <label for="mesin_stop" class="col-sm-3 control-label">Mesin Stop 2</label>
@@ -672,14 +676,14 @@ $(document).ready(function() {
 						<select class="form-control select2" name="mesin_stop" id="mesin_stop" style="width: 100%;">
 							<option value="">Pilih</option>
 							<?php
-								$sql_mesin = mysqli_query($cona, "SELECT nama, dept, deskripsi 
-																 FROM tbl_mesin_now 
-																 WHERE dept='".$_SESSION['dept10']."' and deskripsi like 'Raising%' ORDER BY deskripsi");
-								while($dt_mesin = mysqli_fetch_array($sql_mesin)){	
+								$sql = "SELECT nama, dept, deskripsi FROM db_adm.tbl_mesin_now WHERE dept = ? AND deskripsi LIKE ? ORDER BY deskripsi";
+								$sql_mesin = sqlsrv_query($cona, $sql, [$_SESSION['dept10'], 'Raising%']);
+								if ($sql_mesin === false) { die(print_r(sqlsrv_errors(), true)); }
+								while ($dt_mesin = sqlsrv_fetch_array($sql_mesin, SQLSRV_FETCH_ASSOC)) {
 							?>
-								<option value="<?php echo $dt_mesin['nama'];?>">
-									<?php echo $dt_mesin['nama']." || ".$dt_mesin['deskripsi']." || ".$dt_mesin['dept'];?>
-								</option>
+							<option value="<?php echo $dt_mesin['nama'];?>">
+								<?php echo $dt_mesin['nama']." || ".$dt_mesin['deskripsi']." || ".$dt_mesin['dept'];?>
+							</option>
 							<?php } ?>
 						</select>
 					</div>
@@ -706,11 +710,14 @@ $(document).ready(function() {
 					<div class="col-sm-4">
 						<select class="form-control select2" name="operator1" id="operator1">
 							<option value="">Pilih</option>
-						<?php
-							$sql_op	= mysqli_query($cona, " SELECT nama, kode FROM tbl_shift_operator WHERE dept='".$_SESSION['dept10']."'");
-							while($dt_op   = mysqli_fetch_array($sql_op)){	
+							<?php
+								$sql_op = sqlsrv_query($cona, "SELECT nama, kode FROM db_adm.tbl_shift_operator WHERE dept = ?", [$_SESSION['dept10']]);
+								if ($sql_op === false) { die(print_r(sqlsrv_errors(), true)); }
+								while ($dt_op = sqlsrv_fetch_array($sql_op, SQLSRV_FETCH_ASSOC)) {
 							?>
-							<option value="<?php echo $dt_op['nama'];?>"><?php echo $dt_op['nama']." || ".$dt_op['kode'];?></option>
+							<option value="<?php echo $dt_op['nama'];?>">
+								<?php echo $dt_op['nama']." || ".$dt_op['kode'];?>
+							</option>
 							<?php } ?>
 						</select>
 					</div>
@@ -1020,6 +1027,8 @@ $(document).ready(function() {
                 data: { stopcode: stopCode, nokk: nokk },
                 success: function (response) {
                     // Set nilai input berdasarkan response
+					
+					console.log();
                     if (response.success) {
                         $("#stop_mulai_jam").val(response.stop_mulai_jam);
                         $("#stop_mulai_tgl").val(response.stop_mulai_tgl);
@@ -1088,26 +1097,33 @@ $(document).ready(function() {
 <?php
 if (isset($_POST['btnStart']) && $_POST['btnStart'] === "Start") {
 	function nourut(){
-			include "koneksi.php";
-			$format = date("ym");
-			$sql = mysqli_query($cona, "SELECT nokk FROM tbl_stoppage WHERE non_kk = '1' AND substr(nokk,1,4) like '%" . $format . "%' ORDER BY nokk DESC LIMIT 1 ") or die(mysqli_error());
-			$d = mysqli_num_rows($sql);
-			if ($d > 0) {
-				$r = mysqli_fetch_array($sql);
-				$d = $r['nokk'];
-				$str = substr($d, 4, 4);
-				$Urut = (int)$str;
-			} else {
-				$Urut = 0;
-			}
-			$Urut = $Urut + 1;
-			$Nol = "";
-			$nilai = 4 - strlen($Urut);
-			for ($i = 1; $i <= $nilai; $i++) {
-				$Nol = $Nol . "0";
-			}
-			$nipbr = $format . $Nol . $Urut;
-			return $nipbr;
+		include "koneksi.php";
+
+		$format = date("ym");
+
+		$sql = " SELECT TOP 1 nokk FROM db_adm.tbl_stoppage WHERE non_kk = '1' AND SUBSTRING(nokk, 1, 4) LIKE ? ORDER BY nokk DESC ";
+		$stmt = sqlsrv_query($cona, $sql, ['%' . $format . '%']);
+		if ($stmt === false) { die(print_r(sqlsrv_errors(), true)); }
+		$r = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+
+		if ($r !== false && !empty($r['nokk'])) {
+			$d    = $r['nokk'];
+			$str  = substr($d, 4, 4);
+			$Urut = (int)$str;
+		} else {
+			$Urut = 0;
+		}
+
+		$Urut = $Urut + 1;
+
+		$Nol   = "";
+		$nilai = 4 - strlen((string)$Urut);
+		for ($i = 1; $i <= $nilai; $i++) {
+			$Nol .= "0";
+		}
+
+		$nipbr = $format . $Nol . $Urut;
+		return $nipbr;
 	}
 	$nou = nourut();
     // Bersihkan dan validasi input
@@ -1134,7 +1150,7 @@ if (isset($_POST['btnStart']) && $_POST['btnStart'] === "Start") {
 	if($_POST['kode_stop']=="LM"){
 
 		// SQL Query (Pastikan jumlah `?` sesuai dengan jumlah parameter)
-    $sql = "INSERT INTO tbl_stoppage (
+    $sql = "INSERT INTO db_adm.tbl_stoppage (
         nokk,
 		nodemand,
 		langganan,
@@ -1200,204 +1216,146 @@ if (isset($_POST['btnStart']) && $_POST['btnStart'] === "Start") {
 	?,
 	?,
 	?,
-	NOW(),
-	NOW())";
+	GETDATE(),
+	GETDATE())";
 
-    // Siapkan statement
-    $stmt = mysqli_prepare($cona, $sql);
+    // Siapkan statement (SQL Server)
+	$stmt = sqlsrv_prepare($cona, $sql, [
+		$nokk1, $_POST['demand'], $_POST['pelanggan'], $_POST['buyer'],
+		$_POST['no_order'], $_POST['no_hanger'], $_POST['no_item'], $po,
+		$jns, $_POST['lebar'], $_POST['grms'], $_POST['qty_order'],
+		$lot, $_POST['tgl_delivery'], $warna, $nowarna,
+		$_SESSION['dept10'], $_POST['operation'], $_POST['mulai_jam'], $_POST['mulai_tgl'],
+		$_POST['selesai_jam'], $_POST['selesai_tgl'], $mesin, $_POST['mesin_stop'], $_POST['kode_stop'],
+		$_POST['operator1'], $_POST['durasi'], $_POST['durasijammenit'], $nonkk, $_POST['stop_mulai_jam1'], $_POST['stop_mulai_tgl1']
+	]);
 
-    if ($stmt) {
-        // Bind parameter (HARUS sesuai dengan jumlah `?` dalam query)
-        mysqli_stmt_bind_param(
-            $stmt, "sssssssssssssssssssssssssssssss",
-            $nokk1, $_POST['demand'], $_POST['pelanggan'], $_POST['buyer'],
-            $_POST['no_order'], $_POST['no_hanger'], $_POST['no_item'], $po,
-            $jns, $_POST['lebar'], $_POST['grms'], $_POST['qty_order'],
-			$lot, $_POST['tgl_delivery'], $warna, $nowarna,
-			$_SESSION['dept10'], $_POST['operation'], $_POST['mulai_jam'], $_POST['mulai_tgl'],
-			$_POST['selesai_jam'], $_POST['selesai_tgl'], $mesin, $_POST['mesin_stop'], $_POST['kode_stop'],
-			$_POST['operator1'], $_POST['durasi'], $_POST['durasijammenit'], $nonkk, $_POST['stop_mulai_jam1'], $_POST['stop_mulai_tgl1']
-        );
-
-        // Eksekusi query
-        if (mysqli_stmt_execute($stmt)) {
-            echo "<script>swal({
-			  title: 'Data Tersimpan dengan NOKK: $nokk1',   
-			  text: 'Klik Ok untuk input data kembali',
-			  type: 'success',
-			  }).then((result) => {
-			  if (result.value) {
-				  window.location.href='index1.php?p=Input-Stoppage-Mesin';
-
-			  }
+	if ($stmt) {
+		// Eksekusi query
+		if (sqlsrv_execute($stmt)) {
+			echo "<script>swal({
+			title: 'Data Tersimpan dengan NOKK: $nokk1',
+			text: 'Klik Ok untuk input data kembali',
+			type: 'success',
+			}).then((result) => {
+			if (result.value) {
+				window.location.href='index1.php?p=Input-Stoppage-Mesin';
+			}
 			});</script>";
-        } 
+		} else {
+			die(print_r(sqlsrv_errors(), true));
+		}
 
-        // Tutup statement
-        mysqli_stmt_close($stmt);
-    }
+		sqlsrv_free_stmt($stmt);
+	} else {
+		die(print_r(sqlsrv_errors(), true));
+	}
+
 		
 	}else{
 		
 	// SQL Query (Pastikan jumlah `?` sesuai dengan jumlah parameter)
-    $sql = "INSERT INTO tbl_stoppage (
-        nokk,
-		nodemand,
-		langganan,
-		buyer,
-		no_order,
-		no_hanger,
-		no_item,
-		po, 
-        jenis_kain,
-		lebar,
-		gramasi,
-		qty_order,
-		lot,
-		tgl_delivery,
-		warna,
-		no_warna, 
-        dept,
-		kode_operation,
-		mulai_jam,
-		mulai_tgl,
-		selesai_jam,
-		selesai_tgl, 
-        mesin,
-		mesin_stop,
-		kode_stop,
-		operator,
-		durasi_jam,
-		durasi,
-		non_kk,
-		stop_mulai_jam,
-		stop_mulai_tgl,
-		tgl_buat,
-		tgl_update
-    ) VALUES (
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	NOW(),
-	NOW(),
-	NOW(),
-	NOW())";
+    $sql = "INSERT INTO db_adm.tbl_stoppage (
+		nokk, nodemand, langganan, buyer, no_order, no_hanger, no_item, po,
+		jenis_kain, lebar, gramasi, qty_order, lot, tgl_delivery, warna, no_warna,
+		dept, kode_operation, mulai_jam, mulai_tgl, selesai_jam, selesai_tgl,
+		mesin, mesin_stop, kode_stop, operator, durasi_jam, durasi, non_kk,
+		stop_mulai_jam, stop_mulai_tgl, tgl_buat, tgl_update
+	) VALUES (
+		?,?,?,?,?,?,?,?,
+		?,?,?,?,?,?,?,?,
+		?,?,?,?,?,?,
+		?,?,?,?,?,?,
+		?,?,
+		GETDATE(), GETDATE()
+	)";
 
-    // Siapkan statement
-    $stmt = mysqli_prepare($cona, $sql);
+    // Siapkan statement (SQL Server)
+	$stmt = sqlsrv_prepare($cona, $sql, [
+		$nokk1,
+		$_POST['demand'],
+		$_POST['pelanggan'],
+		$_POST['buyer'],
+		$_POST['no_order'],
+		$_POST['no_hanger'],
+		$_POST['no_item'],
+		$po,
+		$jns,
+		$_POST['lebar'],
+		$_POST['grms'],
+		$_POST['qty_order'],
+		$lot,
+		$_POST['tgl_delivery'],
+		$warna,
+		$nowarna,
+		$_SESSION['dept10'],
+		$_POST['operation'],
+		$_POST['mulai_jam'],
+		$_POST['mulai_tgl'],
+		$_POST['selesai_jam'],
+		$_POST['selesai_tgl'],
+		$mesin,
+		$_POST['mesin_stop'],
+		$_POST['kode_stop'],
+		$_POST['operator1'],
+		$_POST['durasi'],
+		$_POST['durasijammenit'],
+		$nonkk
+	]);
 
-    if ($stmt) {
-        // Bind parameter (HARUS sesuai dengan jumlah `?` dalam query)
-        mysqli_stmt_bind_param(
-            $stmt, "sssssssssssssssssssssssssssss",
-            $nokk1,
-			$_POST['demand'],
-			$_POST['pelanggan'],
-			$_POST['buyer'],
-            $_POST['no_order'],
-			$_POST['no_hanger'],
-			$_POST['no_item'],
-			$po,
-            $jns,
-			$_POST['lebar'],
-			$_POST['grms'],
-			$_POST['qty_order'],
-			$lot,
-			$_POST['tgl_delivery'],
-			$warna,
-			$nowarna,
-			$_SESSION['dept10'],
-			$_POST['operation'],
-			$_POST['mulai_jam'],
-			$_POST['mulai_tgl'],
-			$_POST['selesai_jam'],
-			$_POST['selesai_tgl'],
-			$mesin,
-			$_POST['mesin_stop'],
-			$_POST['kode_stop'],
-			$_POST['operator1'],
-			$_POST['durasi'],
-			$_POST['durasijammenit'],
-			$nonkk
-        );
-
-        // Eksekusi query
-        if (mysqli_stmt_execute($stmt)) {
-            echo "<script>swal({
-			  title: 'Data Tersimpan dengan NOKK: $nokk1',   
-			  text: 'Klik Ok untuk input data kembali',
-			  type: 'success',
-			  }).then((result) => {
-			  if (result.value) {
-				  window.location.href='index1.php?p=Input-Stoppage-Mesin';
-
-			  }
+	if ($stmt) {
+		// Eksekusi query
+		if (sqlsrv_execute($stmt)) {
+			echo "<script>swal({
+			title: 'Data Tersimpan dengan NOKK: $nokk1',
+			text: 'Klik Ok untuk input data kembali',
+			type: 'success',
+			}).then((result) => {
+			if (result.value) {
+				window.location.href='index1.php?p=Input-Stoppage-Mesin';
+			}
 			});</script>";
-        } 
+		} else {
+			die(print_r(sqlsrv_errors(), true));
+		}
 
-        // Tutup statement
-        mysqli_stmt_close($stmt);
-    }
+		// Tutup statement
+		sqlsrv_free_stmt($stmt);
+	} else {
+		die(print_r(sqlsrv_errors(), true));
+	}
 		
 	}
-
-     
-
     // Tutup koneksi database
-    mysqli_close($cona);
+    sqlsrv_close($cona);
 }
 
 if (isset($_POST['btnStop']) && $_POST['btnStop'] === "Stop") {
-    require 'koneksi.php'; // Pastikan koneksi sudah di-include
-    
-    // Mulai transaksi untuk memastikan integritas data
-    mysqli_begin_transaction($cona);
-    
-    try {
-        $nokk = $_POST['nokk'];  
-        
-        // Ambil id terbaru dari tbl_stoppage berdasarkan nokk dan kode_stop
-		$getIdSql = "SELECT id 
-					 FROM tbl_stoppage 
-					 WHERE nokk = ? AND kode_stop = ?
-					 ORDER BY id DESC 
-					 LIMIT 1";
+    require 'koneksi.php';
 
-		$stmtGet = mysqli_prepare($cona, $getIdSql);
-		if (!$stmtGet) {
-			throw new Exception("Error preparing getIdSql: " . mysqli_error($cona));
-		}
-		mysqli_stmt_bind_param($stmtGet, "ss", $nokk, $_POST['kode_stop']);
-		mysqli_stmt_execute($stmtGet);
-		mysqli_stmt_bind_result($stmtGet, $idStoppage);
-		mysqli_stmt_fetch($stmtGet);
-		mysqli_stmt_close($stmtGet);
+    // Mulai transaksi
+    sqlsrv_begin_transaction($cona);
+
+    try {
+        $nokk = $_POST['nokk'];
+
+        $getIdSql = "SELECT TOP 1 id
+                     FROM db_adm.tbl_stoppage
+                     WHERE nokk = ? AND kode_stop = ?
+                     ORDER BY id DESC";
+
+        $stmtGet = sqlsrv_prepare($cona, $getIdSql, [$nokk, $_POST['kode_stop']]);
+        if (!$stmtGet) {
+            throw new Exception("Error preparing getIdSql: " . print_r(sqlsrv_errors(), true));
+        }
+        if (!sqlsrv_execute($stmtGet)) {
+            throw new Exception("Error executing getIdSql: " . print_r(sqlsrv_errors(), true));
+        }
+
+        $rowGet = sqlsrv_fetch_array($stmtGet, SQLSRV_FETCH_ASSOC);
+        sqlsrv_free_stmt($stmtGet);
+
+        $idStoppage = ($rowGet && isset($rowGet['id'])) ? $rowGet['id'] : null;
 
         if (empty($idStoppage)) {
             throw new Exception("Data stoppage tidak ditemukan untuk nokk: $nokk");
@@ -1405,53 +1363,61 @@ if (isset($_POST['btnStop']) && $_POST['btnStop'] === "Stop") {
 
         // Update stop selesai (beda jika kode_stop = LM)
         if ($_POST['kode_stop'] == "LM") {
-            $sql = "UPDATE tbl_stoppage 
+            $sql = "UPDATE db_adm.tbl_stoppage
                     SET stop_selesai_jam = ?, stop_selesai_tgl = ?
                     WHERE id = ?";
-            $stmt = mysqli_prepare($cona, $sql);
+
+            $stmt = sqlsrv_prepare($cona, $sql, [
+                $_POST['stop_selesai_jam1'],
+                $_POST['stop_selesai_tgl1'],
+                $idStoppage
+            ]);
+
             if (!$stmt) {
-                throw new Exception("Error preparing query update LM: " . mysqli_error($cona));
+                throw new Exception("Error preparing query update LM: " . print_r(sqlsrv_errors(), true));
             }
-            mysqli_stmt_bind_param($stmt, "ssi", $_POST['stop_selesai_jam1'], $_POST['stop_selesai_tgl1'], $idStoppage);
         } else {
-            $sql = "UPDATE tbl_stoppage 
-                    SET stop_selesai_jam = CURTIME(), stop_selesai_tgl = CURDATE()
+            $sql = "UPDATE db_adm.tbl_stoppage
+                    SET stop_selesai_jam = CONVERT(varchar(8), GETDATE(), 108),
+                        stop_selesai_tgl = CONVERT(varchar(10), GETDATE(), 23)
                     WHERE id = ?";
-            $stmt = mysqli_prepare($cona, $sql);
+
+            $stmt = sqlsrv_prepare($cona, $sql, [$idStoppage]);
+
             if (!$stmt) {
-                throw new Exception("Error preparing query update default: " . mysqli_error($cona));
+                throw new Exception("Error preparing query update default: " . print_r(sqlsrv_errors(), true));
             }
-            mysqli_stmt_bind_param($stmt, "i", $idStoppage);
         }
 
-        if (!mysqli_stmt_execute($stmt)) {
-            throw new Exception("Error executing update stop_selesai: " . mysqli_stmt_error($stmt));
+        if (!sqlsrv_execute($stmt)) {
+            throw new Exception("Error executing update stop_selesai: " . print_r(sqlsrv_errors(), true));
         }
-        mysqli_stmt_close($stmt);
+        sqlsrv_free_stmt($stmt);
 
-        // Update durasi stop
-        $sql1 = "UPDATE tbl_stoppage 
-                 SET durasi_jam_stop = TIMESTAMPDIFF(SECOND, 
-                     STR_TO_DATE(CONCAT(stop_mulai_tgl, ' ', stop_mulai_jam), '%Y-%m-%d %H:%i:%s'), 
-                     STR_TO_DATE(CONCAT(stop_selesai_tgl, ' ', stop_selesai_jam), '%Y-%m-%d %H:%i:%s')
-                 ) / 3600
+        // Update durasi stop (jam)
+        $sql1 = "UPDATE db_adm.tbl_stoppage
+                 SET durasi_jam_stop =
+                     DATEDIFF(SECOND,
+                         TRY_CONVERT(datetime, stop_mulai_tgl + ' ' + stop_mulai_jam, 120),
+                         TRY_CONVERT(datetime, stop_selesai_tgl + ' ' + stop_selesai_jam, 120)
+                     ) / 3600.0
                  WHERE id = ?";
-        $stmt1 = mysqli_prepare($cona, $sql1);
+
+        $stmt1 = sqlsrv_prepare($cona, $sql1, [$idStoppage]);
         if (!$stmt1) {
-            throw new Exception("Error preparing query durasi: " . mysqli_error($cona));
+            throw new Exception("Error preparing query durasi: " . print_r(sqlsrv_errors(), true));
         }
-        mysqli_stmt_bind_param($stmt1, "i", $idStoppage);
-        if (!mysqli_stmt_execute($stmt1)) {
-            throw new Exception("Error executing query durasi: " . mysqli_stmt_error($stmt1));
+        if (!sqlsrv_execute($stmt1)) {
+            throw new Exception("Error executing query durasi: " . print_r(sqlsrv_errors(), true));
         }
-        mysqli_stmt_close($stmt1);
+        sqlsrv_free_stmt($stmt1);
 
         // Commit transaksi
-        mysqli_commit($cona);
+        sqlsrv_commit($cona);
 
         echo "<script>
             swal({
-                title: 'Data Stop Tersimpan',   
+                title: 'Data Stop Tersimpan',
                 text: 'Klik Ok untuk input data kembali',
                 type: 'success',
             }).then((result) => {
@@ -1460,12 +1426,15 @@ if (isset($_POST['btnStop']) && $_POST['btnStop'] === "Stop") {
                 }
             });
         </script>";
+
     } catch (Exception $e) {
-        mysqli_rollback($cona);
+        sqlsrv_rollback($cona);
         echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
     }
 
-    mysqli_close($cona);
+    // Tutup koneksi database
+    sqlsrv_close($cona);
 }
+
 
 ?>
