@@ -1027,6 +1027,8 @@ $(document).ready(function() {
                 data: { stopcode: stopCode, nokk: nokk },
                 success: function (response) {
                     // Set nilai input berdasarkan response
+					
+					console.log();
                     if (response.success) {
                         $("#stop_mulai_jam").val(response.stop_mulai_jam);
                         $("#stop_mulai_tgl").val(response.stop_mulai_tgl);
@@ -1214,8 +1216,8 @@ if (isset($_POST['btnStart']) && $_POST['btnStart'] === "Start") {
 	?,
 	?,
 	?,
-	NOW(),
-	NOW())";
+	GETDATE(),
+	GETDATE())";
 
     // Siapkan statement (SQL Server)
 	$stmt = sqlsrv_prepare($cona, $sql, [

@@ -9,7 +9,7 @@ include "../../koneksi.php"; // Pastikan file ini benar-benar memuat koneksi DB2
 
 if (isset($_POST['stopcode']) && isset($_POST['nokk'])) {
     $stopcode = $_POST['stopcode'];
-    $nokk = $_POST['nokk'];
+    $nokk     = $_POST['nokk'];
 
     $sqlCek = sqlsrv_query(
         $cona,
@@ -17,15 +17,25 @@ if (isset($_POST['stopcode']) && isset($_POST['nokk'])) {
         [$nokk, $stopcode]
     );
 
+    // kalau query error
+    if ($sqlCek === false) {
+        echo json_encode([
+            "success" => false,
+            "message" => "Query error",
+            "errors"  => sqlsrv_errors()
+        ]);
+        exit;
+    }
+
     $rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
 
-    if ($rcek !== false) {
+    if ($rcek) {
         echo json_encode([
             "success" => true,
-            "stop_mulai_jam" => $rcek['stop_mulai_jam'],
-            "stop_mulai_tgl" => $rcek['stop_mulai_tgl'],
-            "stop_selesai_jam" => $rcek['stop_selesai_jam'],
-            "stop_selesai_tgl" => $rcek['stop_selesai_tgl']
+            "stop_mulai_jam"    => $rcek['stop_mulai_jam'] ?? "",
+            "stop_mulai_tgl"    => $rcek['stop_mulai_tgl'] ?? "",
+            "stop_selesai_jam"  => $rcek['stop_selesai_jam'] ?? "",
+            "stop_selesai_tgl"  => $rcek['stop_selesai_tgl'] ?? ""
         ]);
     } else {
         echo json_encode([
@@ -33,5 +43,13 @@ if (isset($_POST['stopcode']) && isset($_POST['nokk'])) {
             "message" => "Data tidak ditemukan!"
         ]);
     }
+
+    sqlsrv_free_stmt($sqlCek);
+    exit;
 }
+
+echo json_encode([
+    "success" => false,
+    "message" => "Parameter stopcode/nokk tidak lengkap"
+]);
 ?>
