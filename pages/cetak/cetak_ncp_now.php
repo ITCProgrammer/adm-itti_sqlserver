@@ -4,22 +4,22 @@ session_start();
 include "../../koneksi.php";
 include "../../tgl_indo.php";
 if ($_GET['id'] != "") {
-	$qry = sqlsrv_query($cond, "SELECT * FROM db_qc.tbl_ncp_qcf_now WHERE id='".$_GET['id']."'");
+	$qry = sqlsrv_query($cond, "SELECT * FROM db_qc.tbl_ncp_qcf_now WHERE id='" . $_GET['id'] . "'");
 } else {
-	$qry = sqlsrv_query($cond, "SELECT * FROM db_qc.tbl_ncp_qcf_now WHERE no_ncp_gabungan='".$_GET['no_ncp_gabungan']."' ORDER BY revisi DESC ");
+	$qry = sqlsrv_query($cond, "SELECT * FROM db_qc.tbl_ncp_qcf_now WHERE no_ncp_gabungan='" . $_GET['no_ncp_gabungan'] . "' ORDER BY revisi DESC ");
 	//$qry=mysqli_query($con,"SELECT * FROM tbl_ncp_qcf_new WHERE no_ncp='$_GET[no_ncp]' and dept='$_GET[dept]' and nokk='$_GET[nokk]' and revisi='$_GET[revisi]' ORDER BY revisi DESC ");	
 }
 $d = sqlsrv_fetch_array($qry, SQLSRV_FETCH_ASSOC);
 
 $nokk1 = $d['nodemand'];
 
-$sqlDB2="SELECT
+$sqlDB2 = "SELECT
 	p.DESCRIPTION
 FROM
 	PRODUCTIONDEMAND p
 WHERE
 	p.CODE = '$nokk1'";
-$stmt=db2_exec($conn2,$sqlDB2, array('cursor'=>DB2_SCROLLABLE));
+$stmt = db2_exec($conn2, $sqlDB2, array('cursor' => DB2_SCROLLABLE));
 $rowdb2 = db2_fetch_assoc($stmt);
 
 //RMP Benang
@@ -155,7 +155,7 @@ if ($d['m_proses'] != "") {
 				<td valign="top" style="border-top:1px #000000 solid; 
 	border-bottom:1px #000000 solid;
 	border-left:1px #000000 solid; 
-	border-right:1px #000000 solid;"><?php echo $d['lot']; ?> / <?php echo trim($rowdb2['DESCRIPTION']);?></td>
+	border-right:1px #000000 solid;"><?php echo $d['lot']; ?> / <?php echo trim($rowdb2['DESCRIPTION']); ?></td>
 				<td valign="top" style="border-top:1px #000000 solid; 
 	border-bottom:1px #000000 solid;
 	border-left:1px #000000 solid; 
@@ -278,12 +278,12 @@ if ($d['m_proses'] != "") {
 	border-bottom:1px #000000 solid;
 	border-left:1px #000000 solid; 
 	border-right:1px #000000 solid;"><?php if ($d['ncp_hitung'] == "ya") {
-											echo "Hitung, ";
-										} ?>
+																			echo "Hitung, ";
+																		} ?>
 					<?php if ($d['ok_celupan'] != "") {
 						echo "Warna OK Celupan " . $d['ok_celupan'] . " dan ";
 					} ?>
-					<?php echo $d['ket']; ?> <?= 'No. Register : '.$d['reg_no']; ?></td>
+					<?php echo $d['ket']; ?> <?= 'No. Register : ' . $d['reg_no']; ?></td>
 			</tr>
 			<tr>
 				<td rowspan="5" style="border-top:1px #000000 solid; 
@@ -346,9 +346,11 @@ if ($d['m_proses'] != "") {
 		</tbody>
 	</table>
 	<?php
-		$qryckw = sqlsrv_query($cond, "SELECT TOP 1 * FROM db_qc.tbl_cocok_warna_dye WHERE dept = 'QCF' AND nokk = ? ORDER BY id DESC", [$nokk1]);
-		if ($qryckw === false) { die(print_r(sqlsrv_errors(), true)); }
-		$rowckw = sqlsrv_fetch_array($qryckw, SQLSRV_FETCH_ASSOC);
+	$qryckw = sqlsrv_query($cond, "SELECT TOP 1 * FROM db_qc.tbl_cocok_warna_dye WHERE dept = 'QCF' AND nokk = ? ORDER BY id DESC", [$nokk1]);
+	if ($qryckw === false) {
+		die(print_r(sqlsrv_errors(), true));
+	}
+	$rowckw = sqlsrv_fetch_array($qryckw, SQLSRV_FETCH_ASSOC);
 	?>
 	<table border="0" width="100%">
 		<tbody>
