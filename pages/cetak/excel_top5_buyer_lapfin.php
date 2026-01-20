@@ -1,115 +1,155 @@
 <?php
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 header("Content-type: application/octet-stream");
-header("Content-Disposition: attachment; filename=Top5-Buyer-Lap-Fin-".substr($_GET['awal'],0,10).".xls");//ganti nama sesuai keperluan
+header("Content-Disposition: attachment; filename=Top5-Buyer-Lap-Fin-" . substr($_GET['awal'], 0, 10) . ".xls"); //ganti nama sesuai keperluan
 header("Pragma: no-cache");
 header("Expires: 0");
 //disini script laporan anda
 ?>
-<?php 
+<?php
 include "../../koneksi.php";
 //--
-$Awal=$_GET['awal'];
-$Akhir=$_GET['akhir'];
+$Awal = $_GET['awal'];
+$Akhir = $_GET['akhir'];
 ?>
+
 <body>
-<?php 
-      $sqlball=mysqli_query($cond,"SELECT
-      count(a.nokk) as jml_kk_all 
-      from 
-      db_qc.tbl_lap_inspeksi a
-      where (a.proses !='Oven' or a.proses !='Fin 1X') and a.dept ='QCF'
-      AND DATE_FORMAT( a.tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir'");
-      $rball=mysqli_fetch_array($sqlball);
-      ?>
-<strong>Periode: <?php echo $Awal; ?> s/d <?php echo $Akhir; ?></strong><br>
-<table width="100%" border="1">
+  <?php
+  $sqlball = sqlsrv_query($cond, "
+    SELECT COUNT(a.nokk) AS jml_kk_all
+    FROM db_qc.tbl_lap_inspeksi a
+    WHERE a.proses NOT IN ('Oven','Fin 1X')
+      AND a.dept = 'QCF'
+      AND CAST(a.tgl_update AS date) BETWEEN '$Awal' AND '$Akhir'
+  ");
+  $rball = sqlsrv_fetch_array($sqlball, SQLSRV_FETCH_ASSOC);
+  ?>
+  <strong>Periode: <?php echo $Awal; ?> s/d <?php echo $Akhir; ?></strong><br>
+
+  <table width="100%" border="1">
     <tr>
-        <th bgcolor="#12C9F0"><div align="center">No</div></th>
-        <th bgcolor="#12C9F0"><div align="center">Buyer</div></th>
-        <th bgcolor="#12C9F0"><div align="center">A</div></th>
-        <th bgcolor="#12C9F0"><div align="center">B</div></th>
-        <th bgcolor="#12C9F0"><div align="center">C</div></th>
-        <th bgcolor="#12C9F0"><div align="center">D</div></th>
-        <th bgcolor="#12C9F0"><div align="center">NULL</div></th>
-        <th bgcolor="#12C9F0"><div align="center">%</div></th>
+      <th bgcolor="#12C9F0">
+        <div align="center">No</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">Buyer</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">A</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">B</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">C</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">D</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">NULL</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">%</div>
+      </th>
     </tr>
-	<?php 
-          $no=1;
-          $sqlby=mysqli_query($cond,"SELECT 
-          SUBSTRING_INDEX(a.pelanggan,'/',-1) as buyer,
-          count(a.nokk) as jml_kk
-          from 
-          db_qc.tbl_lap_inspeksi a
-          where (a.proses !='Oven' or a.proses !='Fin 1X') and a.dept ='QCF'
-          AND DATE_FORMAT( a.tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' 
-          group by 
-          substring_index(a.pelanggan,'/',-1)
-          order by jml_kk desc limit 5");
-          while($rby=mysqli_fetch_array($sqlby)){
-          //GROUP A
-          $sqlga=mysqli_query($cond,"SELECT
-          a.`grouping`,
-          count(a.nokk) as jml_kk_a
-          from 
-          db_qc.tbl_lap_inspeksi a
-          where (a.proses !='Oven' or a.proses !='Fin 1X') and a.dept ='QCF'
-          AND DATE_FORMAT( a.tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' 
-          and a.`grouping` = 'A' and SUBSTRING_INDEX(a.pelanggan,'/',-1) ='$rby[buyer]'");
-          $rga=mysqli_fetch_array($sqlga);
-          //GROUP B
-          $sqlgb=mysqli_query($cond,"SELECT
-          a.`grouping`,
-          count(a.nokk) as jml_kk_b
-          from 
-          db_qc.tbl_lap_inspeksi a
-          where (a.proses !='Oven' or a.proses !='Fin 1X') and a.dept ='QCF'
-          AND DATE_FORMAT( a.tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' 
-          and a.`grouping` = 'B' and SUBSTRING_INDEX(a.pelanggan,'/',-1) ='$rby[buyer]'");
-          $rgb=mysqli_fetch_array($sqlgb);
-          //GROUP C
-          $sqlgc=mysqli_query($cond,"SELECT
-          a.`grouping`,
-          count(a.nokk) as jml_kk_c
-          from 
-          db_qc.tbl_lap_inspeksi a
-          where (a.proses !='Oven' or a.proses !='Fin 1X') and a.dept ='QCF'
-          AND DATE_FORMAT( a.tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' 
-          and a.`grouping` = 'C' and SUBSTRING_INDEX(a.pelanggan,'/',-1) ='$rby[buyer]'");
-          $rgc=mysqli_fetch_array($sqlgc);
-          //GROUP D
-          $sqlgd=mysqli_query($cond,"SELECT
-          a.`grouping`,
-          count(a.nokk) as jml_kk_d
-          from 
-          db_qc.tbl_lap_inspeksi a
-          where (a.proses !='Oven' or a.proses !='Fin 1X') and a.dept ='QCF'
-          AND DATE_FORMAT( a.tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' 
-          and a.`grouping` = 'D' and SUBSTRING_INDEX(a.pelanggan,'/',-1) ='$rby[buyer]'");
-          $rgd=mysqli_fetch_array($sqlgd);
-          //NULL
-          $sqlgn=mysqli_query($cond,"SELECT
-          a.`grouping`,
-          count(a.nokk) as jml_kk_null
-          from 
-          db_qc.tbl_lap_inspeksi a
-          where (a.proses !='Oven' or a.proses !='Fin 1X') and a.dept ='QCF'
-          AND DATE_FORMAT( a.tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' 
-          and (a.`grouping` = '' or a.`grouping` is null ) and SUBSTRING_INDEX(a.pelanggan,'/',-1) ='$rby[buyer]'");
-          $rgn=mysqli_fetch_array($sqlgn);
+
+    <?php
+    $no = 1;
+
+    $sqlby = sqlsrv_query($cond, "
+      SELECT TOP 5
+        RIGHT(a.pelanggan, CHARINDEX('/', REVERSE(a.pelanggan) + '/') - 1) AS buyer,
+        COUNT(a.nokk) AS jml_kk
+      FROM db_qc.tbl_lap_inspeksi a
+      WHERE a.proses NOT IN ('Oven','Fin 1X')
+        AND a.dept = 'QCF'
+        AND CAST(a.tgl_update AS date) BETWEEN '$Awal' AND '$Akhir'
+      GROUP BY RIGHT(a.pelanggan, CHARINDEX('/', REVERSE(a.pelanggan) + '/') - 1)
+      ORDER BY COUNT(a.nokk) DESC
+    ");
+
+    while ($rby = sqlsrv_fetch_array($sqlby, SQLSRV_FETCH_ASSOC)) {
+
+      // GROUP A
+      $sqlga = sqlsrv_query($cond, "
+        SELECT COUNT(a.nokk) AS jml_kk_a
+        FROM db_qc.tbl_lap_inspeksi a
+        WHERE a.proses NOT IN ('Oven','Fin 1X')
+          AND a.dept = 'QCF'
+          AND CAST(a.tgl_update AS date) BETWEEN '$Awal' AND '$Akhir'
+          AND a.[grouping] = 'A'
+          AND RIGHT(a.pelanggan, CHARINDEX('/', REVERSE(a.pelanggan) + '/') - 1) = '$rby[buyer]'
+      ");
+      $rga = sqlsrv_fetch_array($sqlga, SQLSRV_FETCH_ASSOC);
+
+      // GROUP B
+      $sqlgb = sqlsrv_query($cond, "
+        SELECT COUNT(a.nokk) AS jml_kk_b
+        FROM db_qc.tbl_lap_inspeksi a
+        WHERE a.proses NOT IN ('Oven','Fin 1X')
+          AND a.dept = 'QCF'
+          AND CAST(a.tgl_update AS date) BETWEEN '$Awal' AND '$Akhir'
+          AND a.[grouping] = 'B'
+          AND RIGHT(a.pelanggan, CHARINDEX('/', REVERSE(a.pelanggan) + '/') - 1) = '$rby[buyer]'
+      ");
+      $rgb = sqlsrv_fetch_array($sqlgb, SQLSRV_FETCH_ASSOC);
+
+      // GROUP C
+      $sqlgc = sqlsrv_query($cond, "
+        SELECT COUNT(a.nokk) AS jml_kk_c
+        FROM db_qc.tbl_lap_inspeksi a
+        WHERE a.proses NOT IN ('Oven','Fin 1X')
+          AND a.dept = 'QCF'
+          AND CAST(a.tgl_update AS date) BETWEEN '$Awal' AND '$Akhir'
+          AND a.[grouping] = 'C'
+          AND RIGHT(a.pelanggan, CHARINDEX('/', REVERSE(a.pelanggan) + '/') - 1) = '$rby[buyer]'
+      ");
+      $rgc = sqlsrv_fetch_array($sqlgc, SQLSRV_FETCH_ASSOC);
+
+      // GROUP D
+      $sqlgd = sqlsrv_query($cond, "
+        SELECT COUNT(a.nokk) AS jml_kk_d
+        FROM db_qc.tbl_lap_inspeksi a
+        WHERE a.proses NOT IN ('Oven','Fin 1X')
+          AND a.dept = 'QCF'
+          AND CAST(a.tgl_update AS date) BETWEEN '$Awal' AND '$Akhir'
+          AND a.[grouping] = 'D'
+          AND RIGHT(a.pelanggan, CHARINDEX('/', REVERSE(a.pelanggan) + '/') - 1) = '$rby[buyer]'
+      ");
+      $rgd = sqlsrv_fetch_array($sqlgd, SQLSRV_FETCH_ASSOC);
+
+      // NULL / kosong
+      $sqlgn = sqlsrv_query($cond, "
+        SELECT COUNT(a.nokk) AS jml_kk_null
+        FROM db_qc.tbl_lap_inspeksi a
+        WHERE a.proses NOT IN ('Oven','Fin 1X')
+          AND a.dept = 'QCF'
+          AND CAST(a.tgl_update AS date) BETWEEN '$Awal' AND '$Akhir'
+          AND (a.[grouping] = '' OR a.[grouping] IS NULL)
+          AND RIGHT(a.pelanggan, CHARINDEX('/', REVERSE(a.pelanggan) + '/') - 1) = '$rby[buyer]'
+      ");
+      $rgn = sqlsrv_fetch_array($sqlgn, SQLSRV_FETCH_ASSOC);
+    ?>
+      <tr valign="top">
+        <td align="center"><?php echo $no; ?></td>
+        <td align="center"><?php echo $rby['buyer']; ?></td>
+        <td align="center"><?php echo $rga['jml_kk_a']; ?></td>
+        <td align="center"><?php echo $rgb['jml_kk_b']; ?></td>
+        <td align="center"><?php echo $rgc['jml_kk_c']; ?></td>
+        <td align="center"><?php echo $rgd['jml_kk_d']; ?></td>
+        <td align="center"><?php echo $rgn['jml_kk_null']; ?></td>
+        <td align="center">
+          <?php
+          $den = (float)($rball['jml_kk_all'] ?? 0);
+          $num = (float)($rby['jml_kk'] ?? 0);
+          echo $den > 0 ? number_format(($num / $den) * 100, 2) . " %" : "0.00 %";
           ?>
-        <tr valign="top">
-            <td align="center"><?php echo $no;?></td>
-            <td align="center"><?php echo $rby['buyer'];?></td>
-            <td align="center"><?php echo $rga['jml_kk_a'];?></td>
-            <td align="center"><?php echo $rgb['jml_kk_b'];?></td>
-            <td align="center"><?php echo $rgc['jml_kk_c'];?></td>
-            <td align="center"><?php echo $rgd['jml_kk_d'];?></td>
-            <td align="center"><?php echo $rgn['jml_kk_null'];?></td>
-            <td align="center"><?php echo number_format(($rby['jml_kk']/$rball['jml_kk_all'])*100,2)." %";?></td>
-        </tr>
-        <?php 
-          $no++;}
-        ?>
-</table>
+        </td>
+      </tr>
+    <?php
+      $no++;
+    } // end while buyer
+    ?>
+  </table>
 </body>

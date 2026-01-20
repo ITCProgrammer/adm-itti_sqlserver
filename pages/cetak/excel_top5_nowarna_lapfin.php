@@ -1,124 +1,196 @@
 <?php
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 header("Content-type: application/octet-stream");
-header("Content-Disposition: attachment; filename=Top5-NoWarna-Lap-Fin-".substr($_GET['awal'],0,10).".xls");//ganti nama sesuai keperluan
+header("Content-Disposition: attachment; filename=Top5-NoWarna-Lap-Fin-" . substr($_GET['awal'], 0, 10) . ".xls"); //ganti nama sesuai keperluan
 header("Pragma: no-cache");
 header("Expires: 0");
 //disini script laporan anda
 ?>
-<?php 
+<?php
 include "../../koneksi.php";
 //--
-$Awal=$_GET['awal'];
-$Akhir=$_GET['akhir'];
+$Awal = $_GET['awal'];
+$Akhir = $_GET['akhir'];
 ?>
+
 <body>
-<?php 
-      $sqlball=mysqli_query($cond,"SELECT
-      count(a.nokk) as jml_kk_all 
-      from 
-      db_qc.tbl_lap_inspeksi a
-      where (a.proses !='Oven' or a.proses !='Fin 1X') and a.dept ='QCF'
-      AND DATE_FORMAT( a.tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir'");
-      $rball=mysqli_fetch_array($sqlball);
-      ?>
-<strong>Periode: <?php echo $Awal; ?> s/d <?php echo $Akhir; ?></strong><br>
-<table width="100%" border="1">
+  <?php
+  $sqlball = sqlsrv_query($cond, "
+    SELECT COUNT(a.nokk) AS jml_kk_all
+    FROM db_qc.tbl_lap_inspeksi a
+    WHERE (a.proses <> 'Oven' OR a.proses <> 'Fin 1X')
+      AND a.dept = 'QCF'
+      AND CAST(a.tgl_update AS date) BETWEEN ? AND ?
+  ", [$Awal, $Akhir]);
+
+  $rball = sqlsrv_fetch_array($sqlball, SQLSRV_FETCH_ASSOC);
+  ?>
+  <strong>Periode: <?php echo $Awal; ?> s/d <?php echo $Akhir; ?></strong><br>
+
+  <table width="100%" border="1">
     <tr>
-        <th bgcolor="#12C9F0"><div align="center">No</div></th>
-        <th bgcolor="#12C9F0"><div align="center">No Warna</div></th>
-        <th bgcolor="#12C9F0"><div align="center">Warna</div></th>
-        <th bgcolor="#12C9F0"><div align="center">A</div></th>
-        <th bgcolor="#12C9F0"><div align="center">B</div></th>
-        <th bgcolor="#12C9F0"><div align="center">C</div></th>
-        <th bgcolor="#12C9F0"><div align="center">D</div></th>
-        <th bgcolor="#12C9F0"><div align="center">NULL</div></th>
-        <th bgcolor="#12C9F0"><div align="center">%</div></th>
+      <th bgcolor="#12C9F0">
+        <div align="center">No</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">No Warna</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">Warna</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">A</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">B</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">C</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">D</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">NULL</div>
+      </th>
+      <th bgcolor="#12C9F0">
+        <div align="center">%</div>
+      </th>
     </tr>
-    <?php 
-          $no=1;
-          $sqlw=mysqli_query($cond,"SELECT 
-          no_warna,
-          warna,
-          count(a.nokk) as jml_kk
-          from 
-          db_qc.tbl_lap_inspeksi a
-          where (a.proses !='Oven' or a.proses !='Fin 1X') and a.dept ='QCF'
-          AND DATE_FORMAT( a.tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' 
-          group by 
-          no_warna,
-          warna
-          order by jml_kk desc limit 5");
-          while($rw=mysqli_fetch_array($sqlw)){
-          //GROUP A
-          $sqlwa=mysqli_query($cond,"SELECT
-          no_warna,
-          warna,
-          count(a.nokk) as jml_kk_a
-          from 
-          db_qc.tbl_lap_inspeksi a
-          where (a.proses !='Oven' or a.proses !='Fin 1X') and a.dept ='QCF'
-          AND DATE_FORMAT( a.tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' 
-          and a.`grouping` = 'A' and a.no_warna ='$rw[no_warna]' and a.warna ='$rw[warna]'");
-          $rwa=mysqli_fetch_array($sqlwa);
-          //GROUP B
-          $sqlwb=mysqli_query($cond,"SELECT
-          no_warna,
-          warna,
-          count(a.nokk) as jml_kk_b
-          from 
-          db_qc.tbl_lap_inspeksi a
-          where (a.proses !='Oven' or a.proses !='Fin 1X') and a.dept ='QCF'
-          AND DATE_FORMAT( a.tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' 
-          and a.`grouping` = 'B' and a.no_warna ='$rw[no_warna]' and a.warna ='$rw[warna]'");
-          $rwb=mysqli_fetch_array($sqlwb);
-          //GROUP C
-          $sqlwc=mysqli_query($cond,"SELECT
-          no_warna,
-          warna,
-          count(a.nokk) as jml_kk_c
-          from 
-          db_qc.tbl_lap_inspeksi a
-          where (a.proses !='Oven' or a.proses !='Fin 1X') and a.dept ='QCF'
-          AND DATE_FORMAT( a.tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' 
-          and a.`grouping` = 'C' and a.no_warna ='$rw[no_warna]' and a.warna ='$rw[warna]'");
-          $rwc=mysqli_fetch_array($sqlwc);
-          //GROUP D
-          $sqlwd=mysqli_query($cond,"SELECT
-          no_warna,
-          warna,
-          count(a.nokk) as jml_kk_d
-          from 
-          db_qc.tbl_lap_inspeksi a
-          where (a.proses !='Oven' or a.proses !='Fin 1X') and a.dept ='QCF'
-          AND DATE_FORMAT( a.tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' 
-          and a.`grouping` = 'D' and a.no_warna ='$rw[no_warna]' and a.warna ='$rw[warna]'");
-          $rwd=mysqli_fetch_array($sqlwd);
-          //NULL
-          $sqlwn=mysqli_query($cond,"SELECT
-          no_warna,
-          warna,
-          count(a.nokk) as jml_kk_null
-          from 
-          db_qc.tbl_lap_inspeksi a
-          where (a.proses !='Oven' or a.proses !='Fin 1X') and a.dept ='QCF'
-          AND DATE_FORMAT( a.tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' 
-          and (a.`grouping` = '' or a.`grouping` is null ) and a.no_warna ='$rw[no_warna]' and a.warna ='$rw[warna]'");
-          $rwn=mysqli_fetch_array($sqlwn);
+
+    <?php
+    $no = 1;
+
+    $sqlw = sqlsrv_query($cond, "
+    SELECT TOP 5
+      a.no_warna,
+      a.warna,
+      COUNT(a.nokk) AS jml_kk
+    FROM db_qc.tbl_lap_inspeksi a
+    WHERE (a.proses <> 'Oven' OR a.proses <> 'Fin 1X')
+      AND a.dept = 'QCF'
+      AND CAST(a.tgl_update AS date) BETWEEN ? AND ?
+    GROUP BY a.no_warna, a.warna
+    ORDER BY COUNT(a.nokk) DESC
+  ", [$Awal, $Akhir]);
+
+    while ($rw = sqlsrv_fetch_array($sqlw, SQLSRV_FETCH_ASSOC)) {
+
+      // GROUP A
+      $sqlwa = sqlsrv_query($cond, "
+      SELECT
+        a.no_warna,
+        a.warna,
+        COUNT(a.nokk) AS jml_kk_a
+      FROM db_qc.tbl_lap_inspeksi a
+      WHERE (a.proses <> 'Oven' OR a.proses <> 'Fin 1X')
+        AND a.dept = 'QCF'
+        AND CAST(a.tgl_update AS date) BETWEEN ? AND ?
+        AND a.[grouping] = 'A'
+        AND a.no_warna = ?
+        AND a.warna = ?
+      GROUP BY
+        a.no_warna,
+        a.warna
+    ", [$Awal, $Akhir, $rw['no_warna'], $rw['warna']]);
+      $rwa = sqlsrv_fetch_array($sqlwa, SQLSRV_FETCH_ASSOC);
+
+      // GROUP B
+      $sqlwb = sqlsrv_query($cond, "
+      SELECT
+        a.no_warna,
+        a.warna,
+        COUNT(a.nokk) AS jml_kk_b
+      FROM db_qc.tbl_lap_inspeksi a
+      WHERE (a.proses <> 'Oven' OR a.proses <> 'Fin 1X')
+        AND a.dept = 'QCF'
+        AND CAST(a.tgl_update AS date) BETWEEN ? AND ?
+        AND a.[grouping] = 'B'
+        AND a.no_warna = ?
+        AND a.warna = ?
+      GROUP BY
+        a.no_warna,
+        a.warna
+    ", [$Awal, $Akhir, $rw['no_warna'], $rw['warna']]);
+      $rwb = sqlsrv_fetch_array($sqlwb, SQLSRV_FETCH_ASSOC);
+
+      // GROUP C
+      $sqlwc = sqlsrv_query($cond, "
+      SELECT
+        a.no_warna,
+        a.warna,
+        COUNT(a.nokk) AS jml_kk_c
+      FROM db_qc.tbl_lap_inspeksi a
+      WHERE (a.proses <> 'Oven' OR a.proses <> 'Fin 1X')
+        AND a.dept = 'QCF'
+        AND CAST(a.tgl_update AS date) BETWEEN ? AND ?
+        AND a.[grouping] = 'C'
+        AND a.no_warna = ?
+        AND a.warna = ?
+      GROUP BY
+        a.no_warna,
+        a.warna
+    ", [$Awal, $Akhir, $rw['no_warna'], $rw['warna']]);
+      $rwc = sqlsrv_fetch_array($sqlwc, SQLSRV_FETCH_ASSOC);
+
+      // GROUP D
+      $sqlwd = sqlsrv_query($cond, "
+      SELECT
+        a.no_warna,
+        a.warna,
+        COUNT(a.nokk) AS jml_kk_d
+      FROM db_qc.tbl_lap_inspeksi a
+      WHERE (a.proses <> 'Oven' OR a.proses <> 'Fin 1X')
+        AND a.dept = 'QCF'
+        AND CAST(a.tgl_update AS date) BETWEEN ? AND ?
+        AND a.[grouping] = 'D'
+        AND a.no_warna = ?
+        AND a.warna = ?
+      GROUP BY
+        a.no_warna,
+        a.warna
+    ", [$Awal, $Akhir, $rw['no_warna'], $rw['warna']]);
+      $rwd = sqlsrv_fetch_array($sqlwd, SQLSRV_FETCH_ASSOC);
+
+      // NULL / kosong
+      $sqlwn = sqlsrv_query($cond, "
+      SELECT
+        a.no_warna,
+        a.warna,
+        COUNT(a.nokk) AS jml_kk_null
+      FROM db_qc.tbl_lap_inspeksi a
+      WHERE (a.proses <> 'Oven' OR a.proses <> 'Fin 1X')
+        AND a.dept = 'QCF'
+        AND CAST(a.tgl_update AS date) BETWEEN ? AND ?
+        AND (a.[grouping] = '' OR a.[grouping] IS NULL)
+        AND a.no_warna = ?
+        AND a.warna = ?
+      GROUP BY
+        a.no_warna,
+        a.warna
+    ", [$Awal, $Akhir, $rw['no_warna'], $rw['warna']]);
+      $rwn = sqlsrv_fetch_array($sqlwn, SQLSRV_FETCH_ASSOC);
+    ?>
+      <tr valign="top">
+        <td align="center"><?php echo $no; ?></td>
+        <td align="center"><?php echo $rw['no_warna']; ?></td>
+        <td align="center"><?php echo $rw['warna']; ?></td>
+        <td align="center"><?php echo $rwa['jml_kk_a'] ?? 0; ?></td>
+        <td align="center"><?php echo $rwb['jml_kk_b'] ?? 0; ?></td>
+        <td align="center"><?php echo $rwc['jml_kk_c'] ?? 0; ?></td>
+        <td align="center"><?php echo $rwd['jml_kk_d'] ?? 0; ?></td>
+        <td align="center"><?php echo $rwn['jml_kk_null'] ?? 0; ?></td>
+        <td align="center">
+          <?php
+          $den = (float)($rball['jml_kk_all'] ?? 0);
+          $num = (float)($rw['jml_kk'] ?? 0);
+          echo $den > 0 ? number_format(($num / $den) * 100, 2) . " %" : "0.00 %";
           ?>
-          <tr valign="top">
-            <td align="center"><?php echo $no;?></td>
-            <td align="center"><?php echo $rw['no_warna'];?></td>
-            <td align="center"><?php echo $rw['warna'];?></td>
-            <td align="center"><?php echo $rwa['jml_kk_a'];?></td>
-            <td align="center"><?php echo $rwb['jml_kk_b'];?></td>
-            <td align="center"><?php echo $rwc['jml_kk_c'];?></td>
-            <td align="center"><?php echo $rwd['jml_kk_d'];?></td>
-            <td align="center"><?php echo $rwn['jml_kk_null'];?></td>
-            <td align="center"><?php echo number_format(($rw['jml_kk']/$rball['jml_kk_all'])*100,2)." %";?></td>
-          </tr>
-          <?php 
-          $no++;}
-          ?>
-</table>
+        </td>
+      </tr>
+    <?php
+      $no++;
+    }
+    ?>
+  </table>
 </body>

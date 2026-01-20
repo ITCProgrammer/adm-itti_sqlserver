@@ -1,6 +1,6 @@
 <?php
 header("Content-type: application/octet-stream");
-header("Content-Disposition: attachment; filename=lap-grouping-cocok-warna-".date("F-Y", strtotime($_GET['awal'])).".xls");//ganti nama sesuai keperluan
+header("Content-Disposition: attachment; filename=lap-grouping-cocok-warna-" . date("F-Y", strtotime($_GET['awal'])) . ".xls"); //ganti nama sesuai keperluan
 header("Pragma: no-cache");
 header("Expires: 0");
 //disini script laporan anda
@@ -50,99 +50,111 @@ Shift : <?php echo $shift; ?>
   <tbody>
     <?php
 
-    $shiftCondition = ($shift != "ALL") ? " AND `shift`='$shift' " : "";
+    $shiftCondition = ($shift != "ALL") ? " AND [shift]='$shift' " : "";
 
-    $query = "select
-                SUBSTRING_INDEX(pelanggan, '/',-1) as buyer,
-                trim(no_item) as no_item,
-                group_concat(distinct trim(no_warna)) as no_warna_group
-              from
-                tbl_lap_inspeksi
-              where
-                `dept` = 'QCF'
-                and DATE_FORMAT( CONCAT(tgl_update, ' ', jam_update), '%Y-%m-%d') between '$awal' AND '$akhir' $shiftCondition
-                and `grouping` != ''
-              group by
-                buyer,
-                no_item
-              order by
-                buyer asc";
 
-    $result = mysqli_query($cond, $query);
+    $query = "
+      SELECT
+        RIGHT(pelanggan, CHARINDEX('/', REVERSE(pelanggan) + '/') - 1) AS buyer,
+        LTRIM(RTRIM(no_item)) AS no_item,
+        (
+          SELECT STRING_AGG(x.no_warna, ',')
+          FROM (
+            SELECT DISTINCT LTRIM(RTRIM(b.no_warna)) AS no_warna
+            FROM db_qc.tbl_lap_inspeksi b
+            WHERE b.dept = 'QCF'
+              AND CAST(b.tgl_update AS date) BETWEEN '$awal' AND '$akhir'
+              $shiftCondition
+              AND RIGHT(b.pelanggan, CHARINDEX('/', REVERSE(b.pelanggan) + '/') - 1)
+                  = RIGHT(a.pelanggan, CHARINDEX('/', REVERSE(a.pelanggan) + '/') - 1)
+              AND LTRIM(RTRIM(b.no_item)) = LTRIM(RTRIM(a.no_item))
+              AND ISNULL(LTRIM(RTRIM(b.[grouping])), '') <> ''
+          ) x
+        ) AS no_warna_group
+      FROM db_qc.tbl_lap_inspeksi a
+      WHERE a.dept = 'QCF'
+        AND CAST(a.tgl_update AS date) BETWEEN '$awal' AND '$akhir'
+        $shiftCondition
+        AND ISNULL(LTRIM(RTRIM(a.[grouping])), '') <> ''
+      GROUP BY
+        RIGHT(pelanggan, CHARINDEX('/', REVERSE(pelanggan) + '/') - 1),
+        LTRIM(RTRIM(no_item))
+      ORDER BY buyer ASC
+    ";
+
+    $result = sqlsrv_query($cond, $query);
 
     $no = 1;
     $satu = 1;
     $satuTemp = 1;
-    while ($row = mysqli_fetch_array($result)) {
-      $no_warna_group = explode(',', $row['no_warna_group']);
-      $no_warna_group_string = "'" . implode("', '", explode(',', $row['no_warna_group'])) . "'";
 
-      $query2 = "select 
-                    count(*) as total_warna
-                  from (
-                  select
-                    no_warna,
-                    warna,
-                    group_concat(`grouping`) as groupings
-                  from
-                    tbl_lap_inspeksi
-                  where
-                    `dept` = 'QCF'
-                    and DATE_FORMAT( CONCAT(tgl_update, ' ', jam_update), '%Y-%m-%d') between '$awal' AND '$akhir' $shiftCondition
-                    and SUBSTRING_INDEX(pelanggan, '/',-1) = '$row[buyer]'
-                    and `grouping` != ''
-                  group by
-                    SUBSTRING_INDEX(pelanggan, '/',-1),
-                    no_item,
-                    no_warna) temp";
+    while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
 
-      $result2 = mysqli_query($cond, $query2);
-      $row2 = mysqli_fetch_array($result2);
-      $total_warna = $row2['total_warna'];
+      $no_warna_group_string = "'" . implode("','", array_map('trim', explode(',', $row['no_warna_group'] ?? ''))) . "'";
 
-      $query3 = "select
-                  no_warna,
-                  warna,
-                  group_concat(`grouping`) as groupings
-                from
-                  tbl_lap_inspeksi
-                where
-                  `dept` = 'QCF'
-                  and DATE_FORMAT( CONCAT(tgl_update, ' ', jam_update), '%Y-%m-%d') between '$awal' AND '$akhir' $shiftCondition
-                  and SUBSTRING_INDEX(pelanggan, '/',-1) = '$row[buyer]'
-                  and no_item = '$row[no_item]'
-                  and no_warna in ($no_warna_group_string)
-                  and grouping != ''
-                group by
-                  no_warna";
+      $query2 = "
+        SELECT COUNT(*) AS total_warna
+        FROM (
+          SELECT
+            a.no_warna,
+            a.warna,
+            STRING_AGG(a.[grouping], ',') AS groupings
+          FROM db_qc.tbl_lap_inspeksi a
+          WHERE a.dept = 'QCF'
+            AND CAST(a.tgl_update AS date) BETWEEN '$awal' AND '$akhir'
+            $shiftCondition
+            AND RIGHT(a.pelanggan, CHARINDEX('/', REVERSE(a.pelanggan) + '/') - 1) = '$row[buyer]'
+            AND ISNULL(LTRIM(RTRIM(a.[grouping])), '') <> ''
+          GROUP BY
+            a.no_warna,
+            a.warna
+        ) temp
+      ";
 
-      $result3 = mysqli_query($cond, $query3);
-      $totalRowResult3 = mysqli_num_rows($result3);
+      $result2 = sqlsrv_query($cond, $query2);
+      $row2 = sqlsrv_fetch_array($result2, SQLSRV_FETCH_ASSOC);
+      $total_warna = (int)($row2['total_warna'] ?? 0);
+
+      $query3 = "
+        SELECT
+          a.no_warna,
+          a.warna,
+          STRING_AGG(a.[grouping], ',') AS groupings
+        FROM db_qc.tbl_lap_inspeksi a
+        WHERE a.dept = 'QCF'
+          AND CAST(a.tgl_update AS date) BETWEEN '$awal' AND '$akhir'
+          $shiftCondition
+          AND RIGHT(a.pelanggan, CHARINDEX('/', REVERSE(a.pelanggan) + '/') - 1) = '$row[buyer]'
+          AND LTRIM(RTRIM(a.no_item)) = '$row[no_item]'
+          AND LTRIM(RTRIM(a.no_warna)) IN ($no_warna_group_string)
+          AND ISNULL(LTRIM(RTRIM(a.[grouping])), '') <> ''
+        GROUP BY
+          a.no_warna,
+          a.warna
+      ";
+
+      $result3 = sqlsrv_query($cond, $query3, [], ["Scrollable" => SQLSRV_CURSOR_KEYSET]);
+      $totalRowResult3 = sqlsrv_num_rows($result3);
 
       $dua = 1;
-      while ($row3 = mysqli_fetch_array($result3)) {
+
+      while ($row3 = sqlsrv_fetch_array($result3, SQLSRV_FETCH_ASSOC)) {
 
         $A = 0;
         $B = 0;
         $C = 0;
         $D = 0;
-        foreach (explode(",", $row3['groupings']) as $group) {
-          if ($group == "A") {
-            $A++;
-          }
-          if ($group == "B") {
-            $B++;
-          }
-          if ($group == "C") {
-            $C++;
-          }
-          if ($group == "D") {
-            $D++;
-          }
-        }
-        $totalABCD = $A + $B + $C + $D;
 
-        ?>
+        foreach (explode(",", $row3['groupings'] ?? '') as $group) {
+          $group = trim($group);
+          if ($group == "A") $A++;
+          if ($group == "B") $B++;
+          if ($group == "C") $C++;
+          if ($group == "D") $D++;
+        }
+
+        $totalABCD = $A + $B + $C + $D;
+    ?>
         <tr>
           <?php if ($satu > 0): ?>
             <td rowspan="<?= $total_warna ?>"><?= $no++ ?></td>
@@ -161,8 +173,9 @@ Shift : <?php echo $shift; ?>
           <td bgcolor="pink"><?= $D > 0 ? $D : '' ?></td>
           <td><?= $totalABCD > 0 ? $totalABCD : '' ?></td>
         </tr>
-        <?php
-        if ($satuTemp < $row2['total_warna']) {
+    <?php
+
+        if ($satuTemp < $total_warna) {
           $satuTemp++;
           $satu = 0;
           $dua = 0;
