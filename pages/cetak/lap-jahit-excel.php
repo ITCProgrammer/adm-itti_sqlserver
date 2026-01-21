@@ -38,22 +38,42 @@ Shift 	: <?php echo $shift;?>
     <td><h4>Keterangan</h4></td>
   </tr>
   <?php
-  $no=1;
-  $lotOK=0;$lotBWA=0;$lotBWB=0;$lotBWC=0;$lotTBD=0;$lot=0;
-$lotFin=0;$lotFin1x=0;$lotPdr=0;$lotOven=0;$lotComp=0;
-$lotSt=0;$lotAP=0;$lotPB=0;$rollOK=0;$brutoOK=0;$rollBOK=0;
-$brutoBOK=0;$rollBW=0;$brutoBW=0;$roll=0;$bruto=0;
-  if($_GET['shift']!="ALL"){
-  $shft=" AND `shift`='$_GET[shift]' "; }else{$shft=" ";}
-  if($_GET['order']!=""){$ord=" AND `no_order` LIKE '%$Order%' "; }else{$ord=" ";}
- 
-  $sql=mysqli_query($cond,"SELECT * FROM tbl_jahit WHERE DATE_FORMAT( tgl_jahit, '%Y-%m-%d' ) BETWEEN '$tgl' AND '$tgl1' ".$shft." ".$ord." ORDER BY id ASC");
-  while($row=mysqli_fetch_array($sql)){
-	  
+    $no=1;
+    $lotOK=0;$lotBWA=0;$lotBWB=0;$lotBWC=0;$lotTBD=0;$lot=0;
+    $lotFin=0;$lotFin1x=0;$lotPdr=0;$lotOven=0;$lotComp=0;
+    $lotSt=0;$lotAP=0;$lotPB=0;$rollOK=0;$brutoOK=0;$rollBOK=0;
+    $brutoBOK=0;$rollBW=0;$brutoBW=0;$roll=0;$bruto=0;
+
+    if($_GET['shift']!="ALL"){
+      $shft=" AND [shift]='$_GET[shift]' ";
+    }else{
+      $shft=" ";
+    }
+
+    if($_GET['order']!=""){
+      $ord=" AND [no_order] LIKE '%$Order%' ";
+    }else{
+      $ord=" ";
+    }
+
+    $sql=sqlsrv_query($cond,"SELECT * FROM db_qc.tbl_jahit
+      WHERE CONVERT(date, tgl_jahit) BETWEEN '$tgl' AND '$tgl1' ".$shft." ".$ord."
+      ORDER BY id ASC");
+
+    if($sql===false){
+      echo "<pre>=== SQLSRV ERROR (tbl_jahit) ===\n";
+      print_r(sqlsrv_errors());
+      echo "\nQUERY:\nSELECT * FROM db_qc.tbl_jahit
+      WHERE CONVERT(date, tgl_jahit) BETWEEN '$tgl' AND '$tgl1' ".$shft." ".$ord."
+      ORDER BY id ASC\n</pre>";
+      exit;
+    }
+
+    while($row=sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC)){
   ?>
   <tr>
     <td><?php echo $no;?></td>
-    <td><?php echo date("Y-m-d", strtotime($row['tgl_jahit']));?></td>
+    <td><?php echo ($row['tgl_jahit'] instanceof DateTime) ? $row['tgl_jahit']->format('Y-m-d') : date("Y-m-d", strtotime($row['tgl_jahit'])); ?></td>
     <td>'<?php echo $row['nodemand'];?></td>
     <td><?php echo $row['langganan'];?></td>
     <td><?php echo $row['no_po'];?></td>

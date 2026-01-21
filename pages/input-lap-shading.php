@@ -34,20 +34,27 @@
 if($_GET['nodemand']!=""){$nodemand=$_GET['nodemand'];}else{$nodemand=" ";}
 if($_GET['shift']!=""){$shift=$_GET['shift'];}else{$shift=" ";}
 
-//Data sudah disimpan di database mysqli
-$msql=mysqli_query($cond,"SELECT * FROM `tbl_lap_shading` WHERE `nodemand`='$nodemand' and `shift`='$_GET[shift]' AND DATE_FORMAT(tgl_update, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d')");
-$row=mysqli_fetch_array($msql);
-$crow=mysqli_num_rows($msql);
+//Data sudah disimpan di database (SQLSRV)
+$msql=sqlsrv_query($cond,"SELECT * FROM db_qc.tbl_lap_shading
+WHERE nodemand='$nodemand'
+  AND shift='$shift'
+  AND CAST(tgl_update AS date) = CAST(GETDATE() AS date)");
+$row=sqlsrv_fetch_array($msql, SQLSRV_FETCH_ASSOC);
+$crow=sqlsrv_num_rows($msql);
 
-//Data sudah disimpan di database mysqli
-$msql1=mysqli_query($cond,"SELECT * FROM `tbl_lap_shading` WHERE `nodemand`='$nodemand' and `shift`='$_GET[shift]' ");
-$row1=mysqli_fetch_array($msql1);
-$crow1=mysqli_num_rows($msql1);
+//Data sudah disimpan di database (SQLSRV)
+$msql1=sqlsrv_query($cond,"SELECT * FROM db_qc.tbl_lap_shading
+WHERE nodemand='$nodemand'
+  AND shift='$shift'");
+$row1=sqlsrv_fetch_array($msql1, SQLSRV_FETCH_ASSOC);
+$crow1=sqlsrv_num_rows($msql1);
 
-//Data sudah disimpan di database mysqli
-$qryfin=mysqli_query($cond,"SELECT * FROM `tbl_lap_shading` WHERE `nodemand`='$nodemand' ORDER BY id DESC");
-$rfin=mysqli_fetch_array($qryfin);
-$cekfin=mysqli_num_rows($qryfin);
+//Data sudah disimpan di database (SQLSRV)
+$qryfin=sqlsrv_query($cond,"SELECT TOP 1 * FROM db_qc.tbl_lap_shading
+WHERE nodemand='$nodemand'
+ORDER BY id DESC");
+$rfin=sqlsrv_fetch_array($qryfin, SQLSRV_FETCH_ASSOC);
+$cekfin=sqlsrv_num_rows($qryfin);
 
 
 $sqlDB2="SELECT A.CODE AS DEMANDNO, TRIM(B.PRODUCTIONORDERCODE) AS PRODUCTIONORDERCODE, TRIM(E.LEGALNAME1) AS LEGALNAME1, TRIM(C.ORDERPARTNERBRANDCODE) AS ORDERPARTNERBRANDCODE, TRIM(C.BUYER) AS BUYER,
@@ -293,8 +300,8 @@ $rowr = db2_fetch_assoc($stmt1);
                                     <select class="form-control select2" name="operator" id="operator">
                                         <option value="">Pilih</option>
                                         <?php 
-                                        $qryo=mysqli_query($cond,"SELECT nama FROM tbl_operator ORDER BY nama ASC");
-                                        while($ro=mysqli_fetch_array($qryo)){
+                                        $qryo=sqlsrv_query($cond,"SELECT nama FROM db_qc.tbl_operator ORDER BY nama ASC");
+                                        while($ro=sqlsrv_fetch_array($qryo, SQLSRV_FETCH_ASSOC)){
                                         ?>
                                         <option value="<?php echo $ro['nama'];?>" <?php if($row['operator']==$ro['nama']){echo "SELECTED";}?>><?php echo $ro['nama'];?></option>	
                                         <?php }?>
@@ -385,118 +392,133 @@ $rowr = db2_fetch_assoc($stmt1);
 </div>
 </form>
 <?php
-include"koneksi.php";
+include "koneksi.php";
 ini_set("error_reporting", 1);
+
 if(isset($_POST['simpan']))
 {
-	$ceksql=mysqli_query($cond,"SELECT * FROM `tbl_lap_shading` WHERE `nodemand`='$_GET[nodemand]' and `shift`='$_POST[shift]' AND DATE_FORMAT(tgl_update, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d') LIMIT 1");
-    $cek=mysqli_num_rows($ceksql);
-	if($cek>0){
-    $pelanggan=str_replace("'","''",$_POST['pelanggan']);
-    $order=str_replace("'","''",$_POST['no_order']);
-    $jns=str_replace("'","''",$_POST['jenis_kain']);
-    $warna=str_replace("'","''",$_POST['warna']);
-    $no_warna=str_replace("'","''",$_POST['no_warna']);
-    $comment=str_replace("'","''",$_POST['comment']);
-    $pengarsipan=str_replace("'","''",$_POST['pengarsipan']);
-	$sql1=mysqli_query($cond,"UPDATE`tbl_lap_shading` SET
-	`no_order`='$order',
-    `no_item`='$_POST[no_item]',
-    `no_hanger`='$_POST[no_hanger]',
-    `no_po`='$_POST[no_po]',
-	`pelanggan`='$pelanggan',
-	`jenis_kain`='$jns',
-	`warna`='$warna',
-    `no_warna`='$no_warna',
-	`lot`='$_POST[lot]',
-	`groupshift`='$_POST[groupshift]',
-	`roll_bruto`='$_POST[roll_bruto]',
-	`bruto`='$_POST[bruto]',
-	`roll_reject`='$_POST[roll_reject]',
-	`roll_inspek`='$_POST[roll_inspek]',
-	`roll_ok`='$_POST[roll_ok]',
-	`ket_roll_reject`='$_POST[ket_roll_reject]',
-    `roll_gs3`='$_POST[roll_gs3]',
-    `roll_gs3_5`='$_POST[roll_gs3_5]',
-    `roll_gs4`='$_POST[roll_gs4]',
-    `roll_gs4_5`='$_POST[roll_gs4_5]',
-    `ket_roll_gs3`='$_POST[ket_roll_gs3]',
-    `ket_roll_gs3_5`='$_POST[ket_roll_gs3_5]',
-    `ket_roll_gs4`='$_POST[ket_roll_gs4]',
-    `ket_roll_gs4_5`='$_POST[ket_roll_gs4_5]',
-    `operator`='$_POST[operator]',
-    `lebar`='$_POST[lebar]',
-    `gramasi`='$_POST[gramasi]',
-    `tgl_update`=now(),
-    `ip`='$_SERVER[REMOTE_ADDR]',
-    `comment`='$_POST[comment]',
-    `pengarsipan`='$pengarsipan',
-    `lot_legacy`='$_POST[lot_legacy]',
-    `bs`='$_POST[bs]',
-    `kk_legacy`='$_POST[kk_legacy]'
-	WHERE `nodemand`='$_POST[nodemand]' and  `shift`='$_POST[shift]'");
-	if($sql1){
-        //echo " <script>alert('Data has been updated!');</script>";
-        echo "<script>swal({
-            title: 'Data has been updated!',   
-            text: 'Klik Ok untuk input data kembali',
-            type: 'success',
-            }).then((result) => {
-            if (result.value) {
-                window.location.href='?p=Input-Lap-Shading&nodemand=$_POST[nodemand]';
-               
-            }
-          });</script>";
-		}
-		}
+    $ceksql=sqlsrv_query($cond,"SELECT TOP 1 * FROM db_qc.tbl_lap_shading
+        WHERE nodemand='$_GET[nodemand]'
+          AND shift='$_POST[shift]'
+          AND CAST(tgl_update AS date) = CAST(GETDATE() AS date)
+    ");
+    if($ceksql===false){ print_r(sqlsrv_errors()); die(); }
+    $cek=sqlsrv_num_rows($ceksql);
+
+    if($cek>0){
+        $pelanggan=str_replace("'","''",$_POST['pelanggan']);
+        $order=str_replace("'","''",$_POST['no_order']);
+        $jns=str_replace("'","''",$_POST['jenis_kain']);
+        $warna=str_replace("'","''",$_POST['warna']);
+        $no_warna=str_replace("'","''",$_POST['no_warna']);
+        $comment=str_replace("'","''",$_POST['comment']);
+        $pengarsipan=str_replace("'","''",$_POST['pengarsipan']);
+
+        $sql1=sqlsrv_query($cond,"UPDATE db_qc.tbl_lap_shading SET
+            no_order='$order',
+            no_item='$_POST[no_item]',
+            no_hanger='$_POST[no_hanger]',
+            no_po='$_POST[no_po]',
+            pelanggan='$pelanggan',
+            jenis_kain='$jns',
+            warna='$warna',
+            no_warna='$no_warna',
+            lot='$_POST[lot]',
+            groupshift='$_POST[groupshift]',
+            roll_bruto='$_POST[roll_bruto]',
+            bruto='$_POST[bruto]',
+            roll_reject='$_POST[roll_reject]',
+            roll_inspek='$_POST[roll_inspek]',
+            roll_ok='$_POST[roll_ok]',
+            ket_roll_reject='$_POST[ket_roll_reject]',
+            roll_gs3='$_POST[roll_gs3]',
+            roll_gs3_5='$_POST[roll_gs3_5]',
+            roll_gs4='$_POST[roll_gs4]',
+            roll_gs4_5='$_POST[roll_gs4_5]',
+            ket_roll_gs3='$_POST[ket_roll_gs3]',
+            ket_roll_gs3_5='$_POST[ket_roll_gs3_5]',
+            ket_roll_gs4='$_POST[ket_roll_gs4]',
+            ket_roll_gs4_5='$_POST[ket_roll_gs4_5]',
+            operator='$_POST[operator]',
+            lebar='$_POST[lebar]',
+            gramasi='$_POST[gramasi]',
+            tgl_update=GETDATE(),
+            ip='$_SERVER[REMOTE_ADDR]',
+            comment='$_POST[comment]',
+            pengarsipan='$pengarsipan',
+            lot_legacy='$_POST[lot_legacy]',
+            bs='$_POST[bs]',
+            kk_legacy='$_POST[kk_legacy]'
+            WHERE nodemand='$_POST[nodemand]' and shift='$_POST[shift]'
+        ");
+
+        if($sql1){
+            echo "<script>swal({
+                title: 'Data has been updated!',
+                text: 'Klik Ok untuk input data kembali',
+                type: 'success',
+                }).then((result) => {
+                if (result.value) {
+                    window.location.href='?p=Input-Lap-Shading&nodemand=$_POST[nodemand]';
+                }
+            });</script>";
+        }
+    }
     else{
-    $pelanggan=str_replace("'","''",$_POST['pelanggan']);
-    $order=str_replace("'","''",$_POST['no_order']);
-    $jns=str_replace("'","''",$_POST['jenis_kain']);
-    $po=str_replace("'","''",$_POST['no_po']);
-    $warna=str_replace("'","''",$_POST['warna']);
-    $no_warna=str_replace("'","''",$_POST['no_warna']);
-    $catatan=str_replace("'","''",$_POST['catatan']);
-    $pengarsipan=str_replace("'","''",$_POST['pengarsipan']);
-	$sql=mysqli_query($cond,"INSERT INTO `tbl_lap_shading` SET
-	`nokk`='$_POST[nokk]',
-    `nodemand`='$_POST[nodemand]',
-	`no_order`='$order',
-    `no_item`='$_POST[no_item]',
-    `no_hanger`='$_POST[no_hanger]',
-    `no_po`='$po',
-	`pelanggan`='$pelanggan',
-	`jenis_kain`='$jns',
-	`warna`='$warna',
-    `no_warna`='$no_warna',
-	`lot`='$_POST[lot]',
-    `shift`='$_POST[shift]',
-	`groupshift`='$_POST[groupshift]',
-	`roll_bruto`='$_POST[roll_bruto]',
-	`bruto`='$_POST[bruto]',
-	`roll_reject`='$_POST[roll_reject]',
-	`roll_inspek`='$_POST[roll_inspek]',
-	`roll_ok`='$_POST[roll_ok]',
-	`ket_roll_reject`='$_POST[ket_roll_reject]',
-    `roll_gs3`='$_POST[roll_gs3]',
-    `roll_gs3_5`='$_POST[roll_gs3_5]',
-    `roll_gs4`='$_POST[roll_gs4]',
-    `roll_gs4_5`='$_POST[roll_gs4_5]',
-    `ket_roll_gs3`='$_POST[ket_roll_gs3]',
-    `ket_roll_gs3_5`='$_POST[ket_roll_gs3_5]',
-    `ket_roll_gs4`='$_POST[ket_roll_gs4]',
-    `ket_roll_gs4_5`='$_POST[ket_roll_gs4_5]',
-    `operator`='$_POST[operator]',
-    `lebar`='$_POST[lebar]',
-    `gramasi`='$_POST[gramasi]',
-    `comment`='$_POST[comment]',
-    `pengarsipan`='$pengarsipan',
-    `lot_legacy`='$_POST[lot_legacy]',
-    `bs`='$_POST[bs]',
-    `kk_legacy`='$_POST[kk_legacy]',
-    `tgl_update`=now(),
-    `tgl_buat`=now(),
-    `ip`='$_SERVER[REMOTE_ADDR]'");
+        $pelanggan=str_replace("'","''",$_POST['pelanggan']);
+        $order=str_replace("'","''",$_POST['no_order']);
+        $jns=str_replace("'","''",$_POST['jenis_kain']);
+        $po=str_replace("'","''",$_POST['no_po']);
+        $warna=str_replace("'","''",$_POST['warna']);
+        $no_warna=str_replace("'","''",$_POST['no_warna']);
+        $catatan=str_replace("'","''",$_POST['catatan']);
+        $pengarsipan=str_replace("'","''",$_POST['pengarsipan']);
+
+        $sql=sqlsrv_query($cond,"INSERT INTO db_qc.tbl_lap_shading (
+            nokk, nodemand, no_order, no_item, no_hanger, no_po, pelanggan, jenis_kain, warna, no_warna,
+            lot, shift, groupshift, roll_bruto, bruto, roll_reject, roll_inspek, roll_ok, ket_roll_reject,
+            roll_gs3, roll_gs3_5, roll_gs4, roll_gs4_5, ket_roll_gs3, ket_roll_gs3_5, ket_roll_gs4, ket_roll_gs4_5,
+            operator, lebar, gramasi, comment, pengarsipan, lot_legacy, bs, kk_legacy, tgl_update, tgl_buat, ip
+        ) VALUES (
+            '$_POST[nokk]',
+            '$_POST[nodemand]',
+            '$order',
+            '$_POST[no_item]',
+            '$_POST[no_hanger]',
+            '$po',
+            '$pelanggan',
+            '$jns',
+            '$warna',
+            '$no_warna',
+            '$_POST[lot]',
+            '$_POST[shift]',
+            '$_POST[groupshift]',
+            '$_POST[roll_bruto]',
+            '$_POST[bruto]',
+            '$_POST[roll_reject]',
+            '$_POST[roll_inspek]',
+            '$_POST[roll_ok]',
+            '$_POST[ket_roll_reject]',
+            '$_POST[roll_gs3]',
+            '$_POST[roll_gs3_5]',
+            '$_POST[roll_gs4]',
+            '$_POST[roll_gs4_5]',
+            '$_POST[ket_roll_gs3]',
+            '$_POST[ket_roll_gs3_5]',
+            '$_POST[ket_roll_gs4]',
+            '$_POST[ket_roll_gs4_5]',
+            '$_POST[operator]',
+            '$_POST[lebar]',
+            '$_POST[gramasi]',
+            '$_POST[comment]',
+            '$pengarsipan',
+            '$_POST[lot_legacy]',
+            '$_POST[bs]',
+            '$_POST[kk_legacy]',
+            GETDATE(),
+            GETDATE(),
+            '$_SERVER[REMOTE_ADDR]'
+        )");
 
         $sqlIn="SELECT ELEMENTSINSPECTION.ELEMENTCODE
         FROM ELEMENTSINSPECTION ELEMENTSINSPECTION
@@ -504,76 +526,64 @@ if(isset($_POST['simpan']))
         $stmt2=db2_exec($conn2,$sqlIn, array('cursor'=>DB2_SCROLLABLE));
         $no=1;
         while($rI = db2_fetch_assoc($stmt2)){
-            $idcek1	= $_POST['cek1'][$no];
-            $idcek2	= $_POST['cek2'][$no];
-            $idcek3	= $_POST['cek3'][$no];
+            $idcek1 = $_POST['cek1'][$no];
+            $idcek2 = $_POST['cek2'][$no];
+            $idcek3 = $_POST['cek3'][$no];
             $idcek4 = $_POST['cek4'][$no];
-            if($idcek1!=""){	
-                $element	= trim($rI['ELEMENTCODE']);
-                $nodemand	= $_POST['nodemand'];
-                $sqlInsert=mysqli_query($cond,"INSERT INTO tbl_detail_roll_shading SET
-                `element`='$element',
-                `nodemand`='$nodemand',
-                `grade_4_5`='1',
-                `grade_4`='0',
-                `grade_3_5`='0',
-                `disposisi`='0',
-                `tgl_buat`=now()");
-                }
-            if($idcek2!=""){	
-                    $element	= trim($rI['ELEMENTCODE']);
-                    $nodemand	= $_POST['nodemand'];
-                    $sqlInsert=mysqli_query($cond,"INSERT INTO tbl_detail_roll_shading SET
-                    `element`='$element',
-                    `nodemand`='$nodemand',
-                    `grade_4_5`='0',
-                    `grade_4`='1',
-                    `grade_3_5`='0',
-                    `disposisi`='0',
-                    `tgl_buat`=now()");
-                }
-            if($idcek3!=""){	
-                    $element	= trim($rI['ELEMENTCODE']);
-                    $nodemand	= $_POST['nodemand'];
-                    $sqlInsert=mysqli_query($cond,"INSERT INTO tbl_detail_roll_shading SET
-                    `element`='$element',
-                    `nodemand`='$nodemand',
-                    `grade_4_5`='0',
-                    `grade_4`='0',
-                    `grade_3_5`='1',
-                    `disposisi`='0',
-                    `tgl_buat`=now()");
-                }
-            if($idcek4!=""){	
-                    $element	= trim($rI['ELEMENTCODE']);
-                    $nodemand	= $_POST['nodemand'];
-                    $sqlInsert=mysqli_query($cond,"INSERT INTO tbl_detail_roll_shading SET
-                    `element`='$element',
-                    `nodemand`='$nodemand',
-                    `grade_4_5`='0',
-                    `grade_4`='0',
-                    `grade_3_5`='0',
-                    `disposisi`='1',
-                    `tgl_buat`=now()");
-                }
+
+            if($idcek1!=""){
+                $element = trim($rI['ELEMENTCODE']);
+                $nodemand = $_POST['nodemand'];
+                $sqlInsert=sqlsrv_query($cond,"INSERT INTO db_qc.tbl_detail_roll_shading (
+                    element, nodemand, grade_4_5, grade_4, grade_3_5, disposisi, tgl_buat
+                ) VALUES (
+                    '$element', '$nodemand', '1', '0', '0', '0', GETDATE()
+                )");
+            }
+            if($idcek2!=""){
+                $element = trim($rI['ELEMENTCODE']);
+                $nodemand = $_POST['nodemand'];
+                $sqlInsert=sqlsrv_query($cond,"INSERT INTO db_qc.tbl_detail_roll_shading (
+                    element, nodemand, grade_4_5, grade_4, grade_3_5, disposisi, tgl_buat
+                ) VALUES (
+                    '$element', '$nodemand', '0', '1', '0', '0', GETDATE()
+                )");
+            }
+            if($idcek3!=""){
+                $element = trim($rI['ELEMENTCODE']);
+                $nodemand = $_POST['nodemand'];
+                $sqlInsert=sqlsrv_query($cond,"INSERT INTO db_qc.tbl_detail_roll_shading (
+                    element, nodemand, grade_4_5, grade_4, grade_3_5, disposisi, tgl_buat
+                ) VALUES (
+                    '$element', '$nodemand', '0', '0', '1', '0', GETDATE()
+                )");
+            }
+            if($idcek4!=""){
+                $element = trim($rI['ELEMENTCODE']);
+                $nodemand = $_POST['nodemand'];
+                $sqlInsert=sqlsrv_query($cond,"INSERT INTO db_qc.tbl_detail_roll_shading (
+                    element, nodemand, grade_4_5, grade_4, grade_3_5, disposisi, tgl_buat
+                ) VALUES (
+                    '$element', '$nodemand', '0', '0', '0', '1', GETDATE()
+                )");
+            }
             $no++;
         }
-	if($sql){
+        if($sql){
             echo "<script>swal({
-                title: 'Data has been saved!',   
+                title: 'Data has been saved!',
                 text: 'Klik Ok untuk input data kembali',
                 type: 'success',
                 }).then((result) => {
                 if (result.value) {
                     window.location.href='?p=Input-Lap-Shading&nodemand=$_POST[nodemand]';
-                
                 }
             });</script>";
-            
         }
-	}
+    }
 }
 ?>
+
 <div class="modal fade" id="DataOperator">
           <div class="modal-dialog ">
             <div class="modal-content">
@@ -606,7 +616,7 @@ if(isset($_POST['simpan']))
 <?php 
 if($_POST['simpan_operator']=="Simpan"){
 	$nama=strtoupper($_POST['operator']);
-	$sqlData1=mysqli_query($cond,"INSERT INTO tbl_operator SET 
+	$sqlData1=sqlsrv_query($cond,"INSERT INTO db_qc.tbl_operator SET 
 		  nama='$nama'");
 	if($sqlData1){	
 	echo "<script>swal({

@@ -91,7 +91,7 @@ include "koneksi.php";
           <button type="submit" class="btn btn-block btn-social btn-linkedin btn-sm" name="save" style="width: 60%">Search <i class="fa fa-search"></i></button>
         </div>
         <div class="pull-right">
-          <input type="button" class="btn btn-block btn-social btn-linkedin btn-sm" name="lihat" value="Kembali" onClick="window.location.href='CWarnaDye'">
+          <input type="button" class="btn btn-block btn-social btn-linkedin btn-sm" name="lihat" value="Kembali" onClick="window.location.href='index1.php?p=Input-Lap-Cwarna-Dye-New'">
         </div>
       </div>
       <!-- /.box-footer -->
