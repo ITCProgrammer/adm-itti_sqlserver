@@ -3,27 +3,54 @@ include '../../koneksi.php';
 session_start();
 
 // data dari X-Editable
-$pk     = $_POST['pk'] ?? '';     // contoh: "SO123|10"
-$lot = $_POST['value'] ?? '';  // demand terpilih
+$pk  = $_POST['pk'] ?? '';
+$lot = $_POST['value'] ?? '';   // lot terpilih
 
 // data tambahan (dikirim lewat data-params)
-$demand        = $_POST['demand'] ?? '';
+$demand = $_POST['demand'] ?? '';
 
-// cek apakah record sudah ada
-$qCheck = "SELECT 1 FROM tbl_firstlot WHERE demand = '$demand'";
-$res = mysqli_query($cona, $qCheck);
+$lot = trim((string)$lot);
+$demand = trim((string)$demand);
 
-if (mysqli_fetch_assoc($res)) {
-    // update demand + identitas
-    $q = "UPDATE tbl_firstlot SET lot ='".addslashes($lot)."', lastupdatetime = NOW(), lastupdateuser = '".addslashes($_SESSION['nama10'])."' WHERE demand = '$demand' ";
-} else {
-    // insert baru
-    $q = "Wajib mengisi production demand terlebih dahulu";
+if ($demand === '') {
+    http_response_code(400);
+    echo "Wajib mengisi production demand terlebih dahulu";
+    exit;
 }
 
-if (mysqli_query($cona, $q)) {
-    echo "OK"; // respon sukses
-} else {
+$updUser = $_SESSION['nama10'] ?? '';
+
+// cek apakah demand ada
+$qCheck = "SELECT TOP 1 1 AS ok FROM db_adm.tbl_firstlot WHERE demand = ?";
+$stmtCheck = sqlsrv_query($cona, $qCheck, [$demand]);
+if ($stmtCheck === false) {
     http_response_code(500);
-    echo $q;
+    echo "Database Error (check)";
+    exit;
 }
+
+$exists = (sqlsrv_fetch_array($stmtCheck, SQLSRV_FETCH_ASSOC) !== null);
+
+if (!$exists) {
+    http_response_code(400);
+    echo "Wajib mengisi production demand terlebih dahulu";
+    exit;
+}
+
+// update lot
+$q = "
+    UPDATE db_adm.tbl_firstlot
+    SET lot = ?,
+        lastupdatetime = GETDATE(),
+        lastupdateuser = ?
+    WHERE demand = ?
+";
+$stmt = sqlsrv_query($cona, $q, [$lot, $updUser, $demand]);
+
+if ($stmt === false) {
+    http_response_code(500);
+    echo "Database Error";
+    exit;
+}
+
+echo "OK";
