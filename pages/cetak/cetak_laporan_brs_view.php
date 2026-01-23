@@ -63,33 +63,36 @@ border:hidden;
         $end_formatted = $date_start_tbl2->format('Y-m-d H:i:s');
 
         $query_tbl2 = "SELECT
-                            SUM(CASE WHEN proses = 'GARUK FLEECE ULANG-BRS (Ulang)' THEN qty ELSE 0 END) AS brs_fleece_ulang,
-                            SUM(CASE WHEN proses = 'GARUK ANTI PILLING-BRS (Ulang)' THEN qty ELSE 0 END) AS brs_ap_ulang,
-                            SUM(CASE WHEN proses IN('PEACHSKIN ULANG-BRS (Ulang)', 'PEACHSKIN GREIGE (Ulang)') THEN qty ELSE 0 END) AS brs_peach_ulang,
-                            SUM(CASE WHEN proses = 'POTONG BULU LAIN-LAIN KHUSUS-BRS (Ulang)' THEN qty ELSE 0 END) AS brs_pb_ulang,
-                            SUM(CASE WHEN proses = 'ANTI PILLING LAIN-LAIN KHUSUS-BRS (Ulang)' THEN qty ELSE 0 END) AS brs_oven_ulang,
-                            SUM(CASE WHEN proses = 'GARUK FLEECE ULANG-FIN (Ulang)' THEN qty ELSE 0 END) AS fin_fleece_ulang,
-                            SUM(CASE WHEN proses = 'GARUK ANTI PILLING-FIN (Ulang)' THEN qty ELSE 0 END) AS fin_ap_ulang,
-                            SUM(CASE WHEN proses = 'PEACHSKIN ULANG-FIN (Ulang)' THEN qty ELSE 0 END) AS fin_peach_ulang,
-                            SUM(CASE WHEN proses = 'POTONG BULU LAIN-LAIN KHUSUS-FIN (Ulang)' THEN qty ELSE 0 END) AS fin_pb_ulang,
-                            SUM(CASE WHEN proses = 'ANTI PILLING LAIN-LAIN KHUSUS-FIN (Ulang)' THEN qty ELSE 0 END) AS fin_oven_ulang,
-                            SUM(CASE WHEN proses = 'GARUK FLEECE ULANG-DYE (Ulang)' THEN qty ELSE 0 END) AS dye_fleece_ulang,
-                            SUM(CASE WHEN proses = 'GARUK ANTI PILLING-DYE (Ulang)' THEN qty ELSE 0 END) AS dye_ap_ulang,
-                            SUM(CASE WHEN proses = 'PEACHSKIN ULANG-DYE (Ulang)' THEN qty ELSE 0 END) AS dye_peach_ulang,
-                            SUM(CASE WHEN proses = 'POTONG BULU LAIN-LAIN KHUSUS-DYE (Ulang)' THEN qty ELSE 0 END) AS dye_pb_ulang,
-                            SUM(CASE WHEN proses = 'ANTI PILLING LAIN-LAIN KHUSUS-DYE (Ulang)' THEN qty ELSE 0 END) AS dye_oven_ulang,
-                            SUM(CASE WHEN proses = 'GARUK FLEECE ULANG-CQA (Ulang)' THEN qty ELSE 0 END) AS cqa_fleece_ulang,
-                            SUM(CASE WHEN proses = 'GARUK ANTI PILLING-CQA (Ulang)' THEN qty ELSE 0 END) AS cqa_ap_ulang,
-                            SUM(CASE WHEN proses = 'PEACHSKIN ULANG-CQA (Ulang)' THEN qty ELSE 0 END) AS cqa_peach_ulang,
-                            SUM(CASE WHEN proses = 'POTONG BULU LAIN-LAIN KHUSUS-CQA (Ulang)' THEN qty ELSE 0 END) AS cqa_pb_ulang,
-                            SUM(CASE WHEN proses = 'ANTI PILLING LAIN-LAIN KHUSUS-CQA (Ulang)' THEN qty ELSE 0 END) AS cqa_oven_ulang
-                        FROM
-                            tbl_produksi
-                        WHERE
-                            tgl_buat between'$start_formatted' and '$end_formatted'";
-        $stmt_tbl2 = mysqli_query($conb, $query_tbl2);
-        $row_tbl2 = mysqli_fetch_assoc($stmt_tbl2);
-        $cek_tbl2 = mysqli_num_rows($stmt_tbl2);
+            SUM(CASE WHEN proses = 'GARUK FLEECE ULANG-BRS (Ulang)' THEN qty ELSE 0 END) AS brs_fleece_ulang,
+            SUM(CASE WHEN proses = 'GARUK ANTI PILLING-BRS (Ulang)' THEN qty ELSE 0 END) AS brs_ap_ulang,
+            SUM(CASE WHEN proses IN('PEACHSKIN ULANG-BRS (Ulang)', 'PEACHSKIN GREIGE (Ulang)') THEN qty ELSE 0 END) AS brs_peach_ulang,
+            SUM(CASE WHEN proses = 'POTONG BULU LAIN-LAIN KHUSUS-BRS (Ulang)' THEN qty ELSE 0 END) AS brs_pb_ulang,
+            SUM(CASE WHEN proses = 'ANTI PILLING LAIN-LAIN KHUSUS-BRS (Ulang)' THEN qty ELSE 0 END) AS brs_oven_ulang,
+            SUM(CASE WHEN proses = 'GARUK FLEECE ULANG-FIN (Ulang)' THEN qty ELSE 0 END) AS fin_fleece_ulang,
+            SUM(CASE WHEN proses = 'GARUK ANTI PILLING-FIN (Ulang)' THEN qty ELSE 0 END) AS fin_ap_ulang,
+            SUM(CASE WHEN proses = 'PEACHSKIN ULANG-FIN (Ulang)' THEN qty ELSE 0 END) AS fin_peach_ulang,
+            SUM(CASE WHEN proses = 'POTONG BULU LAIN-LAIN KHUSUS-FIN (Ulang)' THEN qty ELSE 0 END) AS fin_pb_ulang,
+            SUM(CASE WHEN proses = 'ANTI PILLING LAIN-LAIN KHUSUS-FIN (Ulang)' THEN qty ELSE 0 END) AS fin_oven_ulang,
+            SUM(CASE WHEN proses = 'GARUK FLEECE ULANG-DYE (Ulang)' THEN qty ELSE 0 END) AS dye_fleece_ulang,
+            SUM(CASE WHEN proses = 'GARUK ANTI PILLING-DYE (Ulang)' THEN qty ELSE 0 END) AS dye_ap_ulang,
+            SUM(CASE WHEN proses = 'PEACHSKIN ULANG-DYE (Ulang)' THEN qty ELSE 0 END) AS dye_peach_ulang,
+            SUM(CASE WHEN proses = 'POTONG BULU LAIN-LAIN KHUSUS-DYE (Ulang)' THEN qty ELSE 0 END) AS dye_pb_ulang,
+            SUM(CASE WHEN proses = 'ANTI PILLING LAIN-LAIN KHUSUS-DYE (Ulang)' THEN qty ELSE 0 END) AS dye_oven_ulang,
+            SUM(CASE WHEN proses = 'GARUK FLEECE ULANG-CQA (Ulang)' THEN qty ELSE 0 END) AS cqa_fleece_ulang,
+            SUM(CASE WHEN proses = 'GARUK ANTI PILLING-CQA (Ulang)' THEN qty ELSE 0 END) AS cqa_ap_ulang,
+            SUM(CASE WHEN proses = 'PEACHSKIN ULANG-CQA (Ulang)' THEN qty ELSE 0 END) AS cqa_peach_ulang,
+            SUM(CASE WHEN proses = 'POTONG BULU LAIN-LAIN KHUSUS-CQA (Ulang)' THEN qty ELSE 0 END) AS cqa_pb_ulang,
+            SUM(CASE WHEN proses = 'ANTI PILLING LAIN-LAIN KHUSUS-CQA (Ulang)' THEN qty ELSE 0 END) AS cqa_oven_ulang
+        FROM db_brushing.tbl_produksi
+        WHERE tgl_buat BETWEEN '$start_formatted' AND '$end_formatted'";
+
+        $stmt_tbl2 = sqlsrv_query($conb, $query_tbl2, [], ["Scrollable" => SQLSRV_CURSOR_KEYSET]);
+        if ($stmt_tbl2 === false) {
+            die(print_r(sqlsrv_errors(), true));
+        }
+
+        $row_tbl2 = sqlsrv_fetch_array($stmt_tbl2, SQLSRV_FETCH_ASSOC);
+        $cek_tbl2 = sqlsrv_num_rows($stmt_tbl2);
         // print_r($row_tbl2['brs_fleece_ulang']);
         $start_ncp = $date_end_tbl2->format('Y-m-d');
         $end_ncp = $date_start_tbl2->format('Y-m-d');
@@ -97,15 +100,15 @@ border:hidden;
         $qry_ncp = "SELECT
                         SUM(berat) as qty_ncp
                     FROM
-                        tbl_ncp_qcf_now
+                        db_qc.tbl_ncp_qcf_now
                     WHERE
                         STATUS IN ('Belum OK', 'OK', 'BS', 'Disposisi')
                         AND dept = 'BRS'
                         AND dept = 'BRS'
                         AND ncp_hitung = 'ya'
                         AND tgl_buat between '$start_ncp' and '$end_ncp'";
-        $qry1 = mysqli_query($cond, $qry_ncp);
-        $row_ncp = mysqli_fetch_assoc($qry1);
+        $qry1 = sqlsrv_query($cond, $qry_ncp);
+        $row_ncp = sqlsrv_fetch_array($qry1, SQLSRV_FETCH_ASSOC);
 
         // print_r( $startDate);
     ?>
@@ -152,18 +155,31 @@ border:hidden;
       </tr>
 	  <?php
                 // Query tetap (kalau kamu perlu datanya juga)
-                    $query = "SELECT DISTINCT CAST(tgl_buat AS DATE) AS tgl_cutoff
-                            FROM tbl_produksi
-                            WHERE tgl_buat >= '{$startDate->format('Y-m-d')} 23:00:00' 
-                            AND tgl_buat <= '{$endDate->format('Y-m-d')} 23:00:00'
-                            ORDER BY tgl_cutoff ASC";
-                    $result = mysqli_query($conb, $query);
+                $query = "SELECT DISTINCT CAST(tgl_buat AS DATE) AS tgl_cutoff
+                FROM db_brushing.tbl_produksi
+                WHERE tgl_buat >= '{$startDate->format('Y-m-d')} 23:00:00'
+                    AND tgl_buat <= '{$endDate->format('Y-m-d')} 23:00:00'
+                ORDER BY tgl_cutoff ASC";
+
+                $result = sqlsrv_query($conb, $query);
+                if ($result === false) {
+                    die(print_r(sqlsrv_errors(), true));
+                }
 
                 // Array tanggal yang punya data
-                    $tanggal_ada_data = [];
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $tanggal_ada_data[$row['tgl_cutoff']] = true;
+                $tanggal_ada_data = [];
+                while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+
+                    // sqlsrv biasanya balikin DateTime object
+                    if ($row['tgl_cutoff'] instanceof DateTime) {
+                        $tglKey = $row['tgl_cutoff']->format('Y-m-d');
+                    } else {
+                        // jaga-jaga kalau sudah string
+                        $tglKey = (string)$row['tgl_cutoff'];
                     }
+
+                    $tanggal_ada_data[$tglKey] = true;
+                }
 
                 // Loop dari awal sampai akhir bulan
                 $interval = new DateInterval('P1D');
@@ -206,89 +222,131 @@ border:hidden;
                         $start_time = date('Y-m-d 23:01:00', strtotime($tanggal . ' -1 day')); // hari sebelumnya jam 23:00:00
                         $end_time   = $tanggal . ' 23:00:00'; // hari ini jam 23:00:00
                         $query_table1="SELECT
-                                            SUM(CASE WHEN proses = 'GARUK ANTI PILLING (Normal)' THEN qty ELSE 0 END) AS garuk_ap,
-                                            GROUP_CONCAT(DISTINCT CASE WHEN proses = 'GARUK ANTI PILLING (Normal)' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' THEN TRIM(nodemand) ELSE NULL END) AS demand_garuk_ap,
-                                            SUM(CASE WHEN proses in('GARUK FLEECE (Normal)', 'GARUK SLIGHT BRUSH (Normal)', 'GARUK SLIGHTLY BRUS (Normal)', 'GARUK GREIGE (Normal)', 'GARUK BANTU - DYG (Bantu)', 'GARUK BANTU - FIN (Bantu)','GARUK GREIGE (Bantu)','GARUK PERBAIKAN DYG (Bantu)') THEN qty ELSE 0 END) AS garuk_fleece,
-                                            SUM(CASE WHEN proses IN ('POTONG BULU FLEECE (Normal)','GARUK FLEECE (Normal)','GARUK FLEECE (Normal)','GARUK SLIGHT BRUSH (Normal)','GARUK SLIGHTLY BRUS (Normal)') THEN qty ELSE 0 END) AS potong_bulu_fleece,
-                                            SUM(CASE WHEN proses IN ('SISIR ANTI PILLING (Normal)','SISIR BANTU (FIN) (Bantu)','SISIR LAIN-LAIN (Bantu)','GARUK ANTI PILLING (Normal)') THEN qty ELSE 0 END) AS sisir_ap,
-                                            SUM(CASE WHEN proses IN ('POTONG BULU ANTI PILLING (Normal)','GARUK ANTI PILLING (Normal)','SISIR ANTI PILLING (Normal)','ANTI PILLING (Khusus)','ANTI PILLING NORMAL (Normal)','ANTI PILLING (Normal)','ANTI PILLING BIASA (Normal)') THEN qty ELSE 0 END) AS pbulu_ap,
-                                            SUM(CASE WHEN proses IN ('ANTI PILLING (Khusus)','ANTI PILLING (Normal)','ANTI PILLING NORMAL (Normal)','ANTI PILLING BIASA (Normal)','GARUK ANTI PILLING (Normal)','SISIR ANTI PILLING (Normal)','POTONG BULU ANTI PILLING (Normal)','PEACH SKIN (Normal)','POTONG BULU PEACH SKIN (Normal)','POTONG BULU FLEECE (Normal)') THEN qty ELSE 0 END) AS oven_ap,
-                                            SUM(CASE WHEN proses IN ('PEACH SKIN (Normal)','PEACHSKIN GREIGE (Normal)','PEACH BANTU TAS (Bantu)','PEACH SKIN (Bantu)','PEACH SKIN BANTU - DYE (Bantu)','PEACH SKIN BANTU - FIN (Bantu)','POTONG BULU PEACH SKIN (Normal)') THEN qty ELSE 0 END) AS peach,
-                                            SUM(CASE WHEN proses IN ('POTONG BULU PEACH SKIN (Normal)','PEACH SKIN (Normal)') THEN qty ELSE 0 END) AS pb_peach,
-                                            SUM(CASE WHEN proses = 'AIRO (Normal)' THEN qty ELSE 0 END) AS airo,
-                                            SUM(CASE WHEN proses IN ('Potong Bulu (Bantu)','POTONG BULU 07 (Bantu)','POTONG BULU LAIN-LAIN (Bantu)','POTONG BULU LAIN-LAIN (Khusus)','POTONG BULU BACK BANTU-DYEING (Bantu)','POTONG BULU BACK BANTU-FIN (Bantu)','POTONG BULU BACK TAS BANTU (Bantu)','POTONG BULU FACE BANTU-DYEING (Bantu)','POTONG BULU FACE BANTU-FIN (Bantu)','POTONG BULU FACE BANTU-TAS (Bantu)','POTONG BULU FACE TAS BANTU (Bantu)','POTONG BULU GREIGE (Bantu)','POTONG BULU GREIGE (Normal)','PEACH BANTU TAS (Bantu)','PEACH SKIN (Bantu)','PEACH SKIN BANTU - DYE (Bantu)',
-                                                                     'PEACH SKIN BANTU - FIN (Bantu)','GARUK BANTU - DYG (Bantu)','GARUK BANTU - FIN (Bantu)','GARUK GREIGE (Bantu)','GARUK PERBAIKAN DYG (Bantu)') THEN qty ELSE 0 END) AS pb_lain,
-                                            SUM(CASE WHEN proses IN ('ANTI PILLING BANTU - DYE (Bantu)',
-                                                                        'ANTI PILLING BANTU - FIN (Bantu)',
-                                                                        'ANTI PILLING BANTU - QC (Bantu)',
-                                                                        'ANTI PILLING BANTU - TAS (Bantu)',
-                                                                        'ANTI PILLING BANTU-DYEING (Bantu)',
-                                                                        'ANTI PILLING BANTU-FINISHING (Bantu)',
-                                                                        'ANTI PILLING LAIN-LAIN (Bantu)',
-                                                                        'ANTI PILLING LAIN-LAIN (Khusus)',
-                                                                        'PEACH BANTU TAS (Bantu)',
-                                                                        'PEACH SKIN (Bantu)',
-                                                                        'PEACH SKIN BANTU - DYE (Bantu)',
-                                                                        'PEACH SKIN BANTU - FIN (Bantu)',
-                                                                        'GARUK BANTU - DYG (Bantu)',
-                                                                        'GARUK BANTU - FIN (Bantu)',
-                                                                        'GARUK GREIGE (Bantu)',
-                                                                        'GARUK PERBAIKAN DYG (Bantu)') THEN qty ELSE 0 END) AS ap_lain,
-                                            SUM(CASE WHEN proses = 'POLISHING (Normal)' THEN qty ELSE 0 END) AS polish,
-                                            SUM(CASE WHEN (proses LIKE '%bantu%' OR proses LIKE '%NCP%') THEN qty ELSE 0 END) AS lain,
-                                            SUM(CASE WHEN proses IN ('WET SUEDING (Normal)','WET SUEDING FINISHED BACK (Normal)',
-                                                                    'WET SUEDING FINISHED FACE (Normal)',
-                                                                    'WET SUEDING GREIGE BACK (Normal)',
-                                                                    'WET SUEDING GREIGE FACE (Normal)') THEN qty ELSE 0 END) AS wet_sue,
-                                            SUM(CASE WHEN proses IN ('NCP - Tunggu Perbaikan (Normal)',
-                                                                    'GARUK FLEECE ULANG-DYE (Ulang)',
-                                                                    'GARUK FLEECE ULANG-FIN (Ulang)',
-                                                                    'GARUK FLEECE ULANG-BRS (Ulang)',
-                                                                    'GARUK FLEECE ULANG-CQA (Ulang)',
-                                                                    'GARUK ANTI PILLING-FIN (Ulang)',
-                                                                    'GARUK ANTI PILLING-DYE (Ulang)',
-                                                                    'GARUK ANTI PILLING-BRS (Ulang)',
-                                                                    'GARUK ANTI PILLING-CQA (Ulang)',
-                                                                    'PEACHSKIN GREIGE (Ulang)',
-                                                                    'PEACHSKIN ULANG-DYE (Ulang)',
-                                                                    'PEACHSKIN ULANG-BRS (Ulang)',
-                                                                    'PEACHSKIN ULANG-CQA (Ulang)',
-                                                                    'PEACHSKIN ULANG-FIN (Ulang)',
-                                                                    'POTONG BULU LAIN-LAIN KHUSUS-FIN (Ulang)',
-                                                                    'POTONG BULU LAIN-LAIN KHUSUS-DYE (Ulang)',
-                                                                    'POTONG BULU LAIN-LAIN KHUSUS-BRS (Ulang)',
-                                                                    'POTONG BULU LAIN-LAIN KHUSUS-CQA (Ulang)',
-                                                                    'ANTI PILLING LAIN-LAIN KHUSUS-FIN (Ulang)',
-                                                                    'ANTI PILLING LAIN-LAIN KHUSUS-DYE (Ulang)','ANTI PILLING LAIN-LAIN KHUSUS-BRS (Ulang)','ANTI PILLING LAIN-LAIN KHUSUS-CQA (Ulang)') THEN qty ELSE 0 END) AS bantu,
-                                            GROUP_CONCAT(DISTINCT CASE 
-                                                WHEN proses = 'GARUK FLEECE (Normal)' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' 
-                                                THEN TRIM(nodemand) 
-                                                ELSE NULL 
-                                            END) AS demand_garuk_fleece,
-                                            SUM(CASE WHEN proses LIKE '%(Bantu)%' THEN qty ELSE 0 END) AS produksi_ulang,
-                                            GROUP_CONCAT(DISTINCT CASE 
-                                                WHEN proses LIKE '%(Bantu)%' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' 
-                                                THEN TRIM(nodemand) 
-                                                ELSE NULL 
-                                            END) AS demand_produksi_ulang,
-                                            GROUP_CONCAT(DISTINCT CASE 
-                                                WHEN proses = 'PEACH SKIN (Normal)' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' 
-                                                THEN TRIM(nodemand) 
-                                                ELSE NULL 
-                                            END) AS demand_peach_skin,
-                                            count(distinct nokk) as total_kk
-                                        FROM
-                                            tbl_produksi tp
-                                        WHERE 
-                                        tp.tgl_buat between'$start_time' and '$end_time'";
-                        $stmt_qry = mysqli_query($conb, $query_table1);
-                        $data_table1 = mysqli_fetch_assoc($stmt_qry);
+                            SUM(CASE WHEN proses = 'GARUK ANTI PILLING (Normal)' THEN qty ELSE 0 END) AS garuk_ap,
+
+                            STUFF((
+                                SELECT DISTINCT ',' + LTRIM(RTRIM(t2.nodemand))
+                                FROM db_brushing.tbl_produksi t2
+                                WHERE t2.tgl_buat BETWEEN '$start_time' AND '$end_time'
+                                AND t2.proses = 'GARUK ANTI PILLING (Normal)'
+                                AND t2.nodemand IS NOT NULL
+                                AND LTRIM(RTRIM(t2.nodemand)) <> ''
+                                FOR XML PATH(''), TYPE
+                            ).value('.', 'varchar(max)'), 1, 1, '') AS demand_garuk_ap,
+
+                            SUM(CASE WHEN proses in('GARUK FLEECE (Normal)', 'GARUK SLIGHT BRUSH (Normal)', 'GARUK SLIGHTLY BRUS (Normal)', 'GARUK GREIGE (Normal)', 'GARUK BANTU - DYG (Bantu)', 'GARUK BANTU - FIN (Bantu)','GARUK GREIGE (Bantu)','GARUK PERBAIKAN DYG (Bantu)') THEN qty ELSE 0 END) AS garuk_fleece,
+
+                            SUM(CASE WHEN proses IN ('POTONG BULU FLEECE (Normal)','GARUK FLEECE (Normal)','GARUK FLEECE (Normal)','GARUK SLIGHT BRUSH (Normal)','GARUK SLIGHTLY BRUS (Normal)') THEN qty ELSE 0 END) AS potong_bulu_fleece,
+
+                            SUM(CASE WHEN proses IN ('SISIR ANTI PILLING (Normal)','SISIR BANTU (FIN) (Bantu)','SISIR LAIN-LAIN (Bantu)','GARUK ANTI PILLING (Normal)') THEN qty ELSE 0 END) AS sisir_ap,
+
+                            SUM(CASE WHEN proses IN ('POTONG BULU ANTI PILLING (Normal)','GARUK ANTI PILLING (Normal)','SISIR ANTI PILLING (Normal)','ANTI PILLING (Khusus)','ANTI PILLING NORMAL (Normal)','ANTI PILLING (Normal)','ANTI PILLING BIASA (Normal)') THEN qty ELSE 0 END) AS pbulu_ap,
+
+                            SUM(CASE WHEN proses IN ('ANTI PILLING (Khusus)','ANTI PILLING (Normal)','ANTI PILLING NORMAL (Normal)','ANTI PILLING BIASA (Normal)','GARUK ANTI PILLING (Normal)','SISIR ANTI PILLING (Normal)','POTONG BULU ANTI PILLING (Normal)','PEACH SKIN (Normal)','POTONG BULU PEACH SKIN (Normal)','POTONG BULU FLEECE (Normal)') THEN qty ELSE 0 END) AS oven_ap,
+
+                            SUM(CASE WHEN proses IN ('PEACH SKIN (Normal)','PEACHSKIN GREIGE (Normal)','PEACH BANTU TAS (Bantu)','PEACH SKIN (Bantu)','PEACH SKIN BANTU - DYE (Bantu)','PEACH SKIN BANTU - FIN (Bantu)','POTONG BULU PEACH SKIN (Normal)') THEN qty ELSE 0 END) AS peach,
+
+                            SUM(CASE WHEN proses IN ('POTONG BULU PEACH SKIN (Normal)','PEACH SKIN (Normal)') THEN qty ELSE 0 END) AS pb_peach,
+
+                            SUM(CASE WHEN proses = 'AIRO (Normal)' THEN qty ELSE 0 END) AS airo,
+
+                            SUM(CASE WHEN proses IN ('Potong Bulu (Bantu)','POTONG BULU 07 (Bantu)','POTONG BULU LAIN-LAIN (Bantu)','POTONG BULU LAIN-LAIN (Khusus)','POTONG BULU BACK BANTU-DYEING (Bantu)','POTONG BULU BACK BANTU-FIN (Bantu)','POTONG BULU BACK TAS BANTU (Bantu)','POTONG BULU FACE BANTU-DYEING (Bantu)','POTONG BULU FACE BANTU-FIN (Bantu)','POTONG BULU FACE BANTU-TAS (Bantu)','POTONG BULU FACE TAS BANTU (Bantu)','POTONG BULU GREIGE (Bantu)','POTONG BULU GREIGE (Normal)','PEACH BANTU TAS (Bantu)','PEACH SKIN (Bantu)','PEACH SKIN BANTU - DYE (Bantu)',
+                                                'PEACH SKIN BANTU - FIN (Bantu)','GARUK BANTU - DYG (Bantu)','GARUK BANTU - FIN (Bantu)','GARUK GREIGE (Bantu)','GARUK PERBAIKAN DYG (Bantu)') THEN qty ELSE 0 END) AS pb_lain,
+
+                            SUM(CASE WHEN proses IN ('ANTI PILLING BANTU - DYE (Bantu)',
+                                                    'ANTI PILLING BANTU - FIN (Bantu)',
+                                                    'ANTI PILLING BANTU - QC (Bantu)',
+                                                    'ANTI PILLING BANTU - TAS (Bantu)',
+                                                    'ANTI PILLING BANTU-DYEING (Bantu)',
+                                                    'ANTI PILLING BANTU-FINISHING (Bantu)',
+                                                    'ANTI PILLING LAIN-LAIN (Bantu)',
+                                                    'ANTI PILLING LAIN-LAIN (Khusus)',
+                                                    'PEACH BANTU TAS (Bantu)',
+                                                    'PEACH SKIN (Bantu)',
+                                                    'PEACH SKIN BANTU - DYE (Bantu)',
+                                                    'PEACH SKIN BANTU - FIN (Bantu)',
+                                                    'GARUK BANTU - DYG (Bantu)',
+                                                    'GARUK BANTU - FIN (Bantu)',
+                                                    'GARUK GREIGE (Bantu)',
+                                                    'GARUK PERBAIKAN DYG (Bantu)') THEN qty ELSE 0 END) AS ap_lain,
+
+                            SUM(CASE WHEN proses = 'POLISHING (Normal)' THEN qty ELSE 0 END) AS polish,
+
+                            SUM(CASE WHEN (proses LIKE '%bantu%' OR proses LIKE '%NCP%') THEN qty ELSE 0 END) AS lain,
+
+                            SUM(CASE WHEN proses IN ('WET SUEDING (Normal)','WET SUEDING FINISHED BACK (Normal)',
+                                                    'WET SUEDING FINISHED FACE (Normal)',
+                                                    'WET SUEDING GREIGE BACK (Normal)',
+                                                    'WET SUEDING GREIGE FACE (Normal)') THEN qty ELSE 0 END) AS wet_sue,
+
+                            SUM(CASE WHEN proses IN ('NCP - Tunggu Perbaikan (Normal)',
+                                                    'GARUK FLEECE ULANG-DYE (Ulang)',
+                                                    'GARUK FLEECE ULANG-FIN (Ulang)',
+                                                    'GARUK FLEECE ULANG-BRS (Ulang)',
+                                                    'GARUK FLEECE ULANG-CQA (Ulang)',
+                                                    'GARUK ANTI PILLING-FIN (Ulang)',
+                                                    'GARUK ANTI PILLING-DYE (Ulang)',
+                                                    'GARUK ANTI PILLING-BRS (Ulang)',
+                                                    'GARUK ANTI PILLING-CQA (Ulang)',
+                                                    'PEACHSKIN GREIGE (Ulang)',
+                                                    'PEACHSKIN ULANG-DYE (Ulang)',
+                                                    'PEACHSKIN ULANG-BRS (Ulang)',
+                                                    'PEACHSKIN ULANG-CQA (Ulang)',
+                                                    'PEACHSKIN ULANG-FIN (Ulang)',
+                                                    'POTONG BULU LAIN-LAIN KHUSUS-FIN (Ulang)',
+                                                    'POTONG BULU LAIN-LAIN KHUSUS-DYE (Ulang)',
+                                                    'POTONG BULU LAIN-LAIN KHUSUS-BRS (Ulang)',
+                                                    'POTONG BULU LAIN-LAIN KHUSUS-CQA (Ulang)',
+                                                    'ANTI PILLING LAIN-LAIN KHUSUS-FIN (Ulang)',
+                                                    'ANTI PILLING LAIN-LAIN KHUSUS-DYE (Ulang)','ANTI PILLING LAIN-LAIN KHUSUS-BRS (Ulang)','ANTI PILLING LAIN-LAIN KHUSUS-CQA (Ulang)') THEN qty ELSE 0 END) AS bantu,
+
+                            STUFF((
+                                SELECT DISTINCT ',' + LTRIM(RTRIM(t2.nodemand))
+                                FROM db_brushing.tbl_produksi t2
+                                WHERE t2.tgl_buat BETWEEN '$start_time' AND '$end_time'
+                                AND t2.proses = 'GARUK FLEECE (Normal)'
+                                AND t2.nodemand IS NOT NULL
+                                AND LTRIM(RTRIM(t2.nodemand)) <> ''
+                                FOR XML PATH(''), TYPE
+                            ).value('.', 'varchar(max)'), 1, 1, '') AS demand_garuk_fleece,
+
+                            SUM(CASE WHEN proses LIKE '%(Bantu)%' THEN qty ELSE 0 END) AS produksi_ulang,
+
+                            STUFF((
+                                SELECT DISTINCT ',' + LTRIM(RTRIM(t2.nodemand))
+                                FROM db_brushing.tbl_produksi t2
+                                WHERE t2.tgl_buat BETWEEN '$start_time' AND '$end_time'
+                                AND t2.proses LIKE '%(Bantu)%'
+                                AND t2.nodemand IS NOT NULL
+                                AND LTRIM(RTRIM(t2.nodemand)) <> ''
+                                FOR XML PATH(''), TYPE
+                            ).value('.', 'varchar(max)'), 1, 1, '') AS demand_produksi_ulang,
+
+                            STUFF((
+                                SELECT DISTINCT ',' + LTRIM(RTRIM(t2.nodemand))
+                                FROM db_brushing.tbl_produksi t2
+                                WHERE t2.tgl_buat BETWEEN '$start_time' AND '$end_time'
+                                AND t2.proses = 'PEACH SKIN (Normal)'
+                                AND t2.nodemand IS NOT NULL
+                                AND LTRIM(RTRIM(t2.nodemand)) <> ''
+                                FOR XML PATH(''), TYPE
+                            ).value('.', 'varchar(max)'), 1, 1, '') AS demand_peach_skin,
+
+                            COUNT(DISTINCT nokk) as total_kk
+                        FROM db_brushing.tbl_produksi tp
+                        WHERE tp.tgl_buat BETWEEN '$start_time' AND '$end_time'";
+
+                        $stmt_qry = sqlsrv_query($conb, $query_table1);
+                        if ($stmt_qry === false) {
+                            die(print_r(sqlsrv_errors(), true));
+                        }
+                        $data_table1 = sqlsrv_fetch_array($stmt_qry, SQLSRV_FETCH_ASSOC);
                             // echo $tanggal;
                         // Hari kerja
-                            $hari_kerja_query = "SELECT 1 FROM tbl_produksi 
-                                                WHERE tgl_buat >= '$start_time' AND tgl_buat < '$end_time' LIMIT 1";
-                            $hari_kerja_result = mysqli_query($conb, $hari_kerja_query);
-                            $hari_kerja = mysqli_num_rows($hari_kerja_result) > 0 ? '1' : '0';
+                            $hari_kerja_query = "SELECT TOP 1 1 FROM db_brushing.tbl_produksi 
+                                                WHERE tgl_buat >= '$start_time' AND tgl_buat < '$end_time'";
+                            $hari_kerja_result = sqlsrv_query($conb, $hari_kerja_query);
+                            $hari_kerja = sqlsrv_num_rows($hari_kerja_result) > 0 ? '1' : '0';
                             echo "<td align='center' style='border: 1px solid black;'>{$hari_kerja}</td>";
                             $totalHariKerja += $hari_kerja; // Tambahkan ke total hari kerja
                         // Hari kerja
@@ -521,8 +579,8 @@ border:hidden;
                             // AND (
                             //     proses LIKE '%bantu%' OR proses LIKE '%NCP%'
                             // )";
-                            // $bantu_ncp_result = mysqli_query($conb, $bantu_ncp);
-                            // $bantu_ncp_row = mysqli_fetch_assoc($bantu_ncp_result);
+                            // $bantu_ncp_result = sqlsrv_query($conb, $bantu_ncp);
+                            // $bantu_ncp_row = sqlsrv_fetch_array($bantu_ncp_result);
                             $bantu_ncp_row = $data_table1['bantu'];
                                 $display_ncp = ($bantu_ncp_row != 0) ? $bantu_ncp_row : '-';
                                 echo "<td align='center' style='border: 1px solid black;'>{$display_ncp}</td>";
@@ -982,7 +1040,7 @@ border:hidden;
                                             WHEN kode_stop = 'TG' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0) 
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_A_TG,
@@ -1000,7 +1058,7 @@ border:hidden;
                                             WHEN kode_stop = 'TG' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0) 
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_B_TG,
@@ -1018,7 +1076,7 @@ border:hidden;
                                             WHEN kode_stop = 'TG' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0) 
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_C_TG,
@@ -1036,7 +1094,7 @@ border:hidden;
                                             WHEN kode_stop = 'TG' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0) 
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_D_TG,
@@ -1054,7 +1112,7 @@ border:hidden;
                                             WHEN kode_stop = 'TG' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0) 
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_E_TG,
@@ -1072,17 +1130,17 @@ border:hidden;
                                             WHEN kode_stop = 'TG' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0) 
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_F_TG
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk9    = mysqli_query($cona,$query_garuk9);
-                            $tg_g             = mysqli_fetch_assoc($stmt_garuk9);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_garuk9    = sqlsrv_query($cona,$query_garuk9);
+                            $tg_g             = sqlsrv_fetch_array($stmt_garuk9, SQLSRV_FETCH_ASSOC);
                 $query_garuk8 = "SELECT
                                     SUM(
                                         CASE 
@@ -1098,7 +1156,7 @@ border:hidden;
                                             WHEN kode_stop = 'GT' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0) 
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_A_GT,
@@ -1116,7 +1174,7 @@ border:hidden;
                                             WHEN kode_stop = 'GT' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0) 
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_B_GT,
@@ -1134,7 +1192,7 @@ border:hidden;
                                             WHEN kode_stop = 'GT' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0) 
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_C_GT,
@@ -1152,7 +1210,7 @@ border:hidden;
                                             WHEN kode_stop = 'GT' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0) 
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_D_GT,
@@ -1170,7 +1228,7 @@ border:hidden;
                                             WHEN kode_stop = 'GT' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0) 
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_E_GT,
@@ -1188,17 +1246,17 @@ border:hidden;
                                             WHEN kode_stop = 'GT' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0) 
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_F_GT
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk8    = mysqli_query($cona,$query_garuk8);
-                            $gt_g             = mysqli_fetch_assoc($stmt_garuk8);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_garuk8    = sqlsrv_query($cona,$query_garuk8);
+                            $gt_g             = sqlsrv_fetch_array($stmt_garuk8, SQLSRV_FETCH_ASSOC);
                 $query_garuk7 = "SELECT
                                     SUM(
                                         CASE 
@@ -1214,7 +1272,7 @@ border:hidden;
                                             WHEN kode_stop = 'PM' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0) 
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_A_PM,
@@ -1232,7 +1290,7 @@ border:hidden;
                                             WHEN kode_stop = 'PM' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_B_PM,
@@ -1250,7 +1308,7 @@ border:hidden;
                                             WHEN kode_stop = 'PM' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_C_PM,
@@ -1268,7 +1326,7 @@ border:hidden;
                                             WHEN kode_stop = 'PM' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_D_PM,
@@ -1286,7 +1344,7 @@ border:hidden;
                                             WHEN kode_stop = 'PM' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_E_PM,
@@ -1304,17 +1362,17 @@ border:hidden;
                                             WHEN kode_stop = 'PM' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_F_PM
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk7    = mysqli_query($cona,$query_garuk7);
-                            $pm_g             = mysqli_fetch_assoc($stmt_garuk7);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_garuk7    = sqlsrv_query($cona,$query_garuk7);
+                            $pm_g             = sqlsrv_fetch_array($stmt_garuk7, SQLSRV_FETCH_ASSOC);
                 $query_garuk6 = "SELECT
                                     SUM(
                                         CASE 
@@ -1330,7 +1388,7 @@ border:hidden;
                                             WHEN kode_stop = 'PA' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_A_PA,
@@ -1348,7 +1406,7 @@ border:hidden;
                                             WHEN kode_stop = 'PA' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_B_PA,
@@ -1366,7 +1424,7 @@ border:hidden;
                                             WHEN kode_stop = 'PA' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_C_PA,
@@ -1384,7 +1442,7 @@ border:hidden;
                                             WHEN kode_stop = 'PA' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_D_PA,
@@ -1402,7 +1460,7 @@ border:hidden;
                                             WHEN kode_stop = 'PA' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_E_PA,
@@ -1420,17 +1478,17 @@ border:hidden;
                                             WHEN kode_stop = 'PA' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_F_PA
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk6    = mysqli_query($cona,$query_garuk6);
-                            $pa_g             = mysqli_fetch_assoc($stmt_garuk6);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_garuk6    = sqlsrv_query($cona,$query_garuk6);
+                            $pa_g             = sqlsrv_fetch_array($stmt_garuk6, SQLSRV_FETCH_ASSOC);
                 $query_garuk5 = "SELECT
                                     SUM(
                                         CASE 
@@ -1446,7 +1504,7 @@ border:hidden;
                                             WHEN kode_stop = 'AP' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_A_AP,
@@ -1464,7 +1522,7 @@ border:hidden;
                                             WHEN kode_stop = 'AP' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_B_AP,
@@ -1482,7 +1540,7 @@ border:hidden;
                                             WHEN kode_stop = 'AP' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_C_AP,
@@ -1500,7 +1558,7 @@ border:hidden;
                                             WHEN kode_stop = 'AP' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_D_AP,
@@ -1518,7 +1576,7 @@ border:hidden;
                                             WHEN kode_stop = 'AP' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_E_AP,
@@ -1536,17 +1594,17 @@ border:hidden;
                                             WHEN kode_stop = 'AP' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_F_AP
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk5    = mysqli_query($cona,$query_garuk5);
-                            $ap_g             = mysqli_fetch_assoc($stmt_garuk5);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_garuk5    = sqlsrv_query($cona,$query_garuk5);
+                            $ap_g             = sqlsrv_fetch_array($stmt_garuk5, SQLSRV_FETCH_ASSOC);
                 $query_garuk4 = "SELECT
                                     SUM(
                                         CASE 
@@ -1562,7 +1620,7 @@ border:hidden;
                                             WHEN kode_stop = 'KO' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_A_KO,
@@ -1580,7 +1638,7 @@ border:hidden;
                                             WHEN kode_stop = 'KO' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_B_KO,
@@ -1598,7 +1656,7 @@ border:hidden;
                                             WHEN kode_stop = 'KO' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_C_KO,
@@ -1616,7 +1674,7 @@ border:hidden;
                                             WHEN kode_stop = 'KO' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_D_KO,
@@ -1634,7 +1692,7 @@ border:hidden;
                                             WHEN kode_stop = 'KO' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_E_KO,
@@ -1652,17 +1710,17 @@ border:hidden;
                                             WHEN kode_stop = 'KO' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_F_KO
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk4    = mysqli_query($cona,$query_garuk4);
-                            $ko_g             = mysqli_fetch_assoc($stmt_garuk4);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_garuk4    = sqlsrv_query($cona,$query_garuk4);
+                            $ko_g             = sqlsrv_fetch_array($stmt_garuk4, SQLSRV_FETCH_ASSOC);
                 $query_garuk3 = "SELECT
                                     SUM(
                                         CASE 
@@ -1678,7 +1736,7 @@ border:hidden;
                                             WHEN kode_stop = 'PT' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_A_PT,
@@ -1696,7 +1754,7 @@ border:hidden;
                                             WHEN kode_stop = 'PT' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_B_PT,
@@ -1714,7 +1772,7 @@ border:hidden;
                                             WHEN kode_stop = 'PT' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_C_PT,
@@ -1732,7 +1790,7 @@ border:hidden;
                                             WHEN kode_stop = 'PT' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_D_PT,
@@ -1750,7 +1808,7 @@ border:hidden;
                                             WHEN kode_stop = 'PT' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_E_PT,
@@ -1768,17 +1826,17 @@ border:hidden;
                                             WHEN kode_stop = 'PT' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_F_PT
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk3    = mysqli_query($cona,$query_garuk3);
-                            $pt_g             = mysqli_fetch_assoc($stmt_garuk3);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_garuk3    = sqlsrv_query($cona,$query_garuk3);
+                            $pt_g             = sqlsrv_fetch_array($stmt_garuk3, SQLSRV_FETCH_ASSOC);
                 $query_garuk2 = "SELECT
                                     SUM(
                                         CASE 
@@ -1794,7 +1852,7 @@ border:hidden;
                                             WHEN kode_stop = 'KM' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_A_KM,
@@ -1812,7 +1870,7 @@ border:hidden;
                                             WHEN kode_stop = 'KM' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_B_KM,
@@ -1830,7 +1888,7 @@ border:hidden;
                                             WHEN kode_stop = 'KM' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_C_KM,
@@ -1848,7 +1906,7 @@ border:hidden;
                                             WHEN kode_stop = 'KM' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_D_KM,
@@ -1866,7 +1924,7 @@ border:hidden;
                                             WHEN kode_stop = 'KM' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_E_KM,
@@ -1884,17 +1942,17 @@ border:hidden;
                                             WHEN kode_stop = 'KM' 
                                             AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                             AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_garuk_F_KM
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk2    = mysqli_query($cona,$query_garuk2);
-                            $km_g             = mysqli_fetch_assoc($stmt_garuk2);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_garuk2    = sqlsrv_query($cona,$query_garuk2);
+                            $km_g             = sqlsrv_fetch_array($stmt_garuk2, SQLSRV_FETCH_ASSOC);
                     $query_garuk1 = "SELECT
                                             SUM(
                                                 CASE 
@@ -1910,7 +1968,7 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                                     AND mesin like '%A%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_garuk_A_LM,
@@ -1928,7 +1986,7 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                                     AND mesin like '%B%' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_garuk_B_LM,
@@ -1946,7 +2004,7 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                                     AND mesin like '%C%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_garuk_C_LM,
@@ -1964,7 +2022,7 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                                     AND mesin like '%D%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_garuk_D_LM,
@@ -1982,7 +2040,7 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                                     AND mesin like '%E%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_garuk_E_LM,
@@ -2000,17 +2058,17 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                                     AND mesin like '%F%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_garuk_F_LM
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_garuk1    = mysqli_query($cona,$query_garuk1);
-                                    $lm_g             = mysqli_fetch_assoc($stmt_garuk1);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_garuk1    = sqlsrv_query($cona,$query_garuk1);
+                                    $lm_g             = sqlsrv_fetch_array($stmt_garuk1, SQLSRV_FETCH_ASSOC);
                             // Total Garuk
                     $query_mesin_garuk = "SELECT
                                             SUM(
@@ -2025,7 +2083,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                                     AND mesin like '%A%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_garuk_A,
@@ -2041,7 +2099,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                                     AND mesin like '%B%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_garuk_B,
@@ -2057,7 +2115,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                                     AND mesin like '%C%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_garuk_C,
@@ -2073,7 +2131,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                                     AND mesin like '%D%' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_garuk_D,
@@ -2089,7 +2147,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                                     AND mesin like '%E%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_garuk_E,
@@ -2105,17 +2163,17 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
                                                     AND mesin like '%F%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_garuk_F
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_garuk= mysqli_query($cona,$query_mesin_garuk);
-                        $sum_mesin_garuk= mysqli_fetch_assoc($stmt_mesin_garuk);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                        $stmt_mesin_garuk= sqlsrv_query($cona,$query_mesin_garuk);
+                        $sum_mesin_garuk= sqlsrv_fetch_array($stmt_mesin_garuk, SQLSRV_FETCH_ASSOC);
                     ?>
                 <!-- Mesin A -->
                 <tr>
@@ -2219,17 +2277,17 @@ border:hidden;
                                                 CASE 
                                                     WHEN kode_stop = 'TG' 
                                                     AND kode_operation IN ('COM1', 'COM2')
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_sisir_TG
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir9    = mysqli_query($cona,$query_sisir9);
-                                    $tg_sisir             = mysqli_fetch_assoc($stmt_sisir9);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_sisir9    = sqlsrv_query($cona,$query_sisir9);
+                                    $tg_sisir             = sqlsrv_fetch_array($stmt_sisir9, SQLSRV_FETCH_ASSOC);
                     $query_sisir8 = "SELECT
                                             SUM(
                                                 CASE 
@@ -2243,17 +2301,17 @@ border:hidden;
                                                 CASE 
                                                     WHEN kode_stop = 'GT' 
                                                     AND kode_operation IN ('COM1', 'COM2')
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_sisir_GT
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir8    = mysqli_query($cona,$query_sisir8);
-                                    $gt_sisir             = mysqli_fetch_assoc($stmt_sisir8);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_sisir8    = sqlsrv_query($cona,$query_sisir8);
+                                    $gt_sisir             = sqlsrv_fetch_array($stmt_sisir8, SQLSRV_FETCH_ASSOC);
                     $query_sisir7 = "SELECT
                                             SUM(
                                                 CASE 
@@ -2267,17 +2325,17 @@ border:hidden;
                                                 CASE 
                                                     WHEN kode_stop = 'PM' 
                                                     AND kode_operation IN ('COM1', 'COM2')
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_sisir_PM
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir7    = mysqli_query($cona,$query_sisir7);
-                                    $pm_sisir             = mysqli_fetch_assoc($stmt_sisir7);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_sisir7    = sqlsrv_query($cona,$query_sisir7);
+                                    $pm_sisir             = sqlsrv_fetch_array($stmt_sisir7, SQLSRV_FETCH_ASSOC);
                     $query_sisir6 = "SELECT
                                             SUM(
                                                 CASE 
@@ -2291,17 +2349,17 @@ border:hidden;
                                                 CASE 
                                                     WHEN kode_stop = 'PA' 
                                                     AND kode_operation IN ('COM1', 'COM2')
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_sisir_PA
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir6    = mysqli_query($cona,$query_sisir6);
-                                    $pa_sisir             = mysqli_fetch_assoc($stmt_sisir6);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_sisir6    = sqlsrv_query($cona,$query_sisir6);
+                                    $pa_sisir             = sqlsrv_fetch_array($stmt_sisir6, SQLSRV_FETCH_ASSOC);
                     $query_sisir5 = "SELECT
                                             SUM(
                                                 CASE 
@@ -2315,17 +2373,17 @@ border:hidden;
                                                 CASE 
                                                     WHEN kode_stop = 'AP' 
                                                     AND kode_operation IN ('COM1', 'COM2')
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_sisir_AP
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir5    = mysqli_query($cona,$query_sisir5);
-                                    $ap_sisir             = mysqli_fetch_assoc($stmt_sisir5);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_sisir5    = sqlsrv_query($cona,$query_sisir5);
+                                    $ap_sisir             = sqlsrv_fetch_array($stmt_sisir5, SQLSRV_FETCH_ASSOC);
                     $query_sisir4 = "SELECT
                                             SUM(
                                                 CASE 
@@ -2339,17 +2397,17 @@ border:hidden;
                                                 CASE 
                                                     WHEN kode_stop = 'KO' 
                                                     AND kode_operation IN ('COM1', 'COM2')
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_sisir_KO
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir4    = mysqli_query($cona,$query_sisir4);
-                                    $ko_sisir             = mysqli_fetch_assoc($stmt_sisir4);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_sisir4    = sqlsrv_query($cona,$query_sisir4);
+                                    $ko_sisir             = sqlsrv_fetch_array($stmt_sisir4, SQLSRV_FETCH_ASSOC);
                     $query_sisir3 = "SELECT
                                             SUM(
                                                 CASE 
@@ -2363,17 +2421,17 @@ border:hidden;
                                                 CASE 
                                                     WHEN kode_stop = 'PT' 
                                                     AND kode_operation IN ('COM1', 'COM2')
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_sisir_PT
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir3    = mysqli_query($cona,$query_sisir3);
-                                    $pt_sisir             = mysqli_fetch_assoc($stmt_sisir3);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_sisir3    = sqlsrv_query($cona,$query_sisir3);
+                                    $pt_sisir             = sqlsrv_fetch_array($stmt_sisir3, SQLSRV_FETCH_ASSOC);
                     $query_sisir2 = "SELECT
                                             SUM(
                                                 CASE 
@@ -2387,17 +2445,17 @@ border:hidden;
                                                 CASE 
                                                     WHEN kode_stop = 'KM' 
                                                     AND kode_operation IN ('COM1', 'COM2')
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_sisir_KM
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir2    = mysqli_query($cona,$query_sisir2);
-                                    $km_sisir             = mysqli_fetch_assoc($stmt_sisir2);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_sisir2    = sqlsrv_query($cona,$query_sisir2);
+                                    $km_sisir             = sqlsrv_fetch_array($stmt_sisir2, SQLSRV_FETCH_ASSOC);
                     $query_sisir1 = "SELECT
                                             SUM(
                                                 CASE 
@@ -2411,17 +2469,17 @@ border:hidden;
                                                 CASE 
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('COM1', 'COM2')
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_sisir_LM
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir1    = mysqli_query($cona,$query_sisir1);
-                                    $lm_sisir             = mysqli_fetch_assoc($stmt_sisir1);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_sisir1    = sqlsrv_query($cona,$query_sisir1);
+                                    $lm_sisir             = sqlsrv_fetch_array($stmt_sisir1, SQLSRV_FETCH_ASSOC);
                             // Total Sisir
                     $query_mesin_sisir = "SELECT
                                             SUM(
@@ -2434,17 +2492,17 @@ border:hidden;
                                             SUM(
                                                 CASE
                                                     WHEN kode_operation IN ('COM1', 'COM2')
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_sisir
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_sisir= mysqli_query($cona,$query_mesin_sisir);
-                        $sum_mesin_sisir= mysqli_fetch_assoc($stmt_mesin_sisir);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                        $stmt_mesin_sisir= sqlsrv_query($cona,$query_mesin_sisir);
+                        $sum_mesin_sisir= sqlsrv_fetch_array($stmt_mesin_sisir, SQLSRV_FETCH_ASSOC);
                         ?>
                     <td colspan="3" align="left" style="border: 1px solid black;"><strong>SISIR</strong></td>
                     <td align="center" style="border: 1px solid black;">01</td>
@@ -2478,7 +2536,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_01_KM,
@@ -2496,7 +2554,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_02_KM,
@@ -2514,7 +2572,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_03_KM,
@@ -2532,7 +2590,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_04_KM,
@@ -2550,7 +2608,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_05_KM,
@@ -2568,7 +2626,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_06_KM,
@@ -2586,7 +2644,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_07_KM,
@@ -2604,17 +2662,17 @@ border:hidden;
                                                 WHEN kode_stop = 'KM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_08_KM
                                         FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb2    = mysqli_query($cona,$query_pb2);
-                                $km_pb             = mysqli_fetch_assoc($stmt_pb2);
+                                            db_adm.tbl_stoppage a
+                                        WHERE a.dept ='BRS'
+                                            AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                            AND ISNULL(a.kode_stop,'') <> ''";
+                                $stmt_pb2    = sqlsrv_query($cona,$query_pb2);
+                                $km_pb             = sqlsrv_fetch_array($stmt_pb2, SQLSRV_FETCH_ASSOC);
                     $query_pb3 = "SELECT
                                         SUM(
                                             CASE 
@@ -2630,7 +2688,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_01_PT,
@@ -2648,7 +2706,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_02_PT,
@@ -2666,7 +2724,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_03_PT,
@@ -2684,7 +2742,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_04_PT,
@@ -2702,7 +2760,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_05_PT,
@@ -2720,7 +2778,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_06_PT,
@@ -2738,7 +2796,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_07_PT,
@@ -2756,17 +2814,17 @@ border:hidden;
                                                 WHEN kode_stop = 'PT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_08_PT
                                         FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb3    = mysqli_query($cona,$query_pb3);
-                                $pt_pb             = mysqli_fetch_assoc($stmt_pb3);
+                                            db_adm.tbl_stoppage a
+                                        WHERE a.dept ='BRS'
+                                            AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                            AND ISNULL(a.kode_stop,'') <> ''";
+                                $stmt_pb3    = sqlsrv_query($cona,$query_pb3);
+                                $pt_pb             = sqlsrv_fetch_array($stmt_pb3, SQLSRV_FETCH_ASSOC);
                     $query_pb4 = "SELECT
                                         SUM(
                                             CASE 
@@ -2782,7 +2840,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KO' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_01_KO,
@@ -2800,7 +2858,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KO' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_02_KO,
@@ -2818,7 +2876,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KO' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_03_KO,
@@ -2836,7 +2894,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KO' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_04_KO,
@@ -2854,7 +2912,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KO' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_05_KO,
@@ -2872,7 +2930,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KO' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_06_KO,
@@ -2890,7 +2948,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KO' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_07_KO,
@@ -2908,17 +2966,17 @@ border:hidden;
                                                 WHEN kode_stop = 'KO' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_08_KO
                                         FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb4    = mysqli_query($cona,$query_pb4);
-                                $ko_pb             = mysqli_fetch_assoc($stmt_pb4);
+                                            db_adm.tbl_stoppage a
+                                        WHERE a.dept ='BRS'
+                                            AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                            AND ISNULL(a.kode_stop,'') <> ''";
+                                $stmt_pb4    = sqlsrv_query($cona,$query_pb4);
+                                $ko_pb             = sqlsrv_fetch_array($stmt_pb4, SQLSRV_FETCH_ASSOC);
                     $query_pb5 = "SELECT
                                         SUM(
                                             CASE 
@@ -2934,7 +2992,7 @@ border:hidden;
                                                 WHEN kode_stop = 'AP' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_01_AP,
@@ -2952,7 +3010,7 @@ border:hidden;
                                                 WHEN kode_stop = 'AP' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_02_AP,
@@ -2970,7 +3028,7 @@ border:hidden;
                                                 WHEN kode_stop = 'AP' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_03_AP,
@@ -2988,7 +3046,7 @@ border:hidden;
                                                 WHEN kode_stop = 'AP' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_04_AP,
@@ -3006,7 +3064,7 @@ border:hidden;
                                                 WHEN kode_stop = 'AP' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_05_AP,
@@ -3024,7 +3082,7 @@ border:hidden;
                                                 WHEN kode_stop = 'AP' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_06_AP,
@@ -3042,7 +3100,7 @@ border:hidden;
                                                 WHEN kode_stop = 'AP' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_07_AP,
@@ -3060,17 +3118,17 @@ border:hidden;
                                                 WHEN kode_stop = 'AP' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_08_AP
                                         FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb5    = mysqli_query($cona,$query_pb5);
-                                $ap_pb             = mysqli_fetch_assoc($stmt_pb5);
+                                            db_adm.tbl_stoppage a
+                                        WHERE a.dept ='BRS'
+                                            AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                            AND ISNULL(a.kode_stop,'') <> ''";
+                                $stmt_pb5    = sqlsrv_query($cona,$query_pb5);
+                                $ap_pb             = sqlsrv_fetch_array($stmt_pb5, SQLSRV_FETCH_ASSOC);
                     $query_pb6 = "SELECT
                                         SUM(
                                             CASE 
@@ -3086,7 +3144,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PA' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_01_PA,
@@ -3104,7 +3162,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PA' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_02_PA,
@@ -3122,7 +3180,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PA' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_03_PA,
@@ -3140,7 +3198,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PA' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_04_PA,
@@ -3158,7 +3216,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PA' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_05_PA,
@@ -3176,7 +3234,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PA' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_06_PA,
@@ -3194,7 +3252,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PA' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_07_PA,
@@ -3212,17 +3270,17 @@ border:hidden;
                                                 WHEN kode_stop = 'PA' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_08_PA
                                         FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb6    = mysqli_query($cona,$query_pb6);
-                                $pa_pb             = mysqli_fetch_assoc($stmt_pb6);
+                                            db_adm.tbl_stoppage a
+                                        WHERE a.dept ='BRS'
+                                            AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                            AND ISNULL(a.kode_stop,'') <> ''";
+                                $stmt_pb6    = sqlsrv_query($cona,$query_pb6);
+                                $pa_pb             = sqlsrv_fetch_array($stmt_pb6, SQLSRV_FETCH_ASSOC);
                     $query_pb7 = "SELECT
                                         SUM(
                                             CASE 
@@ -3238,7 +3296,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_01_PM,
@@ -3256,7 +3314,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_02_PM,
@@ -3274,7 +3332,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_03_PM,
@@ -3292,7 +3350,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_04_PM,
@@ -3310,7 +3368,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_05_PM,
@@ -3328,7 +3386,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_06_PM,
@@ -3346,7 +3404,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_07_PM,
@@ -3364,17 +3422,17 @@ border:hidden;
                                                 WHEN kode_stop = 'PM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_08_PM
                                         FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb7    = mysqli_query($cona,$query_pb7);
-                                $pm_pb             = mysqli_fetch_assoc($stmt_pb7);
+                                            db_adm.tbl_stoppage a
+                                        WHERE a.dept ='BRS'
+                                            AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                            AND ISNULL(a.kode_stop,'') <> ''";
+                                $stmt_pb7    = sqlsrv_query($cona,$query_pb7);
+                                $pm_pb             = sqlsrv_fetch_array($stmt_pb7, SQLSRV_FETCH_ASSOC);
                     $query_pb8 = "SELECT
                                         SUM(
                                             CASE 
@@ -3390,7 +3448,7 @@ border:hidden;
                                                 WHEN kode_stop = 'GT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_01_GT,
@@ -3408,7 +3466,7 @@ border:hidden;
                                                 WHEN kode_stop = 'GT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_02_GT,
@@ -3426,7 +3484,7 @@ border:hidden;
                                                 WHEN kode_stop = 'GT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_03_GT,
@@ -3444,7 +3502,7 @@ border:hidden;
                                                 WHEN kode_stop = 'GT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_04_GT,
@@ -3462,7 +3520,7 @@ border:hidden;
                                                 WHEN kode_stop = 'GT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_05_GT,
@@ -3480,7 +3538,7 @@ border:hidden;
                                                 WHEN kode_stop = 'GT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_06_GT,
@@ -3498,7 +3556,7 @@ border:hidden;
                                                 WHEN kode_stop = 'GT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_07_GT,
@@ -3516,17 +3574,17 @@ border:hidden;
                                                 WHEN kode_stop = 'GT' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_08_GT
                                         FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb8    = mysqli_query($cona,$query_pb8);
-                                $gt_pb             = mysqli_fetch_assoc($stmt_pb8);
+                                            db_adm.tbl_stoppage a
+                                        WHERE a.dept ='BRS'
+                                            AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                            AND ISNULL(a.kode_stop,'') <> ''";
+                                $stmt_pb8    = sqlsrv_query($cona,$query_pb8);
+                                $gt_pb             = sqlsrv_fetch_array($stmt_pb8, SQLSRV_FETCH_ASSOC);
                     $query_pb9 = "SELECT
                                         SUM(
                                             CASE 
@@ -3542,7 +3600,7 @@ border:hidden;
                                                 WHEN kode_stop = 'TG' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_01_TG,
@@ -3560,7 +3618,7 @@ border:hidden;
                                                 WHEN kode_stop = 'TG' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_02_TG,
@@ -3578,7 +3636,7 @@ border:hidden;
                                                 WHEN kode_stop = 'TG' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_03_TG,
@@ -3596,7 +3654,7 @@ border:hidden;
                                                 WHEN kode_stop = 'TG' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_04_TG,
@@ -3614,7 +3672,7 @@ border:hidden;
                                                 WHEN kode_stop = 'TG' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_05_TG,
@@ -3632,7 +3690,7 @@ border:hidden;
                                                 WHEN kode_stop = 'TG' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_06_TG,
@@ -3650,7 +3708,7 @@ border:hidden;
                                                 WHEN kode_stop = 'TG' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_07_TG,
@@ -3668,17 +3726,17 @@ border:hidden;
                                                 WHEN kode_stop = 'TG' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_08_TG
                                         FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb9    = mysqli_query($cona,$query_pb9);
-                                $tg_pb             = mysqli_fetch_assoc($stmt_pb9);
+                                            db_adm.tbl_stoppage a
+                                        WHERE a.dept ='BRS'
+                                            AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                            AND ISNULL(a.kode_stop,'') <> ''";
+                                $stmt_pb9    = sqlsrv_query($cona,$query_pb9);
+                                $tg_pb             = sqlsrv_fetch_array($stmt_pb9, SQLSRV_FETCH_ASSOC);
                     $query_pb1 = "SELECT
                                         SUM(
                                             CASE 
@@ -3694,7 +3752,7 @@ border:hidden;
                                                 WHEN kode_stop = 'LM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_01_LM,
@@ -3712,7 +3770,7 @@ border:hidden;
                                                 WHEN kode_stop = 'LM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_02_LM,
@@ -3730,7 +3788,7 @@ border:hidden;
                                                 WHEN kode_stop = 'LM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_03_LM,
@@ -3748,7 +3806,7 @@ border:hidden;
                                                 WHEN kode_stop = 'LM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_04_LM,
@@ -3766,7 +3824,7 @@ border:hidden;
                                                 WHEN kode_stop = 'LM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_05_LM,
@@ -3784,7 +3842,7 @@ border:hidden;
                                                 WHEN kode_stop = 'LM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_06_LM,
@@ -3802,7 +3860,7 @@ border:hidden;
                                                 WHEN kode_stop = 'LM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_07_LM,
@@ -3820,17 +3878,17 @@ border:hidden;
                                                 WHEN kode_stop = 'LM' 
                                                 AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                 AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_pb_08_LM
                                         FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb1    = mysqli_query($cona,$query_pb1);
-                                $lm_pb             = mysqli_fetch_assoc($stmt_pb1);
+                                            db_adm.tbl_stoppage a
+                                        WHERE a.dept ='BRS'
+                                            AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                            AND ISNULL(a.kode_stop,'') <> ''";
+                                $stmt_pb1    = sqlsrv_query($cona,$query_pb1);
+                                $lm_pb             = sqlsrv_fetch_array($stmt_pb1, SQLSRV_FETCH_ASSOC);
                             // Total Pb
                     $query_mesin_pb = "SELECT
                                             SUM(
@@ -3845,7 +3903,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                     AND mesin = 'P3SH101'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_pb_01,
@@ -3861,7 +3919,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                     AND mesin = 'P3SH102'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_pb_02,
@@ -3877,7 +3935,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                     AND mesin = 'P3SH103'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_pb_03,
@@ -3893,7 +3951,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                     AND mesin = 'P3SH104'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_pb_04,
@@ -3909,7 +3967,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                     AND mesin = 'P3SH105'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_pb_05,
@@ -3925,7 +3983,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                     AND mesin = 'P3SH106'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_pb_06,
@@ -3941,7 +3999,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                     AND mesin = 'P3SH107'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_pb_07,
@@ -3957,17 +4015,17 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
                                                     AND mesin = 'P3SH108'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_pb_08
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_pb= mysqli_query($cona,$query_mesin_pb);
-                        $sum_mesin_pb= mysqli_fetch_assoc($stmt_mesin_pb);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                        $stmt_mesin_pb= sqlsrv_query($cona,$query_mesin_pb);
+                        $sum_mesin_pb= sqlsrv_fetch_array($stmt_mesin_pb, SQLSRV_FETCH_ASSOC);
                     ?>
                 <!-- Mesin 01 -->
                     <td colspan="3" rowspan="8" align="left" style="border: 1px solid black;"><strong>POTONG BULU</strong></td>
@@ -4099,7 +4157,7 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_05_LM,
@@ -4117,7 +4175,7 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_04_LM,
@@ -4135,7 +4193,7 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_03_LM,
@@ -4153,7 +4211,7 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_02_LM,
@@ -4171,17 +4229,17 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_01_LM
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach9    = mysqli_query($cona,$query_peach9);
-                                    $lm             = mysqli_fetch_assoc($stmt_peach9);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_peach9    = sqlsrv_query($cona,$query_peach9);
+                                    $lm             = sqlsrv_fetch_array($stmt_peach9, SQLSRV_FETCH_ASSOC);
                     $query_peach8 = "SELECT
                                             SUM(
                                                 CASE 
@@ -4197,7 +4255,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_05_KM,
@@ -4215,7 +4273,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_04_KM,
@@ -4233,7 +4291,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_03_KM,
@@ -4251,7 +4309,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_02_KM,
@@ -4269,17 +4327,17 @@ border:hidden;
                                                     WHEN kode_stop = 'KM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_01_KM
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach8    = mysqli_query($cona,$query_peach8);
-                                    $km             = mysqli_fetch_assoc($stmt_peach8);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_peach8    = sqlsrv_query($cona,$query_peach8);
+                                    $km             = sqlsrv_fetch_array($stmt_peach8, SQLSRV_FETCH_ASSOC);
                     $query_peach7 = "SELECT
                                             SUM(
                                                 CASE 
@@ -4295,7 +4353,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PT' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_05_PT,
@@ -4313,7 +4371,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PT' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_04_PT,
@@ -4331,7 +4389,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PT' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_03_PT,
@@ -4349,7 +4407,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PT' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_02_PT,
@@ -4367,17 +4425,17 @@ border:hidden;
                                                     WHEN kode_stop = 'PT' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_01_PT
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach7    = mysqli_query($cona,$query_peach7);
-                                    $pt             = mysqli_fetch_assoc($stmt_peach7);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_peach7    = sqlsrv_query($cona,$query_peach7);
+                                    $pt             = sqlsrv_fetch_array($stmt_peach7, SQLSRV_FETCH_ASSOC);
                     $query_peach6 = "SELECT
                                             SUM(
                                                 CASE 
@@ -4393,7 +4451,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KO' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_05_KO,
@@ -4411,7 +4469,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KO' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_04_KO,
@@ -4430,7 +4488,7 @@ border:hidden;
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU103' 
 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_03_KO,
@@ -4448,7 +4506,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KO' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_02_KO,
@@ -4466,17 +4524,17 @@ border:hidden;
                                                     WHEN kode_stop = 'KO' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_01_KO
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach6    = mysqli_query($cona,$query_peach6);
-                                    $ko             = mysqli_fetch_assoc($stmt_peach6);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_peach6    = sqlsrv_query($cona,$query_peach6);
+                                    $ko             = sqlsrv_fetch_array($stmt_peach6, SQLSRV_FETCH_ASSOC);
                     $query_peach5 = "SELECT
                                             SUM(
                                                 CASE 
@@ -4492,7 +4550,7 @@ border:hidden;
                                                     WHEN kode_stop = 'AP' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_05_AP,
@@ -4510,7 +4568,7 @@ border:hidden;
                                                     WHEN kode_stop = 'AP' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_04_AP,
@@ -4528,7 +4586,7 @@ border:hidden;
                                                     WHEN kode_stop = 'AP' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_03_AP,
@@ -4546,7 +4604,7 @@ border:hidden;
                                                     WHEN kode_stop = 'AP' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_02_AP,
@@ -4564,17 +4622,17 @@ border:hidden;
                                                     WHEN kode_stop = 'AP' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_01_AP
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach5    = mysqli_query($cona,$query_peach5);
-                                    $ap             = mysqli_fetch_assoc($stmt_peach5);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_peach5    = sqlsrv_query($cona,$query_peach5);
+                                    $ap             = sqlsrv_fetch_array($stmt_peach5, SQLSRV_FETCH_ASSOC);
                     $query_peach4 = "SELECT
                                             SUM(
                                                 CASE 
@@ -4590,7 +4648,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PA' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_05_PA,
@@ -4608,7 +4666,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PA' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_04_PA,
@@ -4626,7 +4684,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PA' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_03_PA,
@@ -4644,7 +4702,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PA' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_02_PA,
@@ -4662,17 +4720,17 @@ border:hidden;
                                                     WHEN kode_stop = 'PA' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_01_PA
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach4    = mysqli_query($cona,$query_peach4);
-                                    $pa             = mysqli_fetch_assoc($stmt_peach4);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_peach4    = sqlsrv_query($cona,$query_peach4);
+                                    $pa             = sqlsrv_fetch_array($stmt_peach4, SQLSRV_FETCH_ASSOC);
                     $query_peach3 = "SELECT
                                             SUM(
                                                 CASE 
@@ -4688,7 +4746,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_05_PM,
@@ -4706,7 +4764,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_04_PM,
@@ -4724,7 +4782,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_03_PM,
@@ -4742,7 +4800,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_02_PM,
@@ -4760,17 +4818,17 @@ border:hidden;
                                                     WHEN kode_stop = 'PM' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_01_PM
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach3    = mysqli_query($cona,$query_peach3);
-                                    $pm             = mysqli_fetch_assoc($stmt_peach3);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_peach3    = sqlsrv_query($cona,$query_peach3);
+                                    $pm             = sqlsrv_fetch_array($stmt_peach3, SQLSRV_FETCH_ASSOC);
                     $query_peach2 = "SELECT
                                             SUM(
                                                 CASE 
@@ -4786,7 +4844,7 @@ border:hidden;
                                                     WHEN kode_stop = 'GT' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_05_GT,
@@ -4804,7 +4862,7 @@ border:hidden;
                                                     WHEN kode_stop = 'GT' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_04_GT,
@@ -4822,7 +4880,7 @@ border:hidden;
                                                     WHEN kode_stop = 'GT' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_03_GT,
@@ -4840,7 +4898,7 @@ border:hidden;
                                                     WHEN kode_stop = 'GT' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_02_GT,
@@ -4858,17 +4916,17 @@ border:hidden;
                                                     WHEN kode_stop = 'GT' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_01_GT
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach2    = mysqli_query($cona,$query_peach2);
-                                    $gt             = mysqli_fetch_assoc($stmt_peach2);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_peach2    = sqlsrv_query($cona,$query_peach2);
+                                    $gt             = sqlsrv_fetch_array($stmt_peach2, SQLSRV_FETCH_ASSOC);
                     $query_peach1 = "SELECT
                                             SUM(
                                                 CASE 
@@ -4884,7 +4942,7 @@ border:hidden;
                                                     WHEN kode_stop = 'TG' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_05_TG,
@@ -4902,7 +4960,7 @@ border:hidden;
                                                     WHEN kode_stop = 'TG' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_04_TG,
@@ -4920,7 +4978,7 @@ border:hidden;
                                                     WHEN kode_stop = 'TG' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_03_TG,
@@ -4938,7 +4996,7 @@ border:hidden;
                                                     WHEN kode_stop = 'TG' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_02_TG,
@@ -4956,17 +5014,17 @@ border:hidden;
                                                     WHEN kode_stop = 'TG' 
                                                     AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_01_TG
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_peach1= mysqli_query($cona,$query_peach1);
-                        $tg= mysqli_fetch_assoc($stmt_peach1);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                        $stmt_peach1= sqlsrv_query($cona,$query_peach1);
+                        $tg= sqlsrv_fetch_array($stmt_peach1, SQLSRV_FETCH_ASSOC);
                     // Total Peach
                     $query_mesin_peach1 = "SELECT
                                             SUM(
@@ -4981,7 +5039,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_05,
@@ -4997,7 +5055,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_04,
@@ -5013,7 +5071,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_03,
@@ -5029,7 +5087,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_02,
@@ -5045,20 +5103,20 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
                                                     AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_peach_01
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_peach1= mysqli_query($cona,$query_mesin_peach1);
-                        $sum_mesin_peach= mysqli_fetch_assoc($stmt_mesin_peach1);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                        $stmt_mesin_peach1= sqlsrv_query($cona,$query_mesin_peach1);
+                        $sum_mesin_peach= sqlsrv_fetch_array($stmt_mesin_peach1, SQLSRV_FETCH_ASSOC);
                                         ?>
                 <!-- Untuk Mesin 01 -->
-                    <tr>
+                <tr>
                     <td colspan="3" rowspan="5" align="left" style="border: 1px solid black;"><strong>PEACH SKIN</strong></td>
                     <td align="center" style="border: 1px solid black;">01</td>
                     <td align="center" style="border: 1px solid black;"><?php if ($lm['jam_peach_01_LM'] != 0 || $lm['menit_peach_01_LM'] != 0) {echo str_pad($lm['jam_peach_01_LM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($lm['menit_peach_01_LM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
@@ -5073,7 +5131,7 @@ border:hidden;
                     <td align="center" style="border: 1px solid black;"><?php if ($sum_mesin_peach['jam_peach_01'] != 0 || $sum_mesin_peach['menit_peach_01'] != 0) {echo str_pad($sum_mesin_peach['jam_peach_01'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($sum_mesin_peach['menit_peach_01'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                 </tr>
                 <!-- Untuk Mesin 02 -->
-                    <tr>
+                <tr>
                     <td align="center" style="border: 1px solid black;">02</td>
                     <td align="center" style="border: 1px solid black;"><?php if ($lm['jam_peach_02_LM'] != 0 || $lm['menit_peach_02_LM'] != 0) {echo str_pad($lm['jam_peach_02_LM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($lm['menit_peach_02_LM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center" style="border: 1px solid black;"><?php if ($km['jam_peach_02_KM'] != 0 || $km['menit_peach_02_KM'] != 0) {echo str_pad($km['jam_peach_02_KM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($km['menit_peach_02_KM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
@@ -5087,7 +5145,7 @@ border:hidden;
                     <td align="center" style="border: 1px solid black;"><?php if ($sum_mesin_peach['jam_peach_02'] != 0 || $sum_mesin_peach['menit_peach_02'] != 0) {echo str_pad($sum_mesin_peach['jam_peach_02'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($sum_mesin_peach['menit_peach_02'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                 </tr>
                 <!-- Untuk Mesin 03 -->
-                    <tr>
+                <tr>
                     <td align="center" style="border: 1px solid black;">03</td>
                     <td align="center" style="border: 1px solid black;"><?php if ($lm['jam_peach_03_LM'] != 0 || $lm['menit_peach_03_LM'] != 0) {echo str_pad($lm['jam_peach_03_LM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($lm['menit_peach_03_LM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center" style="border: 1px solid black;"><?php if ($km['jam_peach_03_KM'] != 0 || $km['menit_peach_03_KM'] != 0) {echo str_pad($km['jam_peach_03_KM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($km['menit_peach_03_KM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
@@ -5101,7 +5159,7 @@ border:hidden;
                     <td align="center" style="border: 1px solid black;"><?php if ($sum_mesin_peach['jam_peach_03'] != 0 || $sum_mesin_peach['menit_peach_03'] != 0) {echo str_pad($sum_mesin_peach['jam_peach_03'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($sum_mesin_peach['menit_peach_03'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                 </tr>
                 <!-- Untuk Mesin 04 -->
-                    <tr>
+                <tr>
                     <td align="center" style="border: 1px solid black;">04</td>
                     <td align="center" style="border: 1px solid black;"><?php if ($lm['jam_peach_04_LM'] != 0 || $lm['menit_peach_04_LM'] != 0) {echo str_pad($lm['jam_peach_04_LM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($lm['menit_peach_04_LM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center" style="border: 1px solid black;"><?php if ($km['jam_peach_04_KM'] != 0 || $km['menit_peach_04_KM'] != 0) {echo str_pad($km['jam_peach_04_KM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($km['menit_peach_04_KM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
@@ -5115,7 +5173,7 @@ border:hidden;
                     <td align="center" style="border: 1px solid black;"><?php if ($sum_mesin_peach['jam_peach_04'] != 0 || $sum_mesin_peach['menit_peach_04'] != 0) {echo str_pad($sum_mesin_peach['jam_peach_04'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($sum_mesin_peach['menit_peach_04'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                 </tr>
                 <!-- Untuk Mesin 05 -->
-                    <tr>
+                <tr>
                     <td align="center" style="border: 1px solid black;">05</td>
                     <td align="center" style="border: 1px solid black;"><?php if ($lm['jam_peach_05_LM'] != 0 || $lm['menit_peach_05_LM'] != 0) {echo str_pad($lm['jam_peach_05_LM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($lm['menit_peach_05_LM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center" style="border: 1px solid black;"><?php if ($km['jam_peach_05_KM'] != 0 || $km['menit_peach_05_KM'] != 0) {echo str_pad($km['jam_peach_05_KM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($km['menit_peach_05_KM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
@@ -5149,7 +5207,7 @@ border:hidden;
                                                     WHEN kode_stop = 'TG' 
                                                     AND kode_operation IN ('AIR1')
                                                     AND mesin = 'P3AR101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_01_airo_TG,
@@ -5167,17 +5225,17 @@ border:hidden;
                                                     WHEN kode_stop = 'TG' 
                                                     AND kode_operation IN ('AIR1')
                                                     AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_02_airo_TG
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo9    = mysqli_query($cona,$query_airo9);
-                                    $tg_airo             = mysqli_fetch_assoc($stmt_airo9);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_airo9    = sqlsrv_query($cona,$query_airo9);
+                                    $tg_airo             = sqlsrv_fetch_array($stmt_airo9, SQLSRV_FETCH_ASSOC);
                     $query_airo8 = "SELECT
                                         SUM(
                                             CASE 
@@ -5193,35 +5251,35 @@ border:hidden;
                                                 WHEN kode_stop = 'GT' 
                                                 AND kode_operation IN ('AIR1')
                                                 AND mesin = 'P3AR101' 
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_01_airo_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_02_airo_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_02_airo_GT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo8    = mysqli_query($cona,$query_airo8);
-                                    $gt_airo             = mysqli_fetch_assoc($stmt_airo8);
+                                        SUM(
+                                            CASE 
+                                                WHEN kode_stop = 'GT' 
+                                                AND kode_operation IN ('AIR1')
+                                                AND mesin = 'P3AR102' 
+                                                THEN FLOOR(durasi_jam_stop) 
+                                                ELSE 0 
+                                            END
+                                            ) AS jam_02_airo_GT,
+                                        SUM(
+                                            CASE 
+                                                WHEN kode_stop = 'GT' 
+                                                AND kode_operation IN ('AIR1')
+                                                AND mesin = 'P3AR102' 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
+                                                ELSE 0 
+                                            END
+                                            ) AS menit_02_airo_GT
+                                        FROM
+                                            db_adm.tbl_stoppage a
+                                        WHERE a.dept ='BRS'
+                                            AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                            AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_airo8    = sqlsrv_query($cona,$query_airo8);
+                                    $gt_airo             = sqlsrv_fetch_array($stmt_airo8, SQLSRV_FETCH_ASSOC);
                     $query_airo7 = "SELECT
                                             SUM(
                                                 CASE 
@@ -5237,7 +5295,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PM' 
                                                     AND kode_operation IN ('AIR1')
                                                     AND mesin = 'P3AR101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_01_airo_PM,
@@ -5255,17 +5313,17 @@ border:hidden;
                                                     WHEN kode_stop = 'PM' 
                                                     AND kode_operation IN ('AIR1')
                                                     AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_02_airo_PM
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo7    = mysqli_query($cona,$query_airo7);
-                                    $pm_airo             = mysqli_fetch_assoc($stmt_airo7);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_airo7    = sqlsrv_query($cona,$query_airo7);
+                                    $pm_airo             = sqlsrv_fetch_array($stmt_airo7, SQLSRV_FETCH_ASSOC);
                     $query_airo6 = "SELECT
                                             SUM(
                                                 CASE 
@@ -5281,7 +5339,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PA' 
                                                     AND kode_operation IN ('AIR1')
                                                     AND mesin = 'P3AR101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_01_airo_PA,
@@ -5300,17 +5358,17 @@ border:hidden;
                                                     WHEN kode_stop = 'PA' 
                                                     AND kode_operation IN ('AIR1')
                                                     AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_02_airo_PA
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo6    = mysqli_query($cona,$query_airo6);
-                                    $pa_airo             = mysqli_fetch_assoc($stmt_airo6);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_airo6    = sqlsrv_query($cona,$query_airo6);
+                                    $pa_airo             = sqlsrv_fetch_array($stmt_airo6, SQLSRV_FETCH_ASSOC);
                     $query_airo5 = "SELECT
                                             SUM(
                                                 CASE 
@@ -5326,7 +5384,7 @@ border:hidden;
                                                     WHEN kode_stop = 'AP' 
                                                     AND kode_operation IN ('AIR1')
                                                     AND mesin = 'P3AR101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_01_airo_AP,
@@ -5344,17 +5402,17 @@ border:hidden;
                                                     WHEN kode_stop = 'AP' 
                                                     AND kode_operation IN ('AIR1')
                                                     AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_02_airo_AP
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo5    = mysqli_query($cona,$query_airo5);
-                                    $ap_airo             = mysqli_fetch_assoc($stmt_airo5);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_airo5    = sqlsrv_query($cona,$query_airo5);
+                                    $ap_airo             = sqlsrv_fetch_array($stmt_airo5, SQLSRV_FETCH_ASSOC);
                     $query_airo4 = "SELECT
                                         SUM(
                                             CASE 
@@ -5370,7 +5428,7 @@ border:hidden;
                                                 WHEN kode_stop = 'KO' 
                                                 AND kode_operation IN ('AIR1')
                                                 AND mesin = 'P3AR101' 
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_01_airo_KO,
@@ -5388,17 +5446,17 @@ border:hidden;
                                                 WHEN kode_stop = 'KO' 
                                                 AND kode_operation IN ('AIR1')
                                                 AND mesin = 'P3AR102' 
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_02_airo_KO
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo4    = mysqli_query($cona,$query_airo4);
-                                    $ko_airo             = mysqli_fetch_assoc($stmt_airo4);
+                                        FROM
+                                            db_adm.tbl_stoppage a
+                                        WHERE a.dept ='BRS'
+                                            AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                            AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_airo4    = sqlsrv_query($cona,$query_airo4);
+                                    $ko_airo             = sqlsrv_fetch_array($stmt_airo4, SQLSRV_FETCH_ASSOC);
                     $query_airo3 = "SELECT
                                         SUM(
                                             CASE 
@@ -5414,7 +5472,7 @@ border:hidden;
                                                 WHEN kode_stop = 'PT' 
                                                 AND kode_operation IN ('AIR1')
                                                 AND mesin = 'P3AR101' 
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_01_airo_PT,
@@ -5432,17 +5490,17 @@ border:hidden;
                                                 WHEN kode_stop = 'PT' 
                                                 AND kode_operation IN ('AIR1')
                                                 AND mesin = 'P3AR102' 
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ELSE 0 
                                             END
                                             ) AS menit_02_airo_PT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo3    = mysqli_query($cona,$query_airo3);
-                                    $pt_airo             = mysqli_fetch_assoc($stmt_airo3);
+                                        FROM
+                                            db_adm.tbl_stoppage a
+                                        WHERE a.dept ='BRS'
+                                            AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                            AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_airo3    = sqlsrv_query($cona,$query_airo3);
+                                    $pt_airo             = sqlsrv_fetch_array($stmt_airo3, SQLSRV_FETCH_ASSOC);
                     $query_airo2 = "SELECT
                                             SUM(
                                                 CASE 
@@ -5458,7 +5516,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KM' 
                                                     AND kode_operation IN ('AIR1')
                                                     AND mesin = 'P3AR101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_01_airo_KM,
@@ -5476,17 +5534,17 @@ border:hidden;
                                                     WHEN kode_stop = 'KM' 
                                                     AND kode_operation IN ('AIR1')
                                                     AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_02_airo_KM
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo2    = mysqli_query($cona,$query_airo2);
-                                    $km_airo             = mysqli_fetch_assoc($stmt_airo2);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_airo2    = sqlsrv_query($cona,$query_airo2);
+                                    $km_airo             = sqlsrv_fetch_array($stmt_airo2, SQLSRV_FETCH_ASSOC);
                     $query_airo1 = "SELECT
                                             SUM(
                                                 CASE 
@@ -5502,7 +5560,7 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('AIR1')
                                                     AND mesin = 'P3AR101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_01_airo_LM,
@@ -5520,17 +5578,17 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('AIR1')
                                                     AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_02_airo_LM
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo1    = mysqli_query($cona,$query_airo1);
-                                    $lm_airo             = mysqli_fetch_assoc($stmt_airo1);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_airo1    = sqlsrv_query($cona,$query_airo1);
+                                    $lm_airo             = sqlsrv_fetch_array($stmt_airo1, SQLSRV_FETCH_ASSOC);
                             // Total airo
                     $query_mesin_airo = "SELECT
                                             SUM(
@@ -5545,7 +5603,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('AIR1')
                                                     AND mesin = 'P3AR101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_01_airo,
@@ -5561,17 +5619,17 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('AIR1')
                                                     AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_02_airo
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_airo= mysqli_query($cona,$query_mesin_airo);
-                        $sum_mesin_airo= mysqli_fetch_assoc($stmt_mesin_airo);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                        $stmt_mesin_airo= sqlsrv_query($cona,$query_mesin_airo);
+                        $sum_mesin_airo= sqlsrv_fetch_array($stmt_mesin_airo, SQLSRV_FETCH_ASSOC);
                         ?>
                     <td colspan="3" rowspan="2" align="left" style="border: 1px solid black;"><strong>AIRO</strong></td>
                     <td align="center" style="border: 1px solid black;">01</td>
@@ -5617,7 +5675,7 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_05_LM,
@@ -5636,7 +5694,7 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_04_LM,
@@ -5654,7 +5712,7 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_03_LM,
@@ -5672,7 +5730,7 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_02_LM,
@@ -5690,17 +5748,17 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_01_LM
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap9    = mysqli_query($cona,$query_ap9);
-                                    $lm_ap             = mysqli_fetch_assoc($stmt_ap9);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_ap9    = sqlsrv_query($cona,$query_ap9);
+                                    $lm_ap             = sqlsrv_fetch_array($stmt_ap9, SQLSRV_FETCH_ASSOC);
                     $query_ap8 = "SELECT
                                             SUM(
                                                 CASE 
@@ -5716,7 +5774,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_05_KM,
@@ -5734,7 +5792,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_04_KM,
@@ -5752,7 +5810,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_03_KM,
@@ -5770,7 +5828,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_02_KM,
@@ -5788,17 +5846,17 @@ border:hidden;
                                                     WHEN kode_stop = 'KM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_01_KM
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap8    = mysqli_query($cona,$query_ap8);
-                                    $km_ap             = mysqli_fetch_assoc($stmt_ap8);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_ap8    = sqlsrv_query($cona,$query_ap8);
+                                    $km_ap             = sqlsrv_fetch_array($stmt_ap8, SQLSRV_FETCH_ASSOC);
                     $query_ap7 = "SELECT
                                             SUM(
                                                 CASE 
@@ -5814,7 +5872,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PT' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_05_PT,
@@ -5832,7 +5890,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PT' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_04_PT,
@@ -5850,7 +5908,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PT' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_03_PT,
@@ -5868,7 +5926,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PT' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_02_PT,
@@ -5886,17 +5944,17 @@ border:hidden;
                                                     WHEN kode_stop = 'PT' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_01_PT
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap7    = mysqli_query($cona,$query_ap7);
-                                    $pt_ap             = mysqli_fetch_assoc($stmt_ap7);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_ap7    = sqlsrv_query($cona,$query_ap7);
+                                    $pt_ap             = sqlsrv_fetch_array($stmt_ap7, SQLSRV_FETCH_ASSOC);
                     $query_ap6 = "SELECT
                                             SUM(
                                                 CASE 
@@ -5912,7 +5970,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KO' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_05_KO,
@@ -5930,7 +5988,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KO' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_04_KO,
@@ -5948,7 +6006,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KO' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_03_KO,
@@ -5966,7 +6024,7 @@ border:hidden;
                                                     WHEN kode_stop = 'KO' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_02_KO,
@@ -5984,17 +6042,17 @@ border:hidden;
                                                     WHEN kode_stop = 'KO' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_01_KO
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap6    = mysqli_query($cona,$query_ap6);
-                                    $ko_ap             = mysqli_fetch_assoc($stmt_ap6);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_ap6    = sqlsrv_query($cona,$query_ap6);
+                                    $ko_ap             = sqlsrv_fetch_array($stmt_ap6, SQLSRV_FETCH_ASSOC);
                     $query_ap5 = "SELECT
                                             SUM(
                                                 CASE 
@@ -6010,7 +6068,7 @@ border:hidden;
                                                     WHEN kode_stop = 'AP' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_05_AP,
@@ -6028,7 +6086,7 @@ border:hidden;
                                                     WHEN kode_stop = 'AP' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_04_AP,
@@ -6046,7 +6104,7 @@ border:hidden;
                                                     WHEN kode_stop = 'AP' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_03_AP,
@@ -6064,7 +6122,7 @@ border:hidden;
                                                     WHEN kode_stop = 'AP' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_02_AP,
@@ -6082,17 +6140,17 @@ border:hidden;
                                                     WHEN kode_stop = 'AP' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_01_AP
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap5    = mysqli_query($cona,$query_ap5);
-                                    $ap_ap             = mysqli_fetch_assoc($stmt_ap5);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_ap5    = sqlsrv_query($cona,$query_ap5);
+                                    $ap_ap             = sqlsrv_fetch_array($stmt_ap5, SQLSRV_FETCH_ASSOC);
                     $query_ap4 = "SELECT
                                             SUM(
                                                 CASE 
@@ -6108,7 +6166,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PA' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_05_PA,
@@ -6126,7 +6184,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PA' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_04_PA,
@@ -6144,7 +6202,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PA' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_03_PA,
@@ -6162,7 +6220,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PA' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_02_PA,
@@ -6180,17 +6238,17 @@ border:hidden;
                                                     WHEN kode_stop = 'PA' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_01_PA
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap4    = mysqli_query($cona,$query_ap4);
-                                    $pa_ap             = mysqli_fetch_assoc($stmt_ap4);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_ap4    = sqlsrv_query($cona,$query_ap4);
+                                    $pa_ap             = sqlsrv_fetch_array($stmt_ap4, SQLSRV_FETCH_ASSOC);
                     $query_ap3 = "SELECT
                                             SUM(
                                                 CASE 
@@ -6206,7 +6264,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_05_PM,
@@ -6224,7 +6282,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_04_PM,
@@ -6242,7 +6300,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_03_PM,
@@ -6260,7 +6318,7 @@ border:hidden;
                                                     WHEN kode_stop = 'PM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_02_PM,
@@ -6278,17 +6336,17 @@ border:hidden;
                                                     WHEN kode_stop = 'PM' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_01_PM
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap3    = mysqli_query($cona,$query_ap3);
-                                    $pm_ap             = mysqli_fetch_assoc($stmt_ap3);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_ap3    = sqlsrv_query($cona,$query_ap3);
+                                    $pm_ap             = sqlsrv_fetch_array($stmt_ap3, SQLSRV_FETCH_ASSOC);
                     $query_ap2 = "SELECT
                                             SUM(
                                                 CASE 
@@ -6304,7 +6362,7 @@ border:hidden;
                                                     WHEN kode_stop = 'GT' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_05_GT,
@@ -6322,7 +6380,7 @@ border:hidden;
                                                     WHEN kode_stop = 'GT' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_04_GT,
@@ -6340,7 +6398,7 @@ border:hidden;
                                                     WHEN kode_stop = 'GT' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_03_GT,
@@ -6358,7 +6416,7 @@ border:hidden;
                                                     WHEN kode_stop = 'GT' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_02_GT,
@@ -6376,17 +6434,17 @@ border:hidden;
                                                     WHEN kode_stop = 'GT' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_01_GT
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap2    = mysqli_query($cona,$query_ap2);
-                                    $gt_ap             = mysqli_fetch_assoc($stmt_ap2);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_ap2    = sqlsrv_query($cona,$query_ap2);
+                                    $gt_ap             = sqlsrv_fetch_array($stmt_ap2, SQLSRV_FETCH_ASSOC);
                     $query_ap1 = "SELECT
                                             SUM(
                                                 CASE 
@@ -6402,7 +6460,7 @@ border:hidden;
                                                     WHEN kode_stop = 'TG' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_05_TG,
@@ -6420,7 +6478,7 @@ border:hidden;
                                                     WHEN kode_stop = 'TG' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_04_TG,
@@ -6438,7 +6496,7 @@ border:hidden;
                                                     WHEN kode_stop = 'TG' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_03_TG,
@@ -6456,7 +6514,7 @@ border:hidden;
                                                     WHEN kode_stop = 'TG' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_02_TG,
@@ -6474,17 +6532,17 @@ border:hidden;
                                                     WHEN kode_stop = 'TG' 
                                                     AND kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_01_TG
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_ap1= mysqli_query($cona,$query_ap1);
-                        $tg_ap= mysqli_fetch_assoc($stmt_ap1);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                        $stmt_ap1= sqlsrv_query($cona,$query_ap1);
+                        $tg_ap= sqlsrv_fetch_array($stmt_ap1, SQLSRV_FETCH_ASSOC);
                     // Total ap
                     $query_mesin_ap1 = "SELECT
                                             SUM(
@@ -6499,7 +6557,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_05,
@@ -6515,7 +6573,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_04,
@@ -6531,7 +6589,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_03,
@@ -6547,7 +6605,7 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_02,
@@ -6563,17 +6621,17 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('TDR1') 
                                                     AND mesin LIKE '%01%' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_ap_01
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_ap1= mysqli_query($cona,$query_mesin_ap1);
-                        $sum_mesin_ap= mysqli_fetch_assoc($stmt_mesin_ap1);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                        $stmt_mesin_ap1= sqlsrv_query($cona,$query_mesin_ap1);
+                        $sum_mesin_ap= sqlsrv_fetch_array($stmt_mesin_ap1, SQLSRV_FETCH_ASSOC);
                                         ?>
                     <td colspan="3" rowspan="4" align="left" style="border: 1px solid black;"><strong>ANTI PILLING 01</strong></td>
                     <td align="center" style="border: 1px solid black;">01</td>
@@ -6694,17 +6752,17 @@ border:hidden;
                                             WHEN kode_stop = 'TG' 
                                             AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
                                             -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_wet_F_TG
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet9    = mysqli_query($cona,$query_wet9);
-                            $tg_wet             = mysqli_fetch_assoc($stmt_wet9);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_wet9    = sqlsrv_query($cona,$query_wet9);
+                            $tg_wet             = sqlsrv_fetch_array($stmt_wet9, SQLSRV_FETCH_ASSOC);
                 $query_wet8 = "SELECT
                                     SUM(
                                         CASE 
@@ -6720,17 +6778,17 @@ border:hidden;
                                             WHEN kode_stop = 'GT' 
                                             AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
                                             -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_wet_F_GT
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet8    = mysqli_query($cona,$query_wet8);
-                            $gt_wet             = mysqli_fetch_assoc($stmt_wet8);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_wet8    = sqlsrv_query($cona,$query_wet8);
+                            $gt_wet             = sqlsrv_fetch_array($stmt_wet8, SQLSRV_FETCH_ASSOC);
                 $query_wet7 = "SELECT
                                     SUM(
                                         CASE 
@@ -6746,17 +6804,17 @@ border:hidden;
                                             WHEN kode_stop = 'PM' 
                                             AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
                                             -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_wet_F_PM
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet7    = mysqli_query($cona,$query_wet7);
-                            $pm_wet             = mysqli_fetch_assoc($stmt_wet7);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_wet7    = sqlsrv_query($cona,$query_wet7);
+                            $pm_wet             = sqlsrv_fetch_array($stmt_wet7, SQLSRV_FETCH_ASSOC);
                 $query_wet6 = "SELECT
                                     SUM(
                                         CASE 
@@ -6772,17 +6830,17 @@ border:hidden;
                                             WHEN kode_stop = 'PA' 
                                             AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
                                             -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_wet_F_PA
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet6    = mysqli_query($cona,$query_wet6);
-                            $pa_wet             = mysqli_fetch_assoc($stmt_wet6);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_wet6    = sqlsrv_query($cona,$query_wet6);
+                            $pa_wet             = sqlsrv_fetch_array($stmt_wet6, SQLSRV_FETCH_ASSOC);
                 $query_wet5 = "SELECT
                                     SUM(
                                         CASE 
@@ -6798,17 +6856,17 @@ border:hidden;
                                             WHEN kode_stop = 'AP' 
                                             AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
                                             -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_wet_F_AP
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet5    = mysqli_query($cona,$query_wet5);
-                            $ap_wet             = mysqli_fetch_assoc($stmt_wet5);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_wet5    = sqlsrv_query($cona,$query_wet5);
+                            $ap_wet             = sqlsrv_fetch_array($stmt_wet5, SQLSRV_FETCH_ASSOC);
                 $query_wet4 = "SELECT
                                     SUM(
                                         CASE 
@@ -6824,17 +6882,17 @@ border:hidden;
                                             WHEN kode_stop = 'KO' 
                                             AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
                                             -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_wet_F_KO
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet4    = mysqli_query($cona,$query_wet4);
-                            $ko_wet             = mysqli_fetch_assoc($stmt_wet4);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_wet4    = sqlsrv_query($cona,$query_wet4);
+                            $ko_wet             = sqlsrv_fetch_array($stmt_wet4, SQLSRV_FETCH_ASSOC);
                 $query_wet3 = "SELECT
                                     SUM(
                                         CASE 
@@ -6850,17 +6908,17 @@ border:hidden;
                                             WHEN kode_stop = 'PT' 
                                             AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
                                             -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_wet_F_PT
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet3    = mysqli_query($cona,$query_wet3);
-                            $pt_wet             = mysqli_fetch_assoc($stmt_wet3);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_wet3    = sqlsrv_query($cona,$query_wet3);
+                            $pt_wet             = sqlsrv_fetch_array($stmt_wet3, SQLSRV_FETCH_ASSOC);
                 $query_wet2 = "SELECT
                                     SUM(
                                         CASE 
@@ -6876,17 +6934,17 @@ border:hidden;
                                             WHEN kode_stop = 'KM' 
                                             AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
                                             -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                             ELSE 0 
                                         END
                                         ) AS menit_wet_F_KM
                                     FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet2    = mysqli_query($cona,$query_wet2);
-                            $km_wet             = mysqli_fetch_assoc($stmt_wet2);
+                                        db_adm.tbl_stoppage a
+                                    WHERE a.dept ='BRS'
+                                        AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                        AND ISNULL(a.kode_stop,'') <> ''";
+                            $stmt_wet2    = sqlsrv_query($cona,$query_wet2);
+                            $km_wet             = sqlsrv_fetch_array($stmt_wet2, SQLSRV_FETCH_ASSOC);
                     $query_wet1 = "SELECT
                                             SUM(
                                                 CASE 
@@ -6902,17 +6960,17 @@ border:hidden;
                                                     WHEN kode_stop = 'LM' 
                                                     AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
                                                     -- AND mesin like '%F%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_wet_F_LM
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_wet1    = mysqli_query($cona,$query_wet1);
-                                    $lm_wet             = mysqli_fetch_assoc($stmt_wet1);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                                    $stmt_wet1    = sqlsrv_query($cona,$query_wet1);
+                                    $lm_wet             = sqlsrv_fetch_array($stmt_wet1, SQLSRV_FETCH_ASSOC);
                             // Total Garuk
                     $query_mesin_wet = "SELECT
                                             SUM(
@@ -6927,17 +6985,17 @@ border:hidden;
                                                 CASE
                                                     WHEN kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
                                                     -- AND mesin like '%F%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_wet_F
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_wet= mysqli_query($cona,$query_mesin_wet);
-                        $sum_mesin_wet= mysqli_fetch_assoc($stmt_mesin_wet);
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''";
+                        $stmt_mesin_wet= sqlsrv_query($cona,$query_mesin_wet);
+                        $sum_mesin_wet= sqlsrv_fetch_array($stmt_mesin_wet, SQLSRV_FETCH_ASSOC);
                     ?>
                     <td colspan="3" align="left" style="border: 1px solid black;"><strong>WET SUEDING</strong></td>
                     <td align="center" style="border: 1px solid black;">01</td>
@@ -6967,7 +7025,7 @@ border:hidden;
                                             SUM(
                                                 CASE
                                                     WHEN kode_stop = 'LM'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_total_LM,
@@ -6981,7 +7039,7 @@ border:hidden;
                                             SUM(
                                                 CASE
                                                     WHEN kode_stop = 'KM'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_total_KM,                                                
@@ -6995,7 +7053,7 @@ border:hidden;
                                             SUM(
                                                 CASE
                                                     WHEN kode_stop = 'PT'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_total_PT,                                                
@@ -7009,7 +7067,7 @@ border:hidden;
                                             SUM(
                                                 CASE
                                                     WHEN kode_stop = 'PM'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_total_PM,                                                
@@ -7023,7 +7081,7 @@ border:hidden;
                                             SUM(
                                                 CASE
                                                     WHEN kode_stop = 'GT'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_total_GT,                                                
@@ -7037,7 +7095,7 @@ border:hidden;
                                             SUM(
                                                 CASE
                                                     WHEN kode_stop = 'TG'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_total_TG,                                                
@@ -7051,7 +7109,7 @@ border:hidden;
                                             SUM(
                                                 CASE
                                                     WHEN kode_stop = 'PA'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_total_PA,                                                
@@ -7065,7 +7123,7 @@ border:hidden;
                                             SUM(
                                                 CASE
                                                     WHEN kode_stop = 'AP'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_total_AP,                                                
@@ -7079,7 +7137,7 @@ border:hidden;
                                             SUM(
                                                 CASE
                                                     WHEN kode_stop = 'KO'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                     ELSE 0 
                                                 END
                                                 ) AS menit_total_KO,
@@ -7087,17 +7145,17 @@ border:hidden;
                                                 FLOOR(durasi_jam_stop) 
                                                 ) AS jam_total,
                                             SUM(
-                                                round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
+                                                round((durasi_jam_stop-floor(durasi_jam_stop))*60, 0)
                                                 ) AS menit_total
                                             FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''
-                                                and mesin <> ''";
+                                                db_adm.tbl_stoppage a
+                                            WHERE a.dept ='BRS'
+                                                AND CONVERT(date, a.tgl_buat) BETWEEN '$tanggalAwal_tbl3' AND '$tanggalAkhir_tbl3'
+                                                AND ISNULL(a.kode_stop,'') <> ''
+                                                AND ISNULL(a.mesin,'') <> ''";
                                                 // echo $query_total_tbl3;
-                        $stmt_total_tbl3= mysqli_query($cona,$query_total_tbl3);
-                        $sum_tbl3= mysqli_fetch_assoc($stmt_total_tbl3);
+                        $stmt_total_tbl3= sqlsrv_query($cona,$query_total_tbl3);
+                        $sum_tbl3= sqlsrv_fetch_array($stmt_total_tbl3, SQLSRV_FETCH_ASSOC);
                     ?>
                     <td colspan="4" align="center" style="border: 1px solid black;"><strong>TOTAL</strong></td>
                     <td align="center" style="border: 1px solid black;"><?php if ($sum_tbl3['jam_total_LM'] != 0 || $sum_tbl3['menit_total_LM'] != 0) {echo str_pad($sum_tbl3['jam_total_LM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($sum_tbl3['menit_total_LM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
@@ -8086,44 +8144,22 @@ border:hidden;
                                 FROM (
                                     SELECT 
                                         nokk,
-                                        GROUP_CONCAT(nodemand ORDER BY nodemand SEPARATOR ', ') AS nodemand,
+                                        STRING_AGG(CAST(nodemand AS varchar(max)), ', ') WITHIN GROUP (ORDER BY nodemand) AS nodemand,
                                         MAX(langganan) AS langganan,
                                         MAX(proses) AS proses,
                                         SUM(qty) AS qty
                                     FROM
-                                        tbl_produksi tp
+                                        db_brushing.tbl_produksi tp
                                     WHERE
                                         tgl_buat BETWEEN '$tglAwal_tbl4' AND '$tglAkhir_tbl4'
-										AND proses LIKE 'POTONG BULU LAIN-LAIN%'
-                                        -- AND proses IN (
-										-- 'Potong Bulu (Bantu)',
-										-- 'POTONG BULU 07 (Bantu)',
-										-- 'POTONG BULU LAIN-LAIN (Bantu)',
-										-- 'POTONG BULU LAIN-LAIN (Khusus)',
-										-- 'POTONG BULU BACK BANTU-DYEING (Bantu)',
-										-- 'POTONG BULU BACK BANTU-FIN (Bantu)',
-										-- 'POTONG BULU BACK TAS BANTU (Bantu)',
-										-- 'POTONG BULU FACE BANTU-DYEING (Bantu)',
-										-- 'POTONG BULU FACE BANTU-FIN (Bantu)',
-										-- 'POTONG BULU FACE BANTU-TAS (Bantu)',
-										-- 'POTONG BULU FACE TAS BANTU (Bantu)',
-										-- 'POTONG BULU GREIGE (Bantu)',
-										-- 'POTONG BULU GREIGE (Normal)',
-										-- 'PEACH BANTU TAS (Bantu)',
-										-- 'PEACH SKIN (Bantu)',
-										-- 'PEACH SKIN BANTU - DYE (Bantu)',
-										-- 'PEACH SKIN BANTU - FIN (Bantu)',
-										-- 'GARUK BANTU - DYG (Bantu)',
-										-- 'GARUK BANTU - FIN (Bantu)',
-										-- 'GARUK GREIGE (Bantu)',
-										-- 'GARUK PERBAIKAN DYG (Bantu)'
-										-- )
+                                        AND proses LIKE 'POTONG BULU LAIN-LAIN%'
                                     GROUP BY
-                                        id
+                                        nokk
                                 ) AS t
                             ";
-                            $result_potongbulu_lainlain = mysqli_query($conb, $query_potongbulu_lainlain);
-                            $row_potongbulu_lainlain = mysqli_fetch_assoc($result_potongbulu_lainlain);
+
+                            $result_potongbulu_lainlain = sqlsrv_query($conb, $query_potongbulu_lainlain);
+                            $row_potongbulu_lainlain = sqlsrv_fetch_array($result_potongbulu_lainlain, SQLSRV_FETCH_ASSOC);
                             ?>
                             <td colspan="2"><strong>POTONG BULU LAIN-LAIN</strong></td>
                             <td style="text-align:center;"><?= number_format($row_potongbulu_lainlain['jumlah_kk'] ?? 0); ?></td>
@@ -8139,38 +8175,21 @@ border:hidden;
                                 FROM (
                                     SELECT 
                                         nokk,
-                                        GROUP_CONCAT(nodemand ORDER BY nodemand SEPARATOR ', ') AS nodemand,
+                                        STRING_AGG(CAST(nodemand AS varchar(max)), ', ') WITHIN GROUP (ORDER BY nodemand) AS nodemand,
                                         MAX(langganan) AS langganan,
                                         MAX(proses) AS proses,
                                         SUM(qty) AS qty
                                     FROM
-                                        tbl_produksi tp
+                                        db_brushing.tbl_produksi tp
                                     WHERE
                                         tgl_buat BETWEEN '$tglAwal_tbl4' AND '$tglAkhir_tbl4'
-										AND proses LIKE '%%'
-                                        -- AND proses IN (
-										-- 'ANTI PILLING BANTU - DYE (Bantu)',
-										-- 'ANTI PILLING BANTU - FIN (Bantu)',
-										-- 'ANTI PILLING BANTU - QC (Bantu)',
-										-- 'ANTI PILLING BANTU - TAS (Bantu)',
-										-- 'ANTI PILLING BANTU-DYEING (Bantu)',
-										-- 'ANTI PILLING BANTU-FINISHING (Bantu)',
-										-- 'ANTI PILLING LAIN-LAIN (Bantu)',
-										-- 'ANTI PILLING LAIN-LAIN (Khusus)',
-										-- 'PEACH BANTU TAS (Bantu)',
-										-- 'PEACH SKIN (Bantu)',
-										-- 'PEACH SKIN BANTU - DYE (Bantu)',
-										-- 'PEACH SKIN BANTU - FIN (Bantu)',
-										-- 'GARUK BANTU - DYG (Bantu)',
-										-- 'GARUK BANTU - FIN (Bantu)',
-										-- 'GARUK GREIGE (Bantu)',
-										-- 'GARUK PERBAIKAN DYG (Bantu)'
-										-- )
+                                        AND proses LIKE '%%'
                                     GROUP BY
-                                        id
+                                        nokk
                                 ) AS t";
-                            $result_anti_pilling_lainlain = mysqli_query($conb, $query_anti_pilling_lainlain);
-                            $row_anti_pilling_lainlain = mysqli_fetch_assoc($result_anti_pilling_lainlain);
+
+                            $result_anti_pilling_lainlain = sqlsrv_query($conb, $query_anti_pilling_lainlain);
+                            $row_anti_pilling_lainlain = sqlsrv_fetch_array($result_anti_pilling_lainlain, SQLSRV_FETCH_ASSOC);
                             ?>
                             <td colspan="2"><strong>ANTI PILLING LAIN-LAIN</strong></td>
                             <td style="text-align:center;"><?= number_format($row_anti_pilling_lainlain['jumlah_kk'] ?? 0); ?></td>
@@ -8186,20 +8205,20 @@ border:hidden;
                                 FROM (
                                     SELECT 
                                         nokk,
-                                        GROUP_CONCAT(nodemand ORDER BY nodemand SEPARATOR ', ') AS nodemand,
+                                        STRING_AGG(CAST(nodemand AS varchar(max)), ', ') WITHIN GROUP (ORDER BY nodemand) AS nodemand,
                                         MAX(langganan) AS langganan,
                                         MAX(proses) AS proses,
                                         SUM(qty) AS qty
                                     FROM
-                                        tbl_produksi tp
+                                        db_brushing.tbl_produksi tp
                                     WHERE
                                         tgl_buat BETWEEN '$tglAwal_tbl4' AND '$tglAkhir_tbl4'
                                         AND proses IN ('AIRO (Normal)')
                                     GROUP BY
-                                        id
+                                        nokk
                                 ) AS t";
-                            $result_ario = mysqli_query($conb, $query_ario);
-                            $row_ario = mysqli_fetch_assoc($result_ario);
+                            $result_ario = sqlsrv_query($conb, $query_ario);
+                            $row_ario = sqlsrv_fetch_array($result_ario, SQLSRV_FETCH_ASSOC);
                             ?>
                             <td colspan="2"><strong>AIRO</strong></td>
                             <td style="text-align:center;"><?= number_format($row_ario['jumlah_kk'] ?? 0); ?></td>
@@ -8215,12 +8234,12 @@ border:hidden;
                                 FROM (
                                     SELECT 
                                         nokk,
-                                        GROUP_CONCAT(nodemand ORDER BY nodemand SEPARATOR ', ') AS nodemand,
+                                        STRING_AGG(CAST(nodemand AS varchar(max)), ', ') WITHIN GROUP (ORDER BY nodemand) AS nodemand,
                                         MAX(langganan) AS langganan,
                                         MAX(proses) AS proses,
                                         SUM(qty) AS qty
                                     FROM
-                                        tbl_produksi tp
+                                        db_brushing.tbl_produksi tp
                                     WHERE
                                         tgl_buat BETWEEN '$tglAwal_tbl4' AND '$tglAkhir_tbl4'
                                         AND proses IN (
@@ -8230,10 +8249,10 @@ border:hidden;
 										'GARUK ANTI PILLING (Normal)'
 										)
                                     GROUP BY
-                                        id
+                                        nokk
                                 ) AS t";
-                            $result_sisir = mysqli_query($conb, $query_sisir);
-                            $row_sisirr = mysqli_fetch_assoc($result_sisir);
+                            $result_sisir = sqlsrv_query($conb, $query_sisir);
+                            $row_sisirr = sqlsrv_fetch_array($result_sisir, SQLSRV_FETCH_ASSOC);
                             ?>
                             <td colspan="2"><strong>SISIR</strong></td>
                             <td style="text-align:center;"><?= number_format($row_sisirr['jumlah_kk'] ?? 0); ?></td>
@@ -8243,34 +8262,34 @@ border:hidden;
                             <?php
                             // Query for PEACH SKIN
                             $query_peach = "
-                            SELECT
-                                SUM(qty) AS qty_peach,
-                                COUNT(*) AS jumlah_kk
-                            FROM (
-                                SELECT 
-                                    nokk,
-                                    GROUP_CONCAT(nodemand ORDER BY nodemand SEPARATOR ', ') AS nodemand,
-                                    MAX(langganan) AS langganan,
-                                    MAX(proses) AS proses,
-                                    SUM(qty) AS qty
-                                FROM
-                                    tbl_produksi tp
-                                WHERE
-                                    tgl_buat BETWEEN '$tglAwal_tbl4' AND '$tglAkhir_tbl4'
-                                    AND proses IN (
-									'PEACH SKIN (Normal)',
-									'PEACHSKIN GREIGE (Normal)',
-									'PEACH BANTU TAS (Bantu)',
-									'PEACH SKIN (Bantu)',
-									'PEACH SKIN BANTU - DYE (Bantu)',
-									'PEACH SKIN BANTU - FIN (Bantu)',
-									'POTONG BULU PEACH SKIN (Normal)'
-									)
-                                GROUP BY
-                                    id
-                            ) AS t";
-                            $result_peach = mysqli_query($conb, $query_peach);
-                            $row_peachh = mysqli_fetch_assoc($result_peach);
+                                SELECT
+                                    SUM(qty) AS qty_peach,
+                                    COUNT(*) AS jumlah_kk
+                                FROM (
+                                    SELECT 
+                                        nokk,
+                                        STRING_AGG(CAST(nodemand AS varchar(max)), ', ') WITHIN GROUP (ORDER BY nodemand) AS nodemand,
+                                        MAX(langganan) AS langganan,
+                                        MAX(proses) AS proses,
+                                        SUM(qty) AS qty
+                                    FROM
+                                        db_brushing.tbl_produksi tp
+                                    WHERE
+                                        tgl_buat BETWEEN '$tglAwal_tbl4' AND '$tglAkhir_tbl4'
+                                        AND proses IN (
+                                        'PEACH SKIN (Normal)',
+                                        'PEACHSKIN GREIGE (Normal)',
+                                        'PEACH BANTU TAS (Bantu)',
+                                        'PEACH SKIN (Bantu)',
+                                        'PEACH SKIN BANTU - DYE (Bantu)',
+                                        'PEACH SKIN BANTU - FIN (Bantu)',
+                                        'POTONG BULU PEACH SKIN (Normal)'
+                                        )
+                                    GROUP BY
+                                        nokk
+                                ) AS t";
+                            $result_peach = sqlsrv_query($conb, $query_peach);
+                            $row_peachh = sqlsrv_fetch_array($result_peach, SQLSRV_FETCH_ASSOC);
                             ?>
                             <td colspan="2"><strong>PEACH SKIN</strong></td>
                             <td style="text-align:center;"><?= number_format($row_peachh['jumlah_kk'] ?? 0); ?></td>
@@ -8280,27 +8299,27 @@ border:hidden;
                             <?php
                             // Query for PEACH SKIN GREIGE
                             $query_peach_greige = "
-                            SELECT
-                                SUM(qty) AS qty_peach_greige,
-                                COUNT(*) AS jumlah_kk
+                                SELECT
+                                    SUM(qty) AS qty_peach_greige,
+                                    COUNT(*) AS jumlah_kk
                                 FROM (
-                                SELECT 
-                                    nokk,
-                                    GROUP_CONCAT(nodemand ORDER BY nodemand SEPARATOR ', ') AS nodemand,
-                                    MAX(langganan) AS langganan,
-                                    MAX(proses) AS proses,
-                                    SUM(qty) AS qty
-                                FROM
-                                    tbl_produksi tp
-                                WHERE
-                                    tgl_buat BETWEEN '$tglAwal_tbl4' AND '$tglAkhir_tbl4'
-                                    AND proses IN ('PEACHSKIN GREIGE (Normal)')
+                                    SELECT 
+                                        nokk,
+                                        STRING_AGG(CAST(nodemand AS varchar(max)), ', ') WITHIN GROUP (ORDER BY nodemand) AS nodemand,
+                                        MAX(langganan) AS langganan,
+                                        MAX(proses) AS proses,
+                                        SUM(qty) AS qty
+                                    FROM
+                                        db_brushing.tbl_produksi tp
+                                    WHERE
+                                        tgl_buat BETWEEN '$tglAwal_tbl4' AND '$tglAkhir_tbl4'
+                                        AND proses IN ('PEACHSKIN GREIGE (Normal)')
                                     GROUP BY
-                                    id
+                                        nokk
                                 ) AS t";
 
-                            $result_peach_greige = mysqli_query($conb, $query_peach_greige);
-                            $row_peach_greige = mysqli_fetch_assoc($result_peach_greige);
+                            $result_peach_greige = sqlsrv_query($conb, $query_peach_greige);
+                            $row_peach_greige = sqlsrv_fetch_array($result_peach_greige, SQLSRV_FETCH_ASSOC);
                             ?>
                             <td colspan="2"><strong>PEACH SKIN GREIGE</strong></td>
                             <td style="text-align:center;"><?= number_format($row_peach_greige['jumlah_kk'] ?? 0); ?></td>
@@ -8316,20 +8335,20 @@ border:hidden;
                                 FROM (
                                     SELECT 
                                         nokk,
-                                        GROUP_CONCAT(nodemand ORDER BY nodemand SEPARATOR ', ') AS nodemand,
+                                        STRING_AGG(CAST(nodemand AS varchar(max)), ', ') WITHIN GROUP (ORDER BY nodemand) AS nodemand,
                                         MAX(langganan) AS langganan,
                                         MAX(proses) AS proses,
                                         SUM(qty) AS qty
                                     FROM
-                                        tbl_produksi tp
+                                        db_brushing.tbl_produksi tp
                                     WHERE
                                         tgl_buat BETWEEN '$tglAwal_tbl4' AND '$tglAkhir_tbl4'
                                         AND proses IN ('GARUK GREIGE (Normal)')
                                     GROUP BY
-                                        id
+                                        nokk
                                 ) AS t";
-                            $result_garuk_greige = mysqli_query($conb, $query_garuk_greige);
-                            $row_garuk_greige = mysqli_fetch_assoc($result_garuk_greige);
+                            $result_garuk_greige = sqlsrv_query($conb, $query_garuk_greige);
+                            $row_garuk_greige = sqlsrv_fetch_array($result_garuk_greige, SQLSRV_FETCH_ASSOC);
                             ?>
                             <td colspan="2"><strong>GARUK GREIGE</strong></td>
                             <td style="text-align:center;"><?= number_format($row_garuk_greige['jumlah_kk'] ?? 0); ?></td>
@@ -8345,23 +8364,23 @@ border:hidden;
                                 FROM (
                                     SELECT 
                                         nokk,
-                                        GROUP_CONCAT(nodemand ORDER BY nodemand SEPARATOR ', ') AS nodemand,
+                                        STRING_AGG(CAST(nodemand AS varchar(max)), ', ') WITHIN GROUP (ORDER BY nodemand) AS nodemand,
                                         MAX(langganan) AS langganan,
                                         MAX(proses) AS proses,
                                         SUM(qty) AS qty
                                     FROM
-                                        tbl_produksi tp
+                                        db_brushing.tbl_produksi tp
                                     WHERE
                                         tgl_buat BETWEEN '$tglAwal_tbl4' AND '$tglAkhir_tbl4'
                                         AND proses IN ('GARUK FLEECE (Normal)')
                                     GROUP BY
-                                        id
+                                        nokk
                                 ) AS t";
-                            $result_garuk_fleece_tambah_obat = mysqli_query(
+                            $result_garuk_fleece_tambah_obat = sqlsrv_query(
                                 $conb,
                                 $query_garuk_fleece_tambah_obat
                             );
-                            $row_garuk_fleece_tambah_obat = mysqli_fetch_assoc($result_garuk_fleece_tambah_obat);
+                            $row_garuk_fleece_tambah_obat = sqlsrv_fetch_array($result_garuk_fleece_tambah_obat, SQLSRV_FETCH_ASSOC);
                             ?>
                             <td colspan="2"><strong>GARUK FLEECE TAMBAH OBAT</strong></td>
                             <td style="text-align:center;"><?= number_format($row_garuk_fleece_tambah_obat['jumlah_kk'] ?? 0); ?></td>
@@ -8418,16 +8437,16 @@ border:hidden;
 							$tgl_awal_sebelumnya = date('Y-m-d', strtotime($tglAwal_tbl4 . ' -1 day'));
 							$tgl_akhir_sebelumnya = date('Y-m-d', strtotime($tglAkhir_tbl4 . ' -1 day'));
                             $query_qty_sisa = "
-							SELECT tth.* FROM tbl_tutup_harian AS tth
+							SELECT tth.* FROM db_brushing.tbl_tutup_harian AS tth
 							WHERE
 								tth.tgl_awal = '$tgl_awal_sebelumnya'
 								and tth.tgl_akhir = '$tgl_akhir_sebelumnya'
                                 ";
-                            $result_qty_sisa = mysqli_query(
+                            $result_qty_sisa = sqlsrv_query(
                                 $conb,
                                 $query_qty_sisa
                             );
-                            $row_qty_sisa = mysqli_fetch_assoc($result_qty_sisa);
+                            $row_qty_sisa = sqlsrv_fetch_array($result_qty_sisa, SQLSRV_FETCH_ASSOC);
         ?>  
 		<table border="0" class="table-list1" width="100%">
                 <tr>
@@ -8632,208 +8651,208 @@ border:hidden;
             </tr>
             <?php
             // Query for total not achieved for DOMESTIC
-            $query_not_achieved_DOM =
-                "select
-                    COUNT(*) as total_not_achieved
-                from
-                    (
-                with ranked_data as (
-                    select
+            $query_not_achieved_DOM = "
+                WITH ranked_data AS (
+                    SELECT
                         *,
-                        row_number() over (partition by nokk
-                    order by
-                        tgl_buat desc) as rn,
-                        TIMESTAMPDIFF(hour,
-                            CONCAT(tgl_proses_in, ' ', jam_in),
-                            CONCAT(tgl_proses_out, ' ', jam_out)
-                        ) as durasi_jam
-                    from
-                        tbl_produksi
-                    where
+                        ROW_NUMBER() OVER (PARTITION BY nokk ORDER BY tgl_buat DESC) AS rn,
+                        CASE 
+                            WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) IS NOT NULL
+                            AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                            THEN DATEDIFF(HOUR,
+                                TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120),
+                                TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                            )
+                            ELSE NULL
+                        END AS durasi_jam
+                    FROM
+                        db_brushing.tbl_produksi
+                    WHERE
                         tgl_buat >= '$start'
-                        and tgl_buat < '$tglAkhir_tbl4'
-                        and no_order like '%DOM%'
+                        AND tgl_buat < '$tglAkhir_tbl4'
+                        AND no_order LIKE '%DOM%'
                 )
-                select
-                    *
-                from
+                SELECT
+                    COUNT(*) as total_not_achieved
+                FROM
                     ranked_data
-                where
+                WHERE
                     rn = 1
-                    and durasi_jam > 30) as t";
+                    AND durasi_jam > 30
+            ";
 
-            $result_not_achieved_DOM = mysqli_query($conb, $query_not_achieved_DOM);
-            $row_not_achieved_DOM = mysqli_fetch_assoc($result_not_achieved_DOM);
-            $total_not_achieved_DOM = $row_not_achieved_DOM['total_not_achieved'] ?? 0;
+        $result_not_achieved_DOM = sqlsrv_query($conb, $query_not_achieved_DOM);
+        $row_not_achieved_DOM = sqlsrv_fetch_array($result_not_achieved_DOM, SQLSRV_FETCH_ASSOC);
+        $total_not_achieved_DOM = $row_not_achieved_DOM['total_not_achieved'] ?? 0;
 
             // Query for total not achieved for REP
-            $query_not_achieved_REP =
-                "select
-                                COUNT(*) as total_count
-                            from
-                                (
-                            with ranked_data as (
-                                select
-                                    *,
-                                    row_number() over (partition by nokk
-                                order by
-                                    tgl_buat desc) as rn,
-                                    TIMESTAMPDIFF(hour,
-                                        CONCAT(tgl_proses_in, ' ', jam_in),
-                                        CONCAT(tgl_proses_out, ' ', jam_out)
-                                    ) as durasi_jam
-                                from
-                                    tbl_produksi
-                                where
-                                    tgl_buat >= '$start'
-                                    and tgl_buat < '$tglAkhir_tbl4'
-                                    and no_order like '%REP%'
+            $query_not_achieved_REP = "
+                WITH ranked_data AS (
+                    SELECT
+                        *,
+                        ROW_NUMBER() OVER (PARTITION BY nokk ORDER BY tgl_buat DESC) AS rn,
+                        CASE 
+                            WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) IS NOT NULL
+                            AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                            THEN DATEDIFF(HOUR,
+                                TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120),
+                                TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
                             )
-                            select
-                                *
-                            from
-                                ranked_data
-                            where
-                                rn = 1
-                                and durasi_jam > 12) as t";
-            $result_not_achieved_REP = mysqli_query($conb, $query_not_achieved_REP);
-            $row_not_achieved_REP = mysqli_fetch_assoc($result_not_achieved_REP);
+                            ELSE NULL
+                        END AS durasi_jam
+                    FROM
+                        db_brushing.tbl_produksi
+                    WHERE
+                        tgl_buat >= '$start'
+                        AND tgl_buat < '$tglAkhir_tbl4'
+                        AND no_order LIKE '%REP%'
+                )
+                SELECT
+                    COUNT(*) as total_count
+                FROM
+                    ranked_data
+                WHERE
+                    rn = 1
+                    AND durasi_jam > 12
+            ";
+            $result_not_achieved_REP = sqlsrv_query($conb, $query_not_achieved_REP);
+            $row_not_achieved_REP = sqlsrv_fetch_array($result_not_achieved_REP, SQLSRV_FETCH_ASSOC);
             $total_not_achieved_REP = $row_not_achieved_REP['total_not_achieved'] ?? 0;
 
             // Query for total not achieved for MBE
-            $query_not_achieved_MBE =
-                "select
-                COUNT(*) as total_not_achieved
-                from
-                (
-                with ranked_data as (
-                select
-                    *,
-                    row_number() over (partition by nokk
-                order by
-                    tgl_buat desc) as rn,
-                    TIMESTAMPDIFF(hour,
-                    CONCAT(tgl_proses_in, ' ', jam_in),
-                    CONCAT(tgl_proses_out, ' ', jam_out)
-                    ) as durasi_jam
-                from
-                    tbl_produksi
-                where
-                    tgl_buat >= '$start'
-                    and tgl_buat < '$tglAkhir_tbl4'
-                    and (no_order like '%MBE%' or no_order like '%MNB%')
+            $query_not_achieved_MBE = "
+                WITH ranked_data AS (
+                    SELECT
+                        *,
+                        ROW_NUMBER() OVER (PARTITION BY nokk ORDER BY tgl_buat DESC) AS rn,
+                        CASE 
+                            WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) IS NOT NULL
+                            AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                            THEN DATEDIFF(HOUR,
+                                TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120),
+                                TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                            )
+                            ELSE NULL
+                        END AS durasi_jam
+                    FROM
+                        db_brushing.tbl_produksi
+                    WHERE
+                        tgl_buat >= '$start'
+                        AND tgl_buat < '$tglAkhir_tbl4'
+                        AND (no_order LIKE '%MBE%' OR no_order LIKE '%MNB%')
                 )
-                select
-                *
-                from
-                ranked_data
-                where
-                rn = 1
-                and durasi_jam > 12) as t";
-            $result_not_achieved_MBE = mysqli_query($conb, $query_not_achieved_MBE);
-            $row_not_achieved_MBE = mysqli_fetch_assoc($result_not_achieved_MBE);
+                SELECT
+                    COUNT(*) as total_not_achieved
+                FROM
+                    ranked_data
+                WHERE
+                    rn = 1
+                    AND durasi_jam > 12
+            ";
+            $result_not_achieved_MBE = sqlsrv_query($conb, $query_not_achieved_MBE);
+            $row_not_achieved_MBE = sqlsrv_fetch_array($result_not_achieved_MBE, SQLSRV_FETCH_ASSOC);
             $total_not_achieved_MBE = $row_not_achieved_MBE['total_not_achieved'] ?? 0;
 
             // Query for total not achieved for SAM
-            $query_not_achieved_SAM =
-                "select
-                                COUNT(*) as total_count
-                            from
-                                (
-                            with ranked_data as (
-                                select
-                                    *,
-                                    row_number() over (partition by nokk
-                                order by
-                                    tgl_buat desc) as rn,
-                                    TIMESTAMPDIFF(hour,
-                                        CONCAT(tgl_proses_in, ' ', jam_in),
-                                        CONCAT(tgl_proses_out, ' ', jam_out)
-                                    ) as durasi_jam
-                                from
-                                    tbl_produksi
-                                where
-                                    tgl_buat >= '$start'
-                                    and tgl_buat < '$tglAkhir_tbl4'
-                                    and no_order like '%SAM%'
+            $query_not_achieved_SAM = "
+                WITH ranked_data AS (
+                    SELECT
+                        *,
+                        ROW_NUMBER() OVER (PARTITION BY nokk ORDER BY tgl_buat DESC) AS rn,
+                        CASE 
+                            WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) IS NOT NULL
+                            AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                            THEN DATEDIFF(HOUR,
+                                TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120),
+                                TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
                             )
-                            select
-                                *
-                            from
-                                ranked_data
-                            where
-                                rn = 1
-                                and durasi_jam > 12) as t";
-            $result_not_achieved_SAM = mysqli_query($conb, $query_not_achieved_SAM);
-            $row_not_achieved_SAM = mysqli_fetch_assoc($result_not_achieved_SAM);
+                            ELSE NULL
+                        END AS durasi_jam
+                    FROM
+                        db_brushing.tbl_produksi
+                    WHERE
+                        tgl_buat >= '$start'
+                        AND tgl_buat < '$tglAkhir_tbl4'
+                        AND no_order LIKE '%SAM%'
+                )
+                SELECT
+                    COUNT(*) as total_count
+                FROM
+                    ranked_data
+                WHERE
+                    rn = 1
+                    AND durasi_jam > 12
+            ";
+            $result_not_achieved_SAM = sqlsrv_query($conb, $query_not_achieved_SAM);
+            $row_not_achieved_SAM = sqlsrv_fetch_array($result_not_achieved_SAM, SQLSRV_FETCH_ASSOC);
             $total_not_achieved_SAM = $row_not_achieved_SAM['total_not_achieved'] ?? 0;
 
             // Query for total not achieved for BP
-            $query_not_achieved_BP =
-                "select
-                                COUNT(*) as total_count
-                            from
-                                (
-                            with ranked_data as (
-                                select
-                                    *,
-                                    row_number() over (partition by nokk
-                                order by
-                                    tgl_buat desc) as rn,
-                                    TIMESTAMPDIFF(hour,
-                                        CONCAT(tgl_proses_in, ' ', jam_in),
-                                        CONCAT(tgl_proses_out, ' ', jam_out)
-                                    ) as durasi_jam
-                                from
-                                    tbl_produksi
-                                where
-                                    tgl_buat >= '$start'
-                                    and tgl_buat < '$tglAkhir_tbl4'
-                                    and no_order like '%BP%'
+            $query_not_achieved_BP = "
+                WITH ranked_data AS (
+                    SELECT
+                        *,
+                        ROW_NUMBER() OVER (PARTITION BY nokk ORDER BY tgl_buat DESC) AS rn,
+                        CASE 
+                            WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) IS NOT NULL
+                            AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                            THEN DATEDIFF(HOUR,
+                                TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120),
+                                TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
                             )
-                            select
-                                *
-                            from
-                                ranked_data
-                            where
-                                rn = 1
-                                and durasi_jam > 12) as t";
-            $result_not_achieved_BP = mysqli_query($conb, $query_not_achieved_BP);
-            $row_not_achieved_BP = mysqli_fetch_assoc($result_not_achieved_BP);
+                            ELSE NULL
+                        END AS durasi_jam
+                    FROM
+                        db_brushing.tbl_produksi
+                    WHERE
+                        tgl_buat >= '$start'
+                        AND tgl_buat < '$tglAkhir_tbl4'
+                        AND no_order LIKE '%BP%'
+                )
+                SELECT
+                    COUNT(*) as total_count
+                FROM
+                    ranked_data
+                WHERE
+                    rn = 1
+                    AND durasi_jam > 12
+            ";
+            $result_not_achieved_BP = sqlsrv_query($conb, $query_not_achieved_BP);
+            $row_not_achieved_BP = sqlsrv_fetch_array($result_not_achieved_BP, SQLSRV_FETCH_ASSOC);
             $total_not_achieved_BP = $row_not_achieved_BP['total_not_achieved'] ?? 0;
 
             // Query for total not achieved for RET
-            $query_not_achieved_RET =
-                "select
-                                COUNT(*) as total_count
-                            from
-                                (
-                            with ranked_data as (
-                                select
-                                    *,
-                                    row_number() over (partition by nokk
-                                order by
-                                    tgl_buat desc) as rn,
-                                    TIMESTAMPDIFF(hour,
-                                        CONCAT(tgl_proses_in, ' ', jam_in),
-                                        CONCAT(tgl_proses_out, ' ', jam_out)
-                                    ) as durasi_jam
-                                from
-                                    tbl_produksi
-                                where
-                                    tgl_buat >= '$start'
-                                    and tgl_buat < '$tglAkhir_tbl4'
-                                    and no_order like '%RET%'
+            $query_not_achieved_RET = "
+                WITH ranked_data AS (
+                    SELECT
+                        *,
+                        ROW_NUMBER() OVER (PARTITION BY nokk ORDER BY tgl_buat DESC) AS rn,
+                        CASE 
+                            WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) IS NOT NULL
+                            AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                            THEN DATEDIFF(HOUR,
+                                TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120),
+                                TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
                             )
-                            select
-                                *
-                            from
-                                ranked_data
-                            where
-                                rn = 1
-                                and durasi_jam > 12) as t";
-            $result_not_achieved_RET = mysqli_query($conb, $query_not_achieved_RET);
-            $row_not_achieved_RET = mysqli_fetch_assoc($result_not_achieved_RET);
+                            ELSE NULL
+                        END AS durasi_jam
+                    FROM
+                        db_brushing.tbl_produksi
+                    WHERE
+                        tgl_buat >= '$start'
+                        AND tgl_buat < '$tglAkhir_tbl4'
+                        AND no_order LIKE '%RET%'
+                )
+                SELECT
+                    COUNT(*) as total_count
+                FROM
+                    ranked_data
+                WHERE
+                    rn = 1
+                    AND durasi_jam > 12
+            ";
+            $result_not_achieved_RET = sqlsrv_query($conb, $query_not_achieved_RET);
+            $row_not_achieved_RET = sqlsrv_fetch_array($result_not_achieved_RET, SQLSRV_FETCH_ASSOC);
             $total_not_achieved_RET = $row_not_achieved_RET['total_not_achieved'] ?? 0;
             ?>
 
@@ -8875,76 +8894,77 @@ border:hidden;
                 <?php
                 
                 //DOMESTIC
-                $query = "select
-                                COUNT(*) as total_count
-                            from
-                                (
-                            with ranked_data as (
-                                select
-                                    *,
-                                    row_number() over (partition by nokk
-                                order by
-                                    tgl_buat desc) as rn,
-                                    TIMESTAMPDIFF(hour,
-                                        CONCAT(tgl_proses_in, ' ', jam_in),
-                                        CONCAT(tgl_proses_out, ' ', jam_out)
-                                    ) as durasi_jam
-                                from
-                                    tbl_produksi
-                                where
-                                    tgl_buat >= '$tglAwal_tbl4'
-                                    and tgl_buat < '$tglAkhir_tbl4'
-                                    and no_order like '%DOM%'
-                            )
-                            select
-                                *
-                            from
-                                ranked_data
-                            where
-                                rn = 1
-                                and durasi_jam <= 30) as t
-                            ";
-                $result = mysqli_query($conb, $query);
-                $row = mysqli_fetch_assoc($result);
+                $query = "
+                    WITH ranked_data AS (
+                        SELECT
+                            *,
+                            ROW_NUMBER() OVER (PARTITION BY nokk ORDER BY tgl_buat DESC) AS rn,
+                            CASE 
+                                WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) IS NOT NULL
+                                AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                                THEN DATEDIFF(HOUR,
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120),
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                                )
+                                ELSE NULL
+                            END AS durasi_jam
+                        FROM
+                            db_brushing.tbl_produksi
+                        WHERE
+                            tgl_buat >= '$tglAwal_tbl4'
+                            AND tgl_buat < '$tglAkhir_tbl4'
+                            AND no_order LIKE '%DOM%'
+                    )
+                    SELECT
+                        COUNT(*) as total_count
+                    FROM
+                        ranked_data
+                    WHERE
+                        rn = 1
+                        AND durasi_jam <= 30
+                ";
+                $result = sqlsrv_query($conb, $query);
+                $row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC);
                 $total_tercapai_30_jamDOM = $row['total_count'] ?? 0;
 
 
 
-                $query_tidak_tercapai_30_jam_libur =
-                    "select
+                $query_tidak_tercapai_30_jam_libur = "
+                    SET DATEFIRST 7;
+
+                    WITH ranked_data AS (
+                        SELECT
+                            *,
+                            ROW_NUMBER() OVER (PARTITION BY nokk ORDER BY tgl_buat DESC) AS rn,
+                            CASE 
+                                WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) IS NOT NULL
+                                AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                                THEN DATEDIFF(HOUR,
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120),
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                                )
+                                ELSE NULL
+                            END AS durasi_jam,
+                            DATEPART(WEEKDAY, tgl_buat) AS hari_ke
+                        FROM
+                            db_brushing.tbl_produksi
+                        WHERE
+                            tgl_buat >= '$tglAwal_tbl4'
+                            AND tgl_buat < '$tglAkhir_tbl4'
+                            AND no_order LIKE '%DOM%'
+                    )
+                    SELECT
                         COUNT(*) as TOTAL_TIDAK_TERCAPAI_LIBUR
-                    from
-                    (
-                        with ranked_data as (
-                            select
-                                *,
-                                row_number() over (partition by nokk order by tgl_buat desc) as rn,
-                                TIMESTAMPDIFF(hour,
-                                    CONCAT(tgl_proses_in, ' ', jam_in),
-                                    CONCAT(tgl_proses_out, ' ', jam_out)
-                                ) as durasi_jam,
-                                DAYOFWEEK(tgl_buat) as hari_ke
-                            from
-                                tbl_produksi
-                            where
-                                tgl_buat >= '$tglAwal_tbl4'
-                                and tgl_buat < '$tglAkhir_tbl4'
-                                and no_order like '%DOM%'
-                        )
-                        select
-                            *
-                        from
-                            ranked_data
-                        where
-                            rn = 1
-                            and durasi_jam > 30
-                            and hari_ke = 1 -- 1: Minggu saja
-                    ) as t";
-                        
+                    FROM
+                        ranked_data
+                    WHERE
+                        rn = 1
+                        AND durasi_jam > 30
+                        AND hari_ke = 1
+                ";
 
-
-                $result_tidak_tercapai_30_jam_libur = mysqli_query($conb, $query_tidak_tercapai_30_jam_libur);
-                $row_tidak_tercapai_30_jam_libur = mysqli_fetch_assoc($result_tidak_tercapai_30_jam_libur);
+                $result_tidak_tercapai_30_jam_libur = sqlsrv_query($conb, $query_tidak_tercapai_30_jam_libur);
+                $row_tidak_tercapai_30_jam_libur = sqlsrv_fetch_array($result_tidak_tercapai_30_jam_libur, SQLSRV_FETCH_ASSOC);
                 $total_tidak_tercapai_30_jam_libur = $row_tidak_tercapai_30_jam_libur['TOTAL_TIDAK_TERCAPAI_LIBUR'] ?? 0;
 
 
@@ -9032,73 +9052,76 @@ border:hidden;
                 <td>12 Jam</td>
                 <td align="center"><?= htmlspecialchars($total_GANTI_KAIN_EKSTERNAL); ?></td>
                 <?php
-                $query = "select
-                                COUNT(*) as total_count
-                            from
-                                (
-                            with ranked_data as (
-                                select
-                                    *,
-                                    row_number() over (partition by nokk
-                                order by
-                                    tgl_buat desc) as rn,
-                                    TIMESTAMPDIFF(hour,
-                                        CONCAT(tgl_proses_in, ' ', jam_in),
-                                        CONCAT(tgl_proses_out, ' ', jam_out)
-                                    ) as durasi_jam
-                                from
-                                    tbl_produksi
-                                where
-                                    tgl_buat >= '$tglAwal_tbl4'
-                                    and tgl_buat < '$tglAkhir_tbl4'
-                                    and no_order like '%REP%'
-                            )
-                            select
-                                *
-                            from
-                                ranked_data
-                            where
-                                rn = 1
-                                and durasi_jam <= 12) as t";
+                $query = "
+                    WITH ranked_data AS (
+                        SELECT
+                            *,
+                            ROW_NUMBER() OVER (PARTITION BY nokk ORDER BY tgl_buat DESC) AS rn,
+                            CASE 
+                                WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) IS NOT NULL
+                                AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                                THEN DATEDIFF(HOUR,
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120),
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                                )
+                                ELSE NULL
+                            END AS durasi_jam
+                        FROM
+                            db_brushing.tbl_produksi
+                        WHERE
+                            tgl_buat >= '$tglAwal_tbl4'
+                            AND tgl_buat < '$tglAkhir_tbl4'
+                            AND no_order LIKE '%REP%'
+                    )
+                    SELECT
+                        COUNT(*) as total_count
+                    FROM
+                        ranked_data
+                    WHERE
+                        rn = 1
+                        AND durasi_jam <= 12
+                ";
 
-                $result = mysqli_query($conb, $query);
-                $row = mysqli_fetch_assoc($result);
+                $result = sqlsrv_query($conb, $query);
+                $row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC);
                 $total_tercapai_12_jamREP = $row['total_count'] ?? 0;
 
-
                 $query_tidak_tercapai_12_jam_libur = "
-                    select
-                        COUNT(*) as TOTAL_TIDAK_TERCAPAI_LIBUR
-                    from
-                    (
-                        with ranked_data as (
-                            select
-                                *,
-                                row_number() over (partition by nokk order by tgl_buat desc) as rn,
-                                TIMESTAMPDIFF(hour,
-                                    CONCAT(tgl_proses_in, ' ', jam_in),
-                                    CONCAT(tgl_proses_out, ' ', jam_out)
-                                ) as durasi_jam,
-                                DAYOFWEEK(tgl_buat) as hari_ke
-                            from
-                                tbl_produksi
-                            where
-                                tgl_buat >= '$tglAwal_tbl4'
-                                and tgl_buat < '$tglAkhir_tbl4'
-                                and no_order like '%REP%'
-                        )
-                        select
-                            *
-                        from
-                            ranked_data
-                        where
-                            rn = 1
-                            and durasi_jam > 12
-                            and hari_ke = 1 -- 1: Minggu saja
-                    ) as t";
+                    SET DATEFIRST 7;
 
-                $result_tidak_tercapai_12_jam_libur = mysqli_query($conb, $query_tidak_tercapai_12_jam_libur);
-                $row_tidak_tercapai_12_jam_libur = mysqli_fetch_assoc($result_tidak_tercapai_12_jam_libur);
+                    WITH ranked_data AS (
+                        SELECT
+                            *,
+                            ROW_NUMBER() OVER (PARTITION BY nokk ORDER BY tgl_buat DESC) AS rn,
+                            CASE 
+                                WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) IS NOT NULL
+                                AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                                THEN DATEDIFF(HOUR,
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120),
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                                )
+                                ELSE NULL
+                            END AS durasi_jam,
+                            DATEPART(WEEKDAY, tgl_buat) AS hari_ke
+                        FROM
+                            db_brushing.tbl_produksi
+                        WHERE
+                            tgl_buat >= '$tglAwal_tbl4'
+                            AND tgl_buat < '$tglAkhir_tbl4'
+                            AND no_order LIKE '%REP%'
+                    )
+                    SELECT
+                        COUNT(*) as TOTAL_TIDAK_TERCAPAI_LIBUR
+                    FROM
+                        ranked_data
+                    WHERE
+                        rn = 1
+                        AND durasi_jam > 12
+                        AND hari_ke = 1
+                ";
+
+                $result_tidak_tercapai_12_jam_libur = sqlsrv_query($conb, $query_tidak_tercapai_12_jam_libur);
+                $row_tidak_tercapai_12_jam_libur = sqlsrv_fetch_array($result_tidak_tercapai_12_jam_libur, SQLSRV_FETCH_ASSOC);
                 $total_tidak_tercapai_12_jam_liburREP = $row_tidak_tercapai_12_jam_libur['TOTAL_TIDAK_TERCAPAI_LIBUR'] ?? 0;
                 ?>
                 <td align="center"><?= htmlspecialchars($total_tercapai_12_jamREP) ?? 0; ?></td>
@@ -9186,73 +9209,80 @@ border:hidden;
                 <td>12 Jam</td>
                 <td align="center"><?= htmlspecialchars($total_MINI_BULK); ?></td>
                 <?php
-                $query = "select
-                                COUNT(*) as total_count
-                            from
-                                (
-                            with ranked_data as (
-                                select
-                                    *,
-                                    row_number() over (partition by nokk
-                                order by
-                                    tgl_buat desc) as rn,
-                                    TIMESTAMPDIFF(hour,
-                                        CONCAT(tgl_proses_in, ' ', jam_in),
-                                        CONCAT(tgl_proses_out, ' ', jam_out)
-                                    ) as durasi_jam
-                                from
-                                    tbl_produksi
-                                where
-                                    tgl_buat >= '$tglAwal_tbl4'
-                                    and tgl_buat < '$tglAkhir_tbl4'
-                                    and no_order like '%MBE%'
-                            )
-                            select
-                                *
-                            from
-                                ranked_data
-                            where
-                                rn = 1
-                                and durasi_jam <= 12) as t";
-                $result = mysqli_query($conb, $query);
-                $row = mysqli_fetch_assoc($result);
+                $query = "
+                    WITH ranked_data AS (
+                        SELECT
+                            *,
+                            ROW_NUMBER() OVER (PARTITION BY nokk ORDER BY tgl_buat DESC) AS rn,
+                            CASE 
+                                WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) IS NOT NULL
+                                AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                                THEN DATEDIFF(HOUR,
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120),
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                                )
+                                ELSE NULL
+                            END AS durasi_jam
+                        FROM
+                            db_brushing.tbl_produksi
+                        WHERE
+                            tgl_buat >= '$tglAwal_tbl4'
+                            AND tgl_buat < '$tglAkhir_tbl4'
+                            AND no_order LIKE '%MBE%'
+                    )
+                    SELECT
+                        COUNT(*) as total_count
+                    FROM
+                        ranked_data
+                    WHERE
+                        rn = 1
+                        AND durasi_jam <= 12
+                ";
+                $result = sqlsrv_query($conb, $query);
+                $row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC);
                 $total_tercapai_12_jamMBE = $row['total_count'] ?? 0;
 
-
-
                 $query_tidak_tercapai_12_jam_hari_libur = "
-                    SELECT COUNT(*) AS TOTAL_TIDAK_TERCAPAI_LIBUR
-                    FROM (
-                        SELECT DISTINCT *, 
-                            TIMESTAMP(tgl_proses_in, jam_in) AS start_datetime,
-                            CASE 
-                                WHEN jam_out < jam_in THEN TIMESTAMP(DATE_ADD(tgl_proses_out, INTERVAL 1 DAY), jam_out)
-                                ELSE TIMESTAMP(tgl_proses_out, jam_out)
-                            END AS end_datetime,
-                            TIMESTAMPDIFF(MINUTE, TIMESTAMP(tgl_proses_in, jam_in), 
-                                CASE 
-                                    WHEN jam_out < jam_in THEN TIMESTAMP(DATE_ADD(tgl_proses_out, INTERVAL 1 DAY), jam_out)
-                                    ELSE TIMESTAMP(tgl_proses_out, jam_out)
-                                END
-                            ) / 60 AS durasi_jam,
-                            CASE 
-                                WHEN TIMESTAMPDIFF(MINUTE, TIMESTAMP(tgl_proses_in, jam_in), 
-                                    CASE 
-                                        WHEN jam_out < jam_in THEN TIMESTAMP(DATE_ADD(tgl_proses_out, INTERVAL 1 DAY), jam_out)
-                                        ELSE TIMESTAMP(tgl_proses_out, jam_out)
-                                    END
-                                ) / 60 > 12 THEN '> 12 jam'
+                    SET DATEFIRST 7;
+
+                    WITH base AS (
+                        SELECT
+                            *,
+                            TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) AS start_dt,
+                            CASE
+                                WHEN TRY_CONVERT(time, jam_out) < TRY_CONVERT(time, jam_in)
+                                THEN DATEADD(DAY, 1, TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120))
+                                ELSE TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                            END AS end_dt
+                        FROM db_brushing.tbl_produksi
+                        WHERE tgl_buat >= '$tglAwal_tbl4'
+                        AND tgl_buat <  '$tglAkhir_tbl4'
+                        AND (no_order LIKE '%MBE%' OR no_order LIKE '%MNB%')
+                        AND DATEPART(WEEKDAY, tgl_buat) IN (1, 7) -- Minggu=1, Sabtu=7 (karena DATEFIRST 7)
+                    ),
+                    calc AS (
+                        SELECT
+                            *,
+                            CASE
+                                WHEN start_dt IS NOT NULL AND end_dt IS NOT NULL
+                                THEN DATEDIFF(MINUTE, start_dt, end_dt) / 60.0
+                                ELSE NULL
+                            END AS durasi_jam,
+                            CASE
+                                WHEN start_dt IS NOT NULL AND end_dt IS NOT NULL
+                                AND (DATEDIFF(MINUTE, start_dt, end_dt) / 60.0) > 12
+                                THEN '> 12 jam'
                                 ELSE '≤ 12 jam'
                             END AS kategori
-                        FROM tbl_produksi
-                        WHERE tgl_buat >= '$tglAwal_tbl4' AND tgl_buat < '$tglAkhir_tbl4'
-                        AND (no_order LIKE '%MBE%' OR no_order LIKE '%MNB%')
-                        AND DAYOFWEEK(tgl_buat) IN (1, 7) -- Hari Minggu (1) dan Sabtu (7)
-                    ) AS t
-                    WHERE kategori = '> 12 jam'";
+                        FROM base
+                    )
+                    SELECT COUNT(*) AS TOTAL_TIDAK_TERCAPAI_LIBUR
+                    FROM calc
+                    WHERE kategori = '> 12 jam'
+                ";
 
-                $result_tidak_tercapai_12_jam_hari_libur = mysqli_query($conb, $query_tidak_tercapai_12_jam_hari_libur);
-                $row_tidak_tercapai_12_jam_hari_libur = mysqli_fetch_assoc($result_tidak_tercapai_12_jam_hari_libur);
+                $result_tidak_tercapai_12_jam_hari_libur = sqlsrv_query($conb, $query_tidak_tercapai_12_jam_hari_libur);
+                $row_tidak_tercapai_12_jam_hari_libur = sqlsrv_fetch_array($result_tidak_tercapai_12_jam_hari_libur, SQLSRV_FETCH_ASSOC);
                 $total_tidak_tercapai_12_jam_hari_liburMBE = $row_tidak_tercapai_12_jam_hari_libur['TOTAL_TIDAK_TERCAPAI_LIBUR'] ?? 0;
                 ?>
                 <td align="center"><?= htmlspecialchars($total_tercapai_12_jamMBE) ?? 0; ?></td>
@@ -9338,74 +9368,91 @@ border:hidden;
                 ?>
                 <td align="center"><?= htmlspecialchars($total_SALESMAN_SAMPLE); ?></td>
                 <?php
-                $query_SALESMAN_SAMPLE_12_JAM =
-                    "select
-                                COUNT(*) as total_count
-                            from
-                                (
-                            with ranked_data as (
-                                select
-                                    *,
-                                    row_number() over (partition by nokk
-                                order by
-                                    tgl_buat desc) as rn,
-                                    TIMESTAMPDIFF(hour,
-                                        CONCAT(tgl_proses_in, ' ', jam_in),
-                                        CONCAT(tgl_proses_out, ' ', jam_out)
-                                    ) as durasi_jam
-                                from
-                                    tbl_produksi
-                                where
-                                    tgl_buat >= '$tglAwal_tbl4'
-                                    and tgl_buat < '$tglAkhir_tbl4'
-
-                                    and no_order like '%SAM%'
-                            )
-                            select
-                                *
-                            from
-                                ranked_data
-                            where
-                                rn = 1
-                                and durasi_jam <= 12) as t";
-                $result_SALESMAN_SAMPLE_12_JAM = mysqli_query($conb, $query_SALESMAN_SAMPLE_12_JAM);
-                $row_SALESMAN_SAMPLE_12_JAM = mysqli_fetch_assoc($result_SALESMAN_SAMPLE_12_JAM);
+                $query_SALESMAN_SAMPLE_12_JAM = "
+                    WITH ranked_data AS (
+                        SELECT
+                            *,
+                            ROW_NUMBER() OVER (PARTITION BY nokk ORDER BY tgl_buat DESC) AS rn,
+                            CASE 
+                                WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) IS NOT NULL
+                                AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                                THEN DATEDIFF(HOUR,
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120),
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                                )
+                                ELSE NULL
+                            END AS durasi_jam
+                        FROM
+                            db_brushing.tbl_produksi
+                        WHERE
+                            tgl_buat >= '$tglAwal_tbl4'
+                            AND tgl_buat < '$tglAkhir_tbl4'
+                            AND no_order LIKE '%SAM%'
+                    )
+                    SELECT
+                        COUNT(*) as total_count
+                    FROM
+                        ranked_data
+                    WHERE
+                        rn = 1
+                        AND durasi_jam <= 12
+                ";
+                $result_SALESMAN_SAMPLE_12_JAM = sqlsrv_query($conb, $query_SALESMAN_SAMPLE_12_JAM);
+                $row_SALESMAN_SAMPLE_12_JAM = sqlsrv_fetch_array($result_SALESMAN_SAMPLE_12_JAM, SQLSRV_FETCH_ASSOC);
                 $total_SALESMAN_SAMPLE_12_JAMSAM = $row_SALESMAN_SAMPLE_12_JAM['TOTAL_SALESMAN_SAMPLE_12_JAM'] ?? 0;
 
-
                 $query_tidak_tercapai_12_jam_libur_SAM = "
-                SELECT COUNT(*) AS TOTAL_TIDAK_TERCAPAI_LIBUR
-                FROM (
-                    SELECT DISTINCT *, 
-                        TIMESTAMP(tgl_proses_in, jam_in) AS start_datetime,
-                        CASE 
-                            WHEN jam_out < jam_in THEN TIMESTAMP(DATE_ADD(tgl_proses_out, INTERVAL 1 DAY), jam_out)
-                            ELSE TIMESTAMP(tgl_proses_out, jam_out)
-                        END AS end_datetime,
-                        TIMESTAMPDIFF(MINUTE, TIMESTAMP(tgl_proses_in, jam_in), 
-                            CASE 
-                                WHEN jam_out < jam_in THEN TIMESTAMP(DATE_ADD(tgl_proses_out, INTERVAL 1 DAY), jam_out)
-                                ELSE TIMESTAMP(tgl_proses_out, jam_out)
-                            END
-                        ) / 60 AS durasi_jam,
-                        CASE 
-                            WHEN TIMESTAMPDIFF(MINUTE, TIMESTAMP(tgl_proses_in, jam_in), 
-                                CASE 
-                                    WHEN jam_out < jam_in THEN TIMESTAMP(DATE_ADD(tgl_proses_out, INTERVAL 1 DAY), jam_out)
-                                    ELSE TIMESTAMP(tgl_proses_out, jam_out)
-                                END
-                            ) / 60 > 12 THEN '> 12 jam'
-                            ELSE '≤ 12 jam'
-                        END AS kategori
-                    FROM tbl_produksi
-                    WHERE tgl_buat >= '$tglAwal_tbl4' AND tgl_buat < '$tglAkhir_tbl4'
-                    AND no_order LIKE '%SAM%'
-                    AND DAYOFWEEK(tgl_buat) IN (1, 7) -- Hari Minggu (1) dan Sabtu (7)
-                ) AS t
-                WHERE kategori = '> 12 jam'";
+                    SELECT COUNT(*) AS TOTAL_TIDAK_TERCAPAI_LIBUR
+                    FROM (
+                        SELECT DISTINCT *,
+                            TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120) AS start_datetime,
+                            CASE
+                                WHEN TRY_CONVERT(time, jam_out) < TRY_CONVERT(time, jam_in)
+                                THEN DATEADD(DAY, 1, TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120))
+                                ELSE TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                            END AS end_datetime,
+                            CASE
+                                WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120) IS NOT NULL
+                                AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                                THEN DATEDIFF(
+                                        MINUTE,
+                                        TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120),
+                                        CASE
+                                            WHEN TRY_CONVERT(time, jam_out) < TRY_CONVERT(time, jam_in)
+                                            THEN DATEADD(DAY, 1, TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120))
+                                            ELSE TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                                        END
+                                    ) / 60.0
+                                ELSE NULL
+                            END AS durasi_jam,
+                            CASE
+                                WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120) IS NOT NULL
+                                AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                                AND (
+                                    DATEDIFF(
+                                        MINUTE,
+                                        TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120),
+                                        CASE
+                                            WHEN TRY_CONVERT(time, jam_out) < TRY_CONVERT(time, jam_in)
+                                            THEN DATEADD(DAY, 1, TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120))
+                                            ELSE TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                                        END
+                                    ) / 60.0
+                                ) > 12
+                                THEN '> 12 jam'
+                                ELSE '≤ 12 jam'
+                            END AS kategori
+                        FROM db_brushing.tbl_produksi
+                        WHERE tgl_buat >= '$tglAwal_tbl4'
+                        AND tgl_buat < '$tglAkhir_tbl4'
+                        AND no_order LIKE '%SAM%'
+                        AND DATENAME(WEEKDAY, tgl_buat) IN ('Saturday', 'Sunday')
+                    ) AS t
+                    WHERE kategori = '> 12 jam'
+                ";
 
-                $result_tidak_tercapai_12_jam_libur_SAM = mysqli_query($conb, $query_tidak_tercapai_12_jam_libur_SAM);
-                $row_tidak_tercapai_12_jam_libur_SAM = mysqli_fetch_assoc($result_tidak_tercapai_12_jam_libur_SAM);
+                $result_tidak_tercapai_12_jam_libur_SAM = sqlsrv_query($conb, $query_tidak_tercapai_12_jam_libur_SAM);
+                $row_tidak_tercapai_12_jam_libur_SAM = sqlsrv_fetch_array($result_tidak_tercapai_12_jam_libur_SAM, SQLSRV_FETCH_ASSOC);
                 $total_tidak_tercapai_12_jam_libur_SAM = $row_tidak_tercapai_12_jam_libur_SAM['TOTAL_TIDAK_TERCAPAI_LIBUR'] ?? 0;
                 ?>
                 <td align="center"><?= htmlspecialchars($total_SALESMAN_SAMPLE_12_JAMSAM); ?></td>
@@ -9501,73 +9548,93 @@ border:hidden;
                 ?>
                 <td align="center"><?= htmlspecialchars($total_DEVELOPMENT_SAMPLE); ?></td>
                 <?php
-                $query = "select
-                                COUNT(*) as total_count
-                            from
-                                (
-                            with ranked_data as (
-                                select
-                                    *,
-                                    row_number() over (partition by nokk
-                                order by
-                                    tgl_buat desc) as rn,
-                                    TIMESTAMPDIFF(hour,
-                                        CONCAT(tgl_proses_in, ' ', jam_in),
-                                        CONCAT(tgl_proses_out, ' ', jam_out)
-                                    ) as durasi_jam
-                                from
-                                    tbl_produksi
-                                where
-                                    tgl_buat >= '$tglAwal_tbl4'
-                                    and tgl_buat < '$tglAkhir_tbl4'
-                                    and no_order like '%BP%'
-                            )
-                            select
-                                *
-                            from
-                                ranked_data
-                            where
-                                rn = 1
-                                and durasi_jam <= 12) as t";
+                $query = "
+                    WITH ranked_data AS (
+                        SELECT
+                            *,
+                            ROW_NUMBER() OVER (PARTITION BY nokk ORDER BY tgl_buat DESC) AS rn,
+                            CASE 
+                                WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) IS NOT NULL
+                                AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                                THEN DATEDIFF(HOUR,
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120),
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                                )
+                                ELSE NULL
+                            END AS durasi_jam
+                        FROM
+                            db_brushing.tbl_produksi
+                        WHERE
+                            tgl_buat >= '$tglAwal_tbl4'
+                            AND tgl_buat < '$tglAkhir_tbl4'
+                            AND no_order LIKE '%BP%'
+                    )
+                    SELECT
+                        COUNT(*) as total_count
+                    FROM
+                        ranked_data
+                    WHERE
+                        rn = 1
+                        AND durasi_jam <= 12
+                ";
                                 
-                $result = mysqli_query($conb, $query);
-                $row = mysqli_fetch_assoc($result);
+                $result = sqlsrv_query($conb, $query);
+                $row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC);
                 $total_tercapai_12_jamBP = $row['total_count'] ?? 0;
 
 
                 $query_tidak_tercapai_12_jam_hari_libur_BP = "
                     SELECT COUNT(*) AS TOTAL_TIDAK_TERCAPAI_LIBUR
                     FROM (
-                        SELECT DISTINCT *, 
-                            TIMESTAMP(tgl_proses_in, jam_in) AS start_datetime,
-                            CASE 
-                                WHEN jam_out < jam_in THEN TIMESTAMP(DATE_ADD(tgl_proses_out, INTERVAL 1 DAY), jam_out)
-                                ELSE TIMESTAMP(tgl_proses_out, jam_out)
+                        SELECT DISTINCT *,
+                            TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120) AS start_datetime,
+                            CASE
+                                WHEN TRY_CONVERT(time, jam_out) < TRY_CONVERT(time, jam_in)
+                                THEN DATEADD(DAY, 1, TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120))
+                                ELSE TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
                             END AS end_datetime,
-                            TIMESTAMPDIFF(MINUTE, TIMESTAMP(tgl_proses_in, jam_in), 
-                                CASE 
-                                    WHEN jam_out < jam_in THEN TIMESTAMP(DATE_ADD(tgl_proses_out, INTERVAL 1 DAY), jam_out)
-                                    ELSE TIMESTAMP(tgl_proses_out, jam_out)
-                                END
-                            ) / 60 AS durasi_jam,
-                            CASE 
-                                WHEN TIMESTAMPDIFF(MINUTE, TIMESTAMP(tgl_proses_in, jam_in), 
-                                    CASE 
-                                        WHEN jam_out < jam_in THEN TIMESTAMP(DATE_ADD(tgl_proses_out, INTERVAL 1 DAY), jam_out)
-                                        ELSE TIMESTAMP(tgl_proses_out, jam_out)
-                                    END
-                                ) / 60 > 12 THEN '> 12 jam'
+                            CASE
+                                WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120) IS NOT NULL
+                                AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                                THEN DATEDIFF(
+                                        MINUTE,
+                                        TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120),
+                                        CASE
+                                            WHEN TRY_CONVERT(time, jam_out) < TRY_CONVERT(time, jam_in)
+                                            THEN DATEADD(DAY, 1, TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120))
+                                            ELSE TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                                        END
+                                    ) / 60.0
+                                ELSE NULL
+                            END AS durasi_jam,
+                            CASE
+                                WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120) IS NOT NULL
+                                AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                                AND (
+                                    DATEDIFF(
+                                        MINUTE,
+                                        TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120),
+                                        CASE
+                                            WHEN TRY_CONVERT(time, jam_out) < TRY_CONVERT(time, jam_in)
+                                            THEN DATEADD(DAY, 1, TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120))
+                                            ELSE TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                                        END
+                                    ) / 60.0
+                                ) > 12
+                                THEN '> 12 jam'
                                 ELSE '≤ 12 jam'
                             END AS kategori
-                        FROM tbl_produksi
-                        WHERE tgl_buat >= '$tglAwal_tbl4' AND tgl_buat < '$tglAkhir_tbl4'
+                        FROM db_brushing.tbl_produksi
+                        WHERE tgl_buat >= '$tglAwal_tbl4'
+                        AND tgl_buat < '$tglAkhir_tbl4'
                         AND no_order LIKE '%BP%'
-                        AND DAYOFWEEK(tgl_buat) IN (1, 7) -- Hari Minggu (1) dan Sabtu (7)
+                        AND DATENAME(WEEKDAY, tgl_buat) IN ('Saturday', 'Sunday')
                     ) AS t
-                    WHERE kategori = '> 12 jam'";
+                    WHERE kategori = '> 12 jam'
+                ";
 
-                $result_tidak_tercapai_12_jam_hari_libur_BP = mysqli_query($conb, $query_tidak_tercapai_12_jam_hari_libur_BP);
-                $row_tidak_tercapai_12_jam_hari_libur_BP = mysqli_fetch_assoc($result_tidak_tercapai_12_jam_hari_libur_BP);
+                $result_tidak_tercapai_12_jam_hari_libur_BP = sqlsrv_query($conb, $query_tidak_tercapai_12_jam_hari_libur_BP);
+                $row_tidak_tercapai_12_jam_hari_libur_BP = sqlsrv_fetch_array($result_tidak_tercapai_12_jam_hari_libur_BP, SQLSRV_FETCH_ASSOC);
                 $total_tidak_tercapai_12_jam_hari_libur_BP = $row_tidak_tercapai_12_jam_hari_libur_BP['TOTAL_TIDAK_TERCAPAI_LIBUR'] ?? 0;
                 ?>
                 <td align="center"><?= htmlspecialchars($total_tercapai_12_jamBP); ?></td>
@@ -9653,36 +9720,37 @@ border:hidden;
                 ?>
                 <td align="center"><?= htmlspecialchars($total_RETURN); ?></td>
                 <?php
-                $query = "select
-                                COUNT(*) as total_count
-                            from
-                                (
-                            with ranked_data as (
-                                select
-                                    *,
-                                    row_number() over (partition by nokk
-                                order by
-                                    tgl_buat desc) as rn,
-                                    TIMESTAMPDIFF(hour,
-                                        CONCAT(tgl_proses_in, ' ', jam_in),
-                                        CONCAT(tgl_proses_out, ' ', jam_out)
-                                    ) as durasi_jam
-                                from
-                                    tbl_produksi
-                                where
-                                    tgl_buat >= '$tglAwal_tbl4'
-                                    and tgl_buat < '$tglAkhir_tbl4'
-                                    and no_order like '%RET%'
-                            )
-                            select
-                                *
-                            from
-                                ranked_data
-                            where
-                                rn = 1
-                                and durasi_jam <= 12) as t";
-                $result = mysqli_query($conb, $query);
-                $row = mysqli_fetch_assoc($result);
+                $query = "
+                    WITH ranked_data AS (
+                        SELECT
+                            *,
+                            ROW_NUMBER() OVER (PARTITION BY nokk ORDER BY tgl_buat DESC) AS rn,
+                            CASE 
+                                WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120) IS NOT NULL
+                                AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                                THEN DATEDIFF(HOUR,
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_in,  ' ', jam_in), 120),
+                                    TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                                )
+                                ELSE NULL
+                            END AS durasi_jam
+                        FROM
+                            db_brushing.tbl_produksi
+                        WHERE
+                            tgl_buat >= '$tglAwal_tbl4'
+                            AND tgl_buat < '$tglAkhir_tbl4'
+                            AND no_order LIKE '%RET%'
+                    )
+                    SELECT
+                        COUNT(*) as total_count
+                    FROM
+                        ranked_data
+                    WHERE
+                        rn = 1
+                        AND durasi_jam <= 12
+                ";
+                $result = sqlsrv_query($conb, $query);
+                $row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC);
                 $total_tercapai_12_jamRET = $row['total_count'] ?? 0;
 
 
@@ -9690,34 +9758,51 @@ border:hidden;
                     SELECT COUNT(*) AS TOTAL_TIDAK_TERCAPAI_LIBUR
                     FROM (
                         SELECT DISTINCT *, 
-                            TIMESTAMP(tgl_proses_in, jam_in) AS start_datetime,
+                            TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120) AS start_datetime,
                             CASE 
-                                WHEN jam_out < jam_in THEN TIMESTAMP(DATE_ADD(tgl_proses_out, INTERVAL 1 DAY), jam_out)
-                                ELSE TIMESTAMP(tgl_proses_out, jam_out)
+                                WHEN TRY_CONVERT(time, jam_out) < TRY_CONVERT(time, jam_in)
+                                THEN DATEADD(DAY, 1, TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120))
+                                ELSE TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
                             END AS end_datetime,
-                            TIMESTAMPDIFF(MINUTE, TIMESTAMP(tgl_proses_in, jam_in), 
-                                CASE 
-                                    WHEN jam_out < jam_in THEN TIMESTAMP(DATE_ADD(tgl_proses_out, INTERVAL 1 DAY), jam_out)
-                                    ELSE TIMESTAMP(tgl_proses_out, jam_out)
-                                END
-                            ) / 60 AS durasi_jam,
+                            CASE
+                                WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120) IS NOT NULL
+                                AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                                THEN DATEDIFF(MINUTE,
+                                        TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120),
+                                        CASE 
+                                            WHEN TRY_CONVERT(time, jam_out) < TRY_CONVERT(time, jam_in)
+                                            THEN DATEADD(DAY, 1, TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120))
+                                            ELSE TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                                        END
+                                    ) / 60.0
+                                ELSE NULL
+                            END AS durasi_jam,
                             CASE 
-                                WHEN TIMESTAMPDIFF(MINUTE, TIMESTAMP(tgl_proses_in, jam_in), 
-                                    CASE 
-                                        WHEN jam_out < jam_in THEN TIMESTAMP(DATE_ADD(tgl_proses_out, INTERVAL 1 DAY), jam_out)
-                                        ELSE TIMESTAMP(tgl_proses_out, jam_out)
-                                    END
-                                ) / 60 > 12 THEN '> 12 jam'
+                                WHEN TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120) IS NOT NULL
+                                AND TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120) IS NOT NULL
+                                AND (
+                                    DATEDIFF(MINUTE,
+                                        TRY_CONVERT(datetime, CONCAT(tgl_proses_in, ' ', jam_in), 120),
+                                        CASE 
+                                            WHEN TRY_CONVERT(time, jam_out) < TRY_CONVERT(time, jam_in)
+                                            THEN DATEADD(DAY, 1, TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120))
+                                            ELSE TRY_CONVERT(datetime, CONCAT(tgl_proses_out, ' ', jam_out), 120)
+                                        END
+                                    ) / 60.0
+                                ) > 12
+                                THEN '> 12 jam'
                                 ELSE '≤ 12 jam'
                             END AS kategori
-                        FROM tbl_produksi
-                        WHERE tgl_buat >= '$tglAwal_tbl4' AND tgl_buat < '$tglAkhir_tbl4'
+                        FROM db_brushing.tbl_produksi
+                        WHERE tgl_buat >= '$tglAwal_tbl4'
+                        AND tgl_buat < '$tglAkhir_tbl4'
                         AND no_order LIKE '%RET%'
-                        AND DAYOFWEEK(tgl_buat) IN (1, 7) -- Hari Minggu (1) dan Sabtu (7)
+                        AND DATENAME(WEEKDAY, tgl_buat) IN ('Saturday', 'Sunday')
                     ) AS t
-                    WHERE kategori = '> 12 jam'";
-                $result_tidak_tercapai_12_jam_hari_libur_RET = mysqli_query($conb, $query_tidak_tercapai_12_jam_hari_libur_RET);
-                $row_tidak_tercapai_12_jam_hari_libur_RET = mysqli_fetch_assoc($result_tidak_tercapai_12_jam_hari_libur_RET);
+                    WHERE kategori = '> 12 jam'
+                ";
+                $result_tidak_tercapai_12_jam_hari_libur_RET = sqlsrv_query($conb, $query_tidak_tercapai_12_jam_hari_libur_RET);
+                $row_tidak_tercapai_12_jam_hari_libur_RET = sqlsrv_fetch_array($result_tidak_tercapai_12_jam_hari_libur_RET, SQLSRV_FETCH_ASSOC);
                 $total_tidak_tercapai_12_jam_hari_libur_RET = $row_tidak_tercapai_12_jam_hari_libur_RET['TOTAL_TIDAK_TERCAPAI_LIBUR'] ?? 0;
                 ?>
                 <td align="center"><?= htmlspecialchars($total_tercapai_12_jamRET); ?></td>

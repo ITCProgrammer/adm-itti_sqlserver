@@ -473,14 +473,14 @@ function formatJamMenit($decimalHours) {
 			$tot_kj_t_s = $dts_K_fin_jadi_t_s['kering']+$dts_K_padder_t_s['kering']+$dts_K_pot_t_s['kering']+$dts_K_fin_ulang_t_s['kering']+$dts_K_compact_t_s['kering']+$dts_K_compact_perbaikan_t_s['kering']+$dts_K_ov_krh_t_s['kering'];
 			$tot_loss_t_s = $dts_K_tarik_t_s['kering']+$dts_K_ov_fl_ul_t_s['kering']+$dts_K_ov_ul_t_s['kering']+$dts_K_ov_dye_t_s['kering']+$dts_K_padder_t_s['kering']+$dts_K_fin_ulang_t_s['kering']+$dts_K_compact_perbaikan_t_s['kering']+$dts_K_ov_dyeing_t_s['kering']; 
 			  
-			$sqlgk_t_s=mysqli_query($cona," SELECT
+			$sqlgk_t_s=sqlsrv_query($cona," SELECT
 				SUM(qty_order) as kg
 			FROM
-				tbl_gantikain tb
+				db_adm.tbl_gantikain tb
 			WHERE
 			YEAR(tgl_update) = '$tahunSebelumnya'
 			and (t_jawab='FIN' or t_jawab1='FIN' or t_jawab2='FIN' or t_jawab3='FIN' or t_jawab4='FIN')");
-			$rg_t_s=mysqli_fetch_array($sqlgk_t_s);  
+			$rg_t_s=sqlsrv_fetch_array($sqlgk_t_s, SQLSRV_FETCH_ASSOC);  
 			?>  
             <td align="center" valign="middle"><strong>Total'<?= substr($tahunSebelumnya, 2); ?>
             </strong></td>
@@ -856,14 +856,14 @@ function formatJamMenit($decimalHours) {
 			$tot_kj_l = $dts_K_fin_jadi_l['kering']+$dts_K_padder_l['kering']+$dts_K_pot_l['kering']+$dts_K_fin_ulang_l['kering']+$dts_K_compact_l['kering']+$dts_K_compact_perbaikan_l['kering']+$dts_K_ov_krh_l['kering'];
 			$tot_loss_l = $dts_K_tarik_l['kering']+$dts_K_ov_fl_ul_l['kering']+$dts_K_ov_ul_l['kering']+$dts_K_ov_dye_l['kering']+$dts_K_padder_l['kering']+$dts_K_fin_ulang_l['kering']+$dts_K_compact_perbaikan_l['kering']+$dts_K_ov_dyeing_l['kering'];  
 			  
-			$sqlgk_l=mysqli_query($cona," SELECT
+			$sqlgk_l=sqlsrv_query($cona," SELECT
 				SUM(qty_order) as kg
 			FROM
-				tbl_gantikain tb
+				db_adm.tbl_gantikain tb
 			WHERE
 			MONTH(tgl_update) = 12 AND YEAR(tgl_update) = '$tahunSebelumnya'
 			and (t_jawab='FIN' or t_jawab1='FIN' or t_jawab2='FIN' or t_jawab3='FIN' or t_jawab4='FIN')");
-			$rg_l=mysqli_fetch_array($sqlgk_l);  
+			$rg_l=sqlsrv_fetch_array($sqlgk_l, SQLSRV_FETCH_ASSOC);  
 			?>
             <td align="center" valign="middle"><strong>Des'<?= substr($tahunSebelumnya, 2); ?>
             </strong></td>
@@ -1255,15 +1255,15 @@ function formatJamMenit($decimalHours) {
 			$tot_loss = $dts_K_tarik['kering']+$dts_K_ov_fl_ul['kering']+$dts_K_ov_ul['kering']+$dts_K_ov_dye['kering']+$dts_K_padder['kering']+$dts_K_fin_ulang['kering']+$dts_K_compact_perbaikan['kering']+$dts_K_ov_dyeing['kering'];
 			
 			
-			$sqlgk=mysqli_query($cona," SELECT
+			$sqlgk=sqlsrv_query($cona," SELECT
 				SUM(qty_order) as kg
 			FROM
-				tbl_gantikain tb
+				db_adm.tbl_gantikain tb
 			WHERE
 			MONTH(tgl_update) = '$bln1' AND YEAR(tgl_update) = '$tahun'
 			and (t_jawab='FIN' or t_jawab1='FIN' or t_jawab2='FIN' or t_jawab3='FIN' or t_jawab4='FIN' )
 			");
-			$rg=mysqli_fetch_array($sqlgk);			
+			$rg=sqlsrv_fetch_array($sqlgk, SQLSRV_FETCH_ASSOC);			
 		  ?>	
           <tr>
             <td align="center" valign="middle"><strong>
@@ -1569,7 +1569,7 @@ function formatJamMenit($decimalHours) {
         </thead>
         <tbody>
 		  <?php
-			$sqlS01 = mysqli_query($cona," SELECT
+			$sqlS01 = sqlsrv_query($cona," SELECT
 				SUM(CASE WHEN ts.kode_stop = 'PM' THEN ts.durasi_jam_stop ELSE 0 END) AS PM,
 				SUM(CASE WHEN ts.kode_stop = 'KO' THEN ts.durasi_jam_stop ELSE 0 END) AS KO,
 				SUM(CASE WHEN ts.kode_stop = 'TG' THEN ts.durasi_jam_stop ELSE 0 END) AS TG,
@@ -1581,14 +1581,14 @@ function formatJamMenit($decimalHours) {
 				SUM(ts.durasi_jam) AS TOTAL,
 				SUM(ts.durasi_jam_stop) AS TOTAL_M
 			FROM
-				tbl_stoppage ts
+				db_adm.tbl_stoppage ts
 			WHERE
 				ts.dept = 'FIN'
 				AND ts.mesin = 'P3ST301'
 				AND YEAR(ts.tgl_buat) = '".$_GET['tahun']."'
 				AND MONTH(ts.tgl_buat) = '".$_GET['bulan']."'");
-			$rowdS01=mysqli_fetch_array($sqlS01);
-			$sqlS02 = mysqli_query($cona," SELECT
+			$rowdS01=sqlsrv_fetch_array($sqlS01, SQLSRV_FETCH_ASSOC);
+			$sqlS02 = sqlsrv_query($cona," SELECT
 				SUM(CASE WHEN ts.kode_stop = 'PM' THEN ts.durasi_jam_stop ELSE 0 END) AS PM,
 				SUM(CASE WHEN ts.kode_stop = 'KO' THEN ts.durasi_jam_stop ELSE 0 END) AS KO,
 				SUM(CASE WHEN ts.kode_stop = 'TG' THEN ts.durasi_jam_stop ELSE 0 END) AS TG,
@@ -1600,14 +1600,14 @@ function formatJamMenit($decimalHours) {
 				SUM(ts.durasi_jam) AS TOTAL,
 				SUM(ts.durasi_jam_stop) AS TOTAL_M
 			FROM
-				tbl_stoppage ts
+				db_adm.tbl_stoppage ts
 			WHERE
 				ts.dept = 'FIN'
 				AND ts.mesin = 'P3ST302'
 				AND YEAR(ts.tgl_buat) = '".$_GET['tahun']."'
 				AND MONTH(ts.tgl_buat) = '".$_GET['bulan']."'");
-			$rowdS02=mysqli_fetch_array($sqlS02);
-			$sqlS03 = mysqli_query($cona," SELECT
+			$rowdS02=sqlsrv_fetch_array($sqlS02, SQLSRV_FETCH_ASSOC);
+			$sqlS03 = sqlsrv_query($cona," SELECT
 				SUM(CASE WHEN ts.kode_stop = 'PM' THEN ts.durasi_jam_stop ELSE 0 END) AS PM,
 				SUM(CASE WHEN ts.kode_stop = 'KO' THEN ts.durasi_jam_stop ELSE 0 END) AS KO,
 				SUM(CASE WHEN ts.kode_stop = 'TG' THEN ts.durasi_jam_stop ELSE 0 END) AS TG,
@@ -1619,14 +1619,14 @@ function formatJamMenit($decimalHours) {
 				SUM(ts.durasi_jam) AS TOTAL,
 				SUM(ts.durasi_jam_stop) AS TOTAL_M
 			FROM
-				tbl_stoppage ts
+				db_adm.tbl_stoppage ts
 			WHERE
 				ts.dept = 'FIN'
 				AND ts.mesin = 'P3ST103'
 				AND YEAR(ts.tgl_buat) = '".$_GET['tahun']."'
 				AND MONTH(ts.tgl_buat) = '".$_GET['bulan']."'");
-			$rowdS03=mysqli_fetch_array($sqlS03);
-			$sqlS04 = mysqli_query($cona," SELECT
+			$rowdS03=sqlsrv_fetch_array($sqlS03, SQLSRV_FETCH_ASSOC);
+			$sqlS04 = sqlsrv_query($cona," SELECT
 				SUM(CASE WHEN ts.kode_stop = 'PM' THEN ts.durasi_jam_stop ELSE 0 END) AS PM,
 				SUM(CASE WHEN ts.kode_stop = 'KO' THEN ts.durasi_jam_stop ELSE 0 END) AS KO,
 				SUM(CASE WHEN ts.kode_stop = 'TG' THEN ts.durasi_jam_stop ELSE 0 END) AS TG,
@@ -1638,14 +1638,14 @@ function formatJamMenit($decimalHours) {
 				SUM(ts.durasi_jam) AS TOTAL,
 				SUM(ts.durasi_jam_stop) AS TOTAL_M
 			FROM
-				tbl_stoppage ts
+				db_adm.tbl_stoppage ts
 			WHERE
 				ts.dept = 'FIN'
 				AND ts.mesin = 'P3ST304'
 				AND YEAR(ts.tgl_buat) = '".$_GET['tahun']."'
 				AND MONTH(ts.tgl_buat) = '".$_GET['bulan']."'");
-			$rowdS04=mysqli_fetch_array($sqlS04);
-			$sqlS05 = mysqli_query($cona," SELECT
+			$rowdS04=sqlsrv_fetch_array($sqlS04, SQLSRV_FETCH_ASSOC);
+			$sqlS05 = sqlsrv_query($cona," SELECT
 				SUM(CASE WHEN ts.kode_stop = 'PM' THEN ts.durasi_jam_stop ELSE 0 END) AS PM,
 				SUM(CASE WHEN ts.kode_stop = 'KO' THEN ts.durasi_jam_stop ELSE 0 END) AS KO,
 				SUM(CASE WHEN ts.kode_stop = 'TG' THEN ts.durasi_jam_stop ELSE 0 END) AS TG,
@@ -1657,14 +1657,14 @@ function formatJamMenit($decimalHours) {
 				SUM(ts.durasi_jam) AS TOTAL,
 				SUM(ts.durasi_jam_stop) AS TOTAL_M
 			FROM
-				tbl_stoppage ts
+				db_adm.tbl_stoppage ts
 			WHERE
 				ts.dept = 'FIN'
 				AND ts.mesin = 'P3ST205'
 				AND YEAR(ts.tgl_buat) = '".$_GET['tahun']."'
 				AND MONTH(ts.tgl_buat) = '".$_GET['bulan']."'");
-			$rowdS05=mysqli_fetch_array($sqlS05);
-			$sqlS06 = mysqli_query($cona," SELECT
+			$rowdS05=sqlsrv_fetch_array($sqlS05, SQLSRV_FETCH_ASSOC);
+			$sqlS06 = sqlsrv_query($cona," SELECT
 				SUM(CASE WHEN ts.kode_stop = 'PM' THEN ts.durasi_jam_stop ELSE 0 END) AS PM,
 				SUM(CASE WHEN ts.kode_stop = 'KO' THEN ts.durasi_jam_stop ELSE 0 END) AS KO,
 				SUM(CASE WHEN ts.kode_stop = 'TG' THEN ts.durasi_jam_stop ELSE 0 END) AS TG,
@@ -1676,14 +1676,14 @@ function formatJamMenit($decimalHours) {
 				SUM(ts.durasi_jam) AS TOTAL,
 				SUM(ts.durasi_jam_stop) AS TOTAL_M
 			FROM
-				tbl_stoppage ts
+				db_adm.tbl_stoppage ts
 			WHERE
 				ts.dept = 'FIN'
 				AND ts.mesin = 'P3ST206'
 				AND YEAR(ts.tgl_buat) = '".$_GET['tahun']."'
 				AND MONTH(ts.tgl_buat) = '".$_GET['bulan']."'");
-			$rowdS06=mysqli_fetch_array($sqlS06);
-			$sqlS07 = mysqli_query($cona," SELECT
+			$rowdS06=sqlsrv_fetch_array($sqlS06, SQLSRV_FETCH_ASSOC);
+			$sqlS07 = sqlsrv_query($cona," SELECT
 				SUM(CASE WHEN ts.kode_stop = 'PM' THEN ts.durasi_jam_stop ELSE 0 END) AS PM,
 				SUM(CASE WHEN ts.kode_stop = 'KO' THEN ts.durasi_jam_stop ELSE 0 END) AS KO,
 				SUM(CASE WHEN ts.kode_stop = 'TG' THEN ts.durasi_jam_stop ELSE 0 END) AS TG,
@@ -1695,14 +1695,14 @@ function formatJamMenit($decimalHours) {
 				SUM(ts.durasi_jam) AS TOTAL,
 				SUM(ts.durasi_jam_stop) AS TOTAL_M
 			FROM
-				tbl_stoppage ts
+				db_adm.tbl_stoppage ts
 			WHERE
 				ts.dept = 'FIN'
 				AND ts.mesin = 'P3ST307'
 				AND YEAR(ts.tgl_buat) = '".$_GET['tahun']."'
 				AND MONTH(ts.tgl_buat) = '".$_GET['bulan']."'");
-			$rowdS07=mysqli_fetch_array($sqlS07);
-			$sqlS08 = mysqli_query($cona," SELECT
+			$rowdS07=sqlsrv_fetch_array($sqlS07, SQLSRV_FETCH_ASSOC);
+			$sqlS08 = sqlsrv_query($cona," SELECT
 				SUM(CASE WHEN ts.kode_stop = 'PM' THEN ts.durasi_jam_stop ELSE 0 END) AS PM,
 				SUM(CASE WHEN ts.kode_stop = 'KO' THEN ts.durasi_jam_stop ELSE 0 END) AS KO,
 				SUM(CASE WHEN ts.kode_stop = 'TG' THEN ts.durasi_jam_stop ELSE 0 END) AS TG,
@@ -1714,14 +1714,14 @@ function formatJamMenit($decimalHours) {
 				SUM(ts.durasi_jam) AS TOTAL,
 				SUM(ts.durasi_jam_stop) AS TOTAL_M
 			FROM
-				tbl_stoppage ts
+				db_adm.tbl_stoppage ts
 			WHERE
 				ts.dept = 'FIN'
 				AND ts.mesin = 'P3ST208'
 				AND YEAR(ts.tgl_buat) = '".$_GET['tahun']."'
 				AND MONTH(ts.tgl_buat) = '".$_GET['bulan']."'");
-			$rowdS08=mysqli_fetch_array($sqlS08);
-			$sqlS09 = mysqli_query($cona," SELECT
+			$rowdS08=sqlsrv_fetch_array($sqlS08, SQLSRV_FETCH_ASSOC);
+			$sqlS09 = sqlsrv_query($cona," SELECT
 				SUM(CASE WHEN ts.kode_stop = 'PM' THEN ts.durasi_jam_stop ELSE 0 END) AS PM,
 				SUM(CASE WHEN ts.kode_stop = 'KO' THEN ts.durasi_jam_stop ELSE 0 END) AS KO,
 				SUM(CASE WHEN ts.kode_stop = 'TG' THEN ts.durasi_jam_stop ELSE 0 END) AS TG,
@@ -1733,14 +1733,14 @@ function formatJamMenit($decimalHours) {
 				SUM(ts.durasi_jam) AS TOTAL,
 				SUM(ts.durasi_jam_stop) AS TOTAL_M
 			FROM
-				tbl_stoppage ts
+				db_adm.tbl_stoppage ts
 			WHERE
 				ts.dept = 'FIN'
 				AND ts.mesin = 'P3ST109'
 				AND YEAR(ts.tgl_buat) = '".$_GET['tahun']."'
 				AND MONTH(ts.tgl_buat) = '".$_GET['bulan']."' ");
-			$rowdS09=mysqli_fetch_array($sqlS09);
-			$sqlSOv01 = mysqli_query($cona," SELECT
+			$rowdS09=sqlsrv_fetch_array($sqlS09, SQLSRV_FETCH_ASSOC);
+			$sqlSOv01 = sqlsrv_query($cona," SELECT
 				SUM(CASE WHEN ts.kode_stop = 'PM' THEN ts.durasi_jam_stop ELSE 0 END) AS PM,
 				SUM(CASE WHEN ts.kode_stop = 'KO' THEN ts.durasi_jam_stop ELSE 0 END) AS KO,
 				SUM(CASE WHEN ts.kode_stop = 'TG' THEN ts.durasi_jam_stop ELSE 0 END) AS TG,
@@ -1752,13 +1752,13 @@ function formatJamMenit($decimalHours) {
 				SUM(ts.durasi_jam) AS TOTAL,
 				SUM(ts.durasi_jam_stop) AS TOTAL_M
 			FROM
-				tbl_stoppage ts
+				db_adm.tbl_stoppage ts
 			WHERE
 				ts.dept = 'FIN'
 				AND ts.mesin = 'P3DR101'
 				AND YEAR(ts.tgl_buat) = '".$_GET['tahun']."'
 				AND MONTH(ts.tgl_buat) = '".$_GET['bulan']."' ");
-			$rowdSOv01=mysqli_fetch_array($sqlSOv01);
+			$rowdSOv01=sqlsrv_fetch_array($sqlSOv01, SQLSRV_FETCH_ASSOC);
 		  ?>	
           <tr>
             <td align="center" valign="middle"><strong>ST 01</strong></td>
@@ -6693,52 +6693,52 @@ function formatJamMenit($decimalHours) {
 			$Tahun1 = substr($tahun, 2, 2);
 			$Bulan = str_pad($bln, 2, '0', STR_PAD_LEFT);
 
-			$sqlNCP = mysqli_query($cond, "SELECT 
-    ROUND(SUM(
-        CASE 
-            WHEN shift = 'A' THEN berat
-            -- WHEN shift = 'A+B' AND berat >= 1 THEN (FLOOR(berat)/2) + mod(berat,1) 
-            -- WHEN shift = 'C+A' AND berat >= 1 THEN (FLOOR(berat)/2)
-			WHEN shift = 'A+B' AND berat >= 1 THEN (berat/2) 
-            WHEN shift = 'C+A' AND berat >= 1 THEN (berat/2) 
-            ELSE 0 
-        END
-    ),2) AS kg_a,
+			$sqlNCP = sqlsrv_query($cond, "SELECT 
+				ROUND(SUM(
+					CASE 
+						WHEN shift = 'A' THEN berat
+						-- WHEN shift = 'A+B' AND berat >= 1 THEN (FLOOR(berat)/2) + mod(berat,1) 
+						-- WHEN shift = 'C+A' AND berat >= 1 THEN (FLOOR(berat)/2)
+						WHEN shift = 'A+B' AND berat >= 1 THEN (berat/2) 
+						WHEN shift = 'C+A' AND berat >= 1 THEN (berat/2) 
+						ELSE 0 
+					END
+				),2) AS kg_a,
 
-    ROUND(SUM(
-        CASE 
-            WHEN shift = 'B' THEN berat
-            -- WHEN shift = 'B+C' AND berat >= 1 THEN (FLOOR(berat)/2) + mod(berat,1) 
-            -- WHEN shift = 'A+B' AND berat >= 1 THEN (FLOOR(berat)/2)
-			WHEN shift = 'B+C' AND berat >= 1 THEN (berat/2) 
-            WHEN shift = 'A+B' AND berat >= 1 THEN (berat/2) 
-            ELSE 0 
-        END
-    ),2) AS kg_b,
- 
-    ROUND(SUM(
-         CASE 
-             WHEN shift = 'C' THEN berat             
-             -- WHEN shift = 'C+A' AND berat >= 1 THEN (FLOOR(berat)/2) + mod(berat,1) 
-             -- WHEN shift = 'B+C' AND berat >= 1 THEN (FLOOR(berat)/2)
-			 WHEN shift = 'C+A' AND berat >= 1 THEN (berat/2) 
-             WHEN shift = 'B+C' AND berat >= 1 THEN (berat/2)
-             ELSE 0 
-         END
-     ),2) AS kg_c
+				ROUND(SUM(
+					CASE 
+						WHEN shift = 'B' THEN berat
+						-- WHEN shift = 'B+C' AND berat >= 1 THEN (FLOOR(berat)/2) + mod(berat,1) 
+						-- WHEN shift = 'A+B' AND berat >= 1 THEN (FLOOR(berat)/2)
+						WHEN shift = 'B+C' AND berat >= 1 THEN (berat/2) 
+						WHEN shift = 'A+B' AND berat >= 1 THEN (berat/2) 
+						ELSE 0 
+					END
+				),2) AS kg_b,
+			
+				ROUND(SUM(
+					CASE 
+						WHEN shift = 'C' THEN berat             
+						-- WHEN shift = 'C+A' AND berat >= 1 THEN (FLOOR(berat)/2) + mod(berat,1) 
+						-- WHEN shift = 'B+C' AND berat >= 1 THEN (FLOOR(berat)/2)
+						WHEN shift = 'C+A' AND berat >= 1 THEN (berat/2) 
+						WHEN shift = 'B+C' AND berat >= 1 THEN (berat/2)
+						ELSE 0 
+					END
+				),2) AS kg_c
 
-FROM tbl_ncp_qcf_now 
-WHERE dept = 'FIN' 
-  AND ncp_hitung = 'ya' 
-  AND no_ncp LIKE '".$Tahun1."/".$Bulan."/%'
-  AND NOT (
-      perbaikan LIKE '%DISPOSISI%' 
-      OR perbaikan LIKE '%BS%' 
-      OR perbaikan LIKE '%CUT LOSS%' 
-      OR perbaikan LIKE '%POTONG BUANG%'
-  )
-  AND NOT status = 'Cancel'");
-			$rowNCP = mysqli_fetch_array($sqlNCP);
+			FROM db_qc.tbl_ncp_qcf_now 
+			WHERE dept = 'FIN' 
+			AND ncp_hitung = 'ya' 
+			AND no_ncp LIKE '".$Tahun1."/".$Bulan."/%'
+			AND NOT (
+				perbaikan LIKE '%DISPOSISI%' 
+				OR perbaikan LIKE '%BS%' 
+				OR perbaikan LIKE '%CUT LOSS%' 
+				OR perbaikan LIKE '%POTONG BUANG%'
+			)
+			AND NOT status = 'Cancel'");
+			$rowNCP = sqlsrv_fetch_array($sqlNCP, SQLSRV_FETCH_ASSOC);
 			
 			$sqlsK_fin_jadiSHF  = sqlsrv_query($conS, "SELECT
 				SUM(CASE WHEN a.shift='A' AND (a.kondisi_kain = 'BASAH' OR a.kondisi_kain = 'KERING') THEN a.qty ELSE 0 END) AS kering_a,
