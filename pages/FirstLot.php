@@ -6,13 +6,70 @@ include "koneksi.php";
 $user_ip = $_SERVER['REMOTE_ADDR'];
 
 // Cek apakah sudah dibuka oleh IP 10.0.5.132
-$check = mysqli_query($cona, "SELECT * FROM tbl_firstlot_lock LIMIT 1");
-$unlocked = mysqli_num_rows($check) > 0;
+$qLock = "SELECT TOP 1 ip_address, unlocked_at FROM db_adm.tbl_firstlot_lock";
+$stmtLock = sqlsrv_query($cona, $qLock);
+
+if ($stmtLock === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
+
+$lockRow = sqlsrv_fetch_array($stmtLock, SQLSRV_FETCH_ASSOC);
+$unlocked = ($lockRow !== null);
 
 // if (!$unlocked && $user_ip === '10.0.5.132') {
-//     // simpan status unlocked
-//     mysqli_query($cona, "INSERT INTO tbl_firstlot_lock (ip_address, unlocked_at) VALUES ('$user_ip', NOW())");
+//     $qIns = "INSERT INTO db_adm.tbl_firstlot_lock (ip_address, unlocked_at) VALUES (?, GETDATE())";
+//     $stmtIns = sqlsrv_query($cona, $qIns, [$user_ip]);
+//     if ($stmtIns === false) {
+//         die(print_r(sqlsrv_errors(), true));
+//     }
+//     $unlocked = true;
 // }
+
+function firstlot_get_saved($cona, $buyer, $order, $style, $po, $item, $warna, $season) {
+
+    $buyer  = trim((string)$buyer);
+    $order  = trim((string)$order);
+    $style  = trim((string)$style);
+    $po     = trim((string)$po);
+    $item   = trim((string)$item);
+    $warna  = trim((string)$warna);
+    $season = trim((string)$season);
+
+    $seasonParam = ($season === '') ? null : $season;
+
+    $sql = "
+        SELECT TOP 1
+            demand,
+            lot,
+            submit_round,
+            comm_int_qc,
+            comm_indra,
+            comm_duc,
+            CONVERT(varchar(10), tgl_kirim, 23)    AS tgl_kirim,
+            CONVERT(varchar(10), tgl_approved, 23) AS tgl_approved
+        FROM db_adm.tbl_firstlot
+        WHERE buyer   = ?
+          AND [order] = ?
+          AND style   = ?
+          AND po      = ?
+          AND item    = ?
+          AND warna   = ?
+          AND (
+                (season = ?)
+             OR (season IS NULL AND ? IS NULL)
+          )
+    ";
+
+    $params = [$buyer, $order, $style, $po, $item, $warna, $seasonParam, $seasonParam];
+
+    $stmt = sqlsrv_query($cona, $sql, $params);
+    if ($stmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+    return $row ?: [];
+}
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -207,16 +264,16 @@ $unlocked = mysqli_num_rows($check) > 0;
                                         ?>
                                         <?php while ($resMain = db2_fetch_assoc($execMain)) { ?>
                                             <?php
-                                            // cek ke MySQL apakah row sudah ada
-                                            $sql = "SELECT * FROM tbl_firstlot WHERE buyer = '$resMain[BUYER]' 
-                                                                        AND `order`  = '$resMain[SALESORDER]'
-                                                                        AND style  = '$resMain[GARMENT_STYLE]'
-                                                                        AND po     = '$resMain[NO_PO]'
-                                                                        AND item   = '$resMain[ITEM]'
-                                                                        AND warna  = '$resMain[WARNA]'
-                                                                        AND season = '$resMain[SEASON]'";
-                                            $execSecond = mysqli_query($cona, $sql);
-                                            $saved      = mysqli_fetch_assoc($execSecond);
+                                            $saved = firstlot_get_saved(
+                                                        $cona,
+                                                        $resMain['BUYER'],
+                                                        $resMain['SALESORDER'],
+                                                        $resMain['GARMENT_STYLE'],
+                                                        $resMain['NO_PO'],
+                                                        $resMain['ITEM'],
+                                                        $resMain['WARNA'],
+                                                        $resMain['SEASON']
+                                                    );
                                             ?>
                                             <tr>
                                                 <td><?= $no++; ?></td>
@@ -231,14 +288,14 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-url="pages/editable/save_demand.php"
                                                             data-source="pages/editable/get_demand.php?order=<?= $resMain['SALESORDER']; ?>&orderline=<?= $resMain['ORDERLINE']; ?>"
                                                             data-params='{
-                                                    "buyer":"<?= htmlspecialchars($resMain['BUYER']); ?>",
-                                                    "salesorder":"<?= htmlspecialchars($resMain['SALESORDER']); ?>",
-                                                    "garment_style":"<?= htmlspecialchars($resMain['GARMENT_STYLE']); ?>",
-                                                    "no_po":"<?= htmlspecialchars($resMain['NO_PO']); ?>",
-                                                    "item":"<?= htmlspecialchars($resMain['ITEM']); ?>",
-                                                    "warna":"<?= htmlspecialchars($resMain['WARNA']); ?>",
-                                                    "season":"<?= htmlspecialchars($resMain['SEASON']); ?>"
-                                                }'>
+                                                                            "buyer":"<?= htmlspecialchars($resMain['BUYER']); ?>",
+                                                                            "salesorder":"<?= htmlspecialchars($resMain['SALESORDER']); ?>",
+                                                                            "garment_style":"<?= htmlspecialchars($resMain['GARMENT_STYLE']); ?>",
+                                                                            "no_po":"<?= htmlspecialchars($resMain['NO_PO']); ?>",
+                                                                            "item":"<?= htmlspecialchars($resMain['ITEM']); ?>",
+                                                                            "warna":"<?= htmlspecialchars($resMain['WARNA']); ?>",
+                                                                            "season":"<?= htmlspecialchars($resMain['SEASON']); ?>"
+                                                                        }'>
                                                             Pilih Demand
                                                         </a>
                                                     <?php endif; ?>
@@ -279,9 +336,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-pk="<?= $resMain['SALESORDER'] . '|' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_lot.php"
                                                             data-source="pages/editable/get_lot.php?order=<?= $resMain['SALESORDER']; ?>&orderline=<?= $resMain['ORDERLINE']; ?>"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'>
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>">
                                                             Pilih Lot
                                                         </a>
                                                     <?php endif; ?>
@@ -298,9 +353,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-type="text"
                                                             data-pk="<?= $resMain['SALESORDER'] . '-' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_submit_round.php"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>"
                                                             data-value="">
                                                             pilih round
                                                         </a>
@@ -317,9 +370,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-type="textarea"
                                                             data-pk="<?= $resMain['SALESORDER'] . '-' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_comm_int_qc.php"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>"
                                                             data-value=""
                                                             data-maxlength="200">
                                                             comment QC
@@ -336,9 +387,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-type="textarea"
                                                             data-pk="<?= $resMain['SALESORDER'] . '-' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_comm_indra.php"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>"
                                                             data-value="">
                                                             comment Pak Indra
                                                         </a>
@@ -354,9 +403,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-type="textarea"
                                                             data-pk="<?= $resMain['SALESORDER'] . '-' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_comm_duc.php"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>"
                                                             data-value="">
                                                             comment Mr Duc
                                                         </a>
@@ -484,16 +531,16 @@ $unlocked = mysqli_num_rows($check) > 0;
                                         ?>
                                         <?php while ($resMain = db2_fetch_assoc($execMain)) { ?>
                                             <?php
-                                            // cek ke MySQL apakah row sudah ada
-                                            $sql = "SELECT * FROM tbl_firstlot WHERE buyer = '$resMain[BUYER]' 
-                                                                        AND `order`  = '$resMain[SALESORDER]'
-                                                                        AND style  = '$resMain[GARMENT_STYLE]'
-                                                                        AND po     = '$resMain[NO_PO]'
-                                                                        AND item   = '$resMain[ITEM]'
-                                                                        AND warna  = '$resMain[WARNA]'
-                                                                        AND season = '$resMain[SEASON]'";
-                                            $execSecond = mysqli_query($cona, $sql);
-                                            $saved      = mysqli_fetch_assoc($execSecond);
+                                            $saved = firstlot_get_saved(
+                                                        $cona,
+                                                        $resMain['BUYER'],
+                                                        $resMain['SALESORDER'],
+                                                        $resMain['GARMENT_STYLE'],
+                                                        $resMain['NO_PO'],
+                                                        $resMain['ITEM'],
+                                                        $resMain['WARNA'],
+                                                        $resMain['SEASON']
+                                                    );
                                             ?>
                                             <tr>
                                                 <td><?= $no++; ?></td>
@@ -556,9 +603,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-pk="<?= $resMain['SALESORDER'] . '|' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_lot.php"
                                                             data-source="pages/editable/get_lot.php?order=<?= $resMain['SALESORDER']; ?>&orderline=<?= $resMain['ORDERLINE']; ?>"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'>
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>">
                                                             Pilih Lot
                                                         </a>
                                                     <?php endif; ?>
@@ -575,9 +620,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-type="text"
                                                             data-pk="<?= $resMain['SALESORDER'] . '-' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_submit_round.php"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>"
                                                             data-value="">
                                                             pilih round
                                                         </a>
@@ -594,9 +637,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-type="textarea"
                                                             data-pk="<?= $resMain['SALESORDER'] . '-' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_comm_int_qc.php"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>"
                                                             data-value=""
                                                             data-maxlength="200">
                                                             comment QC
@@ -613,9 +654,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-type="textarea"
                                                             data-pk="<?= $resMain['SALESORDER'] . '-' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_comm_indra.php"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>"
                                                             data-value="">
                                                             comment Pak Indra
                                                         </a>
@@ -631,9 +670,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-type="textarea"
                                                             data-pk="<?= $resMain['SALESORDER'] . '-' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_comm_duc.php"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>"
                                                             data-value="">
                                                             comment Mr Duc
                                                         </a>
@@ -761,16 +798,16 @@ $unlocked = mysqli_num_rows($check) > 0;
                                         ?>
                                         <?php while ($resMain = db2_fetch_assoc($execMain)) { ?>
                                             <?php
-                                            // cek ke MySQL apakah row sudah ada
-                                            $sql = "SELECT * FROM tbl_firstlot WHERE buyer = '$resMain[BUYER]' 
-                                                                        AND `order`  = '$resMain[SALESORDER]'
-                                                                        AND style  = '$resMain[GARMENT_STYLE]'
-                                                                        AND po     = '$resMain[NO_PO]'
-                                                                        AND item   = '$resMain[ITEM]'
-                                                                        AND warna  = '$resMain[WARNA]'
-                                                                        AND season = '$resMain[SEASON]'";
-                                            $execSecond = mysqli_query($cona, $sql);
-                                            $saved      = mysqli_fetch_assoc($execSecond);
+                                            $saved = firstlot_get_saved(
+                                                        $cona,
+                                                        $resMain['BUYER'],
+                                                        $resMain['SALESORDER'],
+                                                        $resMain['GARMENT_STYLE'],
+                                                        $resMain['NO_PO'],
+                                                        $resMain['ITEM'],
+                                                        $resMain['WARNA'],
+                                                        $resMain['SEASON']
+                                                    );
                                             ?>
                                             <tr>
                                                 <td><?= $no++; ?></td>
@@ -833,9 +870,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-pk="<?= $resMain['SALESORDER'] . '|' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_lot.php"
                                                             data-source="pages/editable/get_lot.php?order=<?= $resMain['SALESORDER']; ?>&orderline=<?= $resMain['ORDERLINE']; ?>"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'>
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>">
                                                             Pilih Lot
                                                         </a>
                                                     <?php endif; ?>
@@ -852,9 +887,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-type="text"
                                                             data-pk="<?= $resMain['SALESORDER'] . '-' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_submit_round.php"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>"
                                                             data-value="">
                                                             pilih round
                                                         </a>
@@ -871,9 +904,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-type="textarea"
                                                             data-pk="<?= $resMain['SALESORDER'] . '-' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_comm_int_qc.php"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>"
                                                             data-value=""
                                                             data-maxlength="200">
                                                             comment QC
@@ -890,9 +921,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-type="textarea"
                                                             data-pk="<?= $resMain['SALESORDER'] . '-' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_comm_indra.php"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>"
                                                             data-value="">
                                                             comment Pak Indra
                                                         </a>
@@ -908,9 +937,7 @@ $unlocked = mysqli_num_rows($check) > 0;
                                                             data-type="textarea"
                                                             data-pk="<?= $resMain['SALESORDER'] . '-' . $resMain['ORDERLINE']; ?>"
                                                             data-url="pages/editable/save_comm_duc.php"
-                                                            data-params='{
-                                                    "demand":"<?= $saved['demand']; ?>"
-                                                }'
+                                                            data-demand="<?= htmlspecialchars($saved['demand'] ?? ''); ?>"
                                                             data-value="">
                                                             comment Mr Duc
                                                         </a>
@@ -963,16 +990,97 @@ $unlocked = mysqli_num_rows($check) > 0;
     <?php endif; ?>
 
     <script>
-        $(function() {
-            $('.table-first-lot').DataTable({
-                'paging': true,
-                'ordering': false,
-                'info': false,
-                'searching': true
+        $(function () {
+
+            function initEditable() {
+                $('.editable-demand, .editable-lot, .editable-submit-round, .editable-comm-int-qc, .editable-comm-indra, .editable-comm-duc').editable('destroy');
+
+                $('.editable-demand').editable({
+                    mode: 'inline',
+                    showbuttons: true,
+                    onblur: 'ignore',
+                    ajaxOptions: { type: 'POST', dataType: 'text' },
+
+                    success: function (response, newValue) {
+                        var demandBaru = (newValue || '').toString().trim();
+                        var $tr = $(this).closest('tr');
+
+                        $tr.find('.editable-lot').attr('data-demand', demandBaru);
+                        $tr.find('.editable-submit-round').attr('data-demand', demandBaru);
+                        $tr.find('.editable-comm-int-qc').attr('data-demand', demandBaru);
+                        $tr.find('.editable-comm-indra').attr('data-demand', demandBaru);
+                        $tr.find('.editable-comm-duc').attr('data-demand', demandBaru);
+
+                        $tr.find('input.tgl-kirim').attr('data-pk', demandBaru);
+                        $tr.find('input.tgl-approve').attr('data-pk', demandBaru);
+
+                        // $(this).replaceWith('<span>' + $('<div/>').text(demandBaru).html() + '</span>');
+                    }
+                });
+
+                // LOT
+                $('.editable-lot').editable({
+                    mode: 'inline',
+                    showbuttons: true,
+                    onblur: 'ignore',
+                    ajaxOptions: { type: 'POST', dataType: 'text' },
+
+                    params: function (params) {
+                        var demand = ($(this).attr('data-demand') || '').toString().trim();
+                        params.demand = demand;
+                        return params;
+                    }
+                });
+
+                $('.editable-submit-round').editable({
+                    mode: 'inline',
+                    showbuttons: true,
+                    onblur: 'ignore',
+                    ajaxOptions: { type: 'POST', dataType: 'text' },
+
+                    params: function (params) {
+                        var demand = ($(this).attr('data-demand') || '').toString().trim();
+                        params.demand = demand;
+                        return params;
+                    }
+                });
+
+                $('.editable-comm-int-qc, .editable-comm-indra, .editable-comm-duc').editable({
+                    mode: 'inline',
+                    showbuttons: true,
+                    onblur: 'ignore',
+                    ajaxOptions: { type: 'POST', dataType: 'text' },
+                    params: function (params) {
+                        var demand = ($(this).attr('data-demand') || '').toString().trim();
+                        params.demand = demand;
+                        return params;
+                    }
+                });
+
+            }
+
+            $('.table-first-lot').each(function () {
+                $(this).DataTable({
+                    paging: true,
+                    ordering: false,
+                    info: false,
+                    searching: true,
+                    drawCallback: function () {
+                    initEditable();
+                    }
+                });
             });
 
-        })
-    </script>
+            initEditable();
 
+            $(document).on('click',
+                'a.editable-demand, a.editable-lot, a.editable-submit-round, a.editable-comm-int-qc, a.editable-comm-indra, a.editable-comm-duc',
+                function(e){
+                    e.stopPropagation();
+                }
+            );
+
+        });
+    </script>
 
 </body>
