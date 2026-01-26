@@ -25,7 +25,7 @@ include "koneksi.php";
             <input name="awal" type="text" class="form-control pull-right" id="datepicker" placeholder="Tanggal Awal" autocomplete="off" required />
           </div>
         </div>
-		<div class="col-sm-2" >
+		<div class="col-sm-2 hide">
 			<input class="form-check-input" type="checkbox" value="1" id="previewCheckbox">
     		<label class="form-check-label" for="previewCheckbox">
       		Preview
