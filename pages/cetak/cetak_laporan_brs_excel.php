@@ -103,53 +103,149 @@ border:hidden;
         $end_formatted = $date_start_tbl2->format('Y-m-d H:i:s');
 	
 		// Data NCP
-        $qry_ncp = "SELECT
-						SUM(berat) AS qty_ncp,
-						SUM(
-							CASE 
-								WHEN masalah REGEXP 'Bulu|Permukaan Berbulu|Bulu Garukan Reject|Bulu Garukan Tipis|Bulu Garukan Tebal|Bulu Garukan Tidak Rata|Bulu Garukan Rontok|Botak|Bulu Garukan Berbiji|Bulu Kain Panjang|Tidak Kena Garuk|Flamability Reject|After Wash Reject|Bulkines Reject|Permukaan Kain Berbulu|Bulu Garukan Pecah|Permukaan Reject|Serat Bengkok|Serat Renggang|Strectch Mati|Stretch Kurang Elastis|Garukan di Muka Kain|Horizon|Thickness Reject|Mengkerut'
-								THEN berat ELSE 0 
-							END
-						) AS garuk_fleece,
-						SUM(
-							CASE 
-								WHEN masalah REGEXP 'Kaitan Jarum|Snagging|Bekas Tarik-tarik Snagging|Serat Pecah'
-								THEN berat ELSE 0 
-							END
-						) AS garuk_ap,
-						SUM(
-							CASE 
-								WHEN masalah REGEXP 'Biji Anti Pilling Reject|Biji Anti Pilling Tidak Rata|Biji Anti Pilling Besar|Biji Anti Pilling Kecil|Pilling Reject|Appearance Jelek|Gesekan'
-								THEN berat ELSE 0 
-							END
-						) AS oven_ap,
-						SUM(
-							CASE 
-								WHEN masalah REGEXP 'Garis Vertikal|Garis Diagonal|Horizontal|Shading \\(Garukan, Peachskin, Potong Bulu\\)|Rapuh|Kena Peach Skin di Terry|Beda Warna'
-								THEN berat ELSE 0 
-							END
-						) AS peach_skin,
-						SUM(
-							CASE 
-								WHEN masalah REGEXP 'Kena Potong Shearing|Terry Putus|Sobek|Lebar Reject|Lebar Kurang|Lebar Lebih|Kena Pisau Garuk'
-								THEN berat ELSE 0 
-							END
-						) AS pb_lain,
-						SUM(
-							CASE 
-								WHEN masalah REGEXP 'Kotor Tanah|Kontaminasi|Pinggiran Kain Kuning|Kena Warna|Kena Minyak|Kotor Kapas|Bintik Oksidasi|Gosong|Belang Steam|Belang Yang Hwa|Belang Spiral|Bercak Steam|Bolong|Bocor|Cabut-Cabut|Peach Skin Reject|Peachskin Tipis|Peachskin Tebal|Peachskin Tidak Rata|Serat Kayu|Tidak Kena Peach Skin|Beda Roll|Bursting Strength Reject|Salah Peach Skin|Peached Berbiji|Gramasi Ringan|Gramasi Berat|Cakar Ayam|Krismark|Garis Lipat|Keriput|Bekas Lipatan Anti Pilling|Gesekan Anti Pilling|Kusut|Kena Angin|Handfeel Reject|Handfeel Kurang Soft|Luntur'
-								THEN berat ELSE 0 
-							END
-						) AS oven_ap_lain
-					FROM
-						tbl_ncp_qcf_now
-					WHERE
-						STATUS IN ('Belum OK', 'OK', 'BS', 'Disposisi')
-						AND dept = 'BRS'
-						AND ncp_hitung = 'ya'
-                        AND tgl_buat between '$start_formatted' and '$end_formatted'";
-        $qry1 = mysqli_query($cond, $qry_ncp);
-        $row_ncp = mysqli_fetch_assoc($qry1);
+        $qry_ncp = "
+			SELECT
+				SUM(berat) AS qty_ncp,
+
+				SUM(
+					CASE 
+						WHEN 
+							masalah LIKE '%Bulu%' OR
+							masalah LIKE '%Permukaan Berbulu%' OR
+							masalah LIKE '%Bulu Garukan Reject%' OR
+							masalah LIKE '%Bulu Garukan Tipis%' OR
+							masalah LIKE '%Bulu Garukan Tebal%' OR
+							masalah LIKE '%Bulu Garukan Tidak Rata%' OR
+							masalah LIKE '%Bulu Garukan Rontok%' OR
+							masalah LIKE '%Botak%' OR
+							masalah LIKE '%Bulu Garukan Berbiji%' OR
+							masalah LIKE '%Bulu Kain Panjang%' OR
+							masalah LIKE '%Tidak Kena Garuk%' OR
+							masalah LIKE '%Flamability Reject%' OR
+							masalah LIKE '%After Wash Reject%' OR
+							masalah LIKE '%Bulkines Reject%' OR
+							masalah LIKE '%Permukaan Kain Berbulu%' OR
+							masalah LIKE '%Bulu Garukan Pecah%' OR
+							masalah LIKE '%Permukaan Reject%' OR
+							masalah LIKE '%Serat Bengkok%' OR
+							masalah LIKE '%Serat Renggang%' OR
+							masalah LIKE '%Strectch Mati%' OR
+							masalah LIKE '%Stretch Kurang Elastis%' OR
+							masalah LIKE '%Garukan di Muka Kain%' OR
+							masalah LIKE '%Horizon%' OR
+							masalah LIKE '%Thickness Reject%' OR
+							masalah LIKE '%Mengkerut%'
+						THEN berat ELSE 0 
+					END
+				) AS garuk_fleece,
+
+				SUM(
+					CASE 
+						WHEN 
+							masalah LIKE '%Kaitan Jarum%' OR
+							masalah LIKE '%Snagging%' OR
+							masalah LIKE '%Bekas Tarik-tarik Snagging%' OR
+							masalah LIKE '%Serat Pecah%'
+						THEN berat ELSE 0 
+					END
+				) AS garuk_ap,
+
+				SUM(
+					CASE 
+						WHEN 
+							masalah LIKE '%Biji Anti Pilling Reject%' OR
+							masalah LIKE '%Biji Anti Pilling Tidak Rata%' OR
+							masalah LIKE '%Biji Anti Pilling Besar%' OR
+							masalah LIKE '%Biji Anti Pilling Kecil%' OR
+							masalah LIKE '%Pilling Reject%' OR
+							masalah LIKE '%Appearance Jelek%' OR
+							masalah LIKE '%Gesekan%'
+						THEN berat ELSE 0 
+					END
+				) AS oven_ap,
+
+				SUM(
+					CASE 
+						WHEN 
+							masalah LIKE '%Garis Vertikal%' OR
+							masalah LIKE '%Garis Diagonal%' OR
+							masalah LIKE '%Horizontal%' OR
+							masalah LIKE '%Shading (Garukan, Peachskin, Potong Bulu)%' OR
+							masalah LIKE '%Rapuh%' OR
+							masalah LIKE '%Kena Peach Skin di Terry%' OR
+							masalah LIKE '%Beda Warna%'
+						THEN berat ELSE 0 
+					END
+				) AS peach_skin,
+
+				SUM(
+					CASE 
+						WHEN 
+							masalah LIKE '%Kena Potong Shearing%' OR
+							masalah LIKE '%Terry Putus%' OR
+							masalah LIKE '%Sobek%' OR
+							masalah LIKE '%Lebar Reject%' OR
+							masalah LIKE '%Lebar Kurang%' OR
+							masalah LIKE '%Lebar Lebih%' OR
+							masalah LIKE '%Kena Pisau Garuk%'
+						THEN berat ELSE 0 
+					END
+				) AS pb_lain,
+
+				SUM(
+					CASE 
+						WHEN 
+							masalah LIKE '%Kotor Tanah%' OR
+							masalah LIKE '%Kontaminasi%' OR
+							masalah LIKE '%Pinggiran Kain Kuning%' OR
+							masalah LIKE '%Kena Warna%' OR
+							masalah LIKE '%Kena Minyak%' OR
+							masalah LIKE '%Kotor Kapas%' OR
+							masalah LIKE '%Bintik Oksidasi%' OR
+							masalah LIKE '%Gosong%' OR
+							masalah LIKE '%Belang Steam%' OR
+							masalah LIKE '%Belang Yang Hwa%' OR
+							masalah LIKE '%Belang Spiral%' OR
+							masalah LIKE '%Bercak Steam%' OR
+							masalah LIKE '%Bolong%' OR
+							masalah LIKE '%Bocor%' OR
+							masalah LIKE '%Cabut-Cabut%' OR
+							masalah LIKE '%Peach Skin Reject%' OR
+							masalah LIKE '%Peachskin Tipis%' OR
+							masalah LIKE '%Peachskin Tebal%' OR
+							masalah LIKE '%Peachskin Tidak Rata%' OR
+							masalah LIKE '%Serat Kayu%' OR
+							masalah LIKE '%Tidak Kena Peach Skin%' OR
+							masalah LIKE '%Beda Roll%' OR
+							masalah LIKE '%Bursting Strength Reject%' OR
+							masalah LIKE '%Salah Peach Skin%' OR
+							masalah LIKE '%Peached Berbiji%' OR
+							masalah LIKE '%Gramasi Ringan%' OR
+							masalah LIKE '%Gramasi Berat%' OR
+							masalah LIKE '%Cakar Ayam%' OR
+							masalah LIKE '%Krismark%' OR
+							masalah LIKE '%Garis Lipat%' OR
+							masalah LIKE '%Keriput%' OR
+							masalah LIKE '%Bekas Lipatan Anti Pilling%' OR
+							masalah LIKE '%Gesekan Anti Pilling%' OR
+							masalah LIKE '%Kusut%' OR
+							masalah LIKE '%Kena Angin%' OR
+							masalah LIKE '%Handfeel Reject%' OR
+							masalah LIKE '%Handfeel Kurang Soft%' OR
+							masalah LIKE '%Luntur%'
+						THEN berat ELSE 0 
+					END
+				) AS oven_ap_lain
+
+			FROM db_qc.tbl_ncp_qcf_now
+			WHERE
+				[status] IN ('Belum OK', 'OK', 'BS', 'Disposisi')
+				AND dept = 'BRS'
+				AND ncp_hitung = 'ya'
+				AND tgl_buat BETWEEN '$start_formatted' AND '$end_formatted'
+			";
+        $qry1 = sqlsrv_query($cond, $qry_ncp);
+        $row_ncp = sqlsrv_fetch_array($qry1, SQLSRV_FETCH_ASSOC);
 
         // print_r( $startDate);
     ?>
@@ -217,19 +313,24 @@ border:hidden;
       </tr>
 	  <?php
                 // Query tetap (kalau kamu perlu datanya juga)
-                    $query = "SELECT DISTINCT CAST(tgl_buat AS DATE) AS tgl_cutoff
-								FROM db_brushing.tbl_produksi
-								WHERE tgl_buat >= '{$startDate->format("Y-m-d")} 23:00:00'
-								AND tgl_buat <= '{$endDate->format("Y-m-d")} 23:00:00'
-								ORDER BY tgl_cutoff ASC
-							";
-                    $result = sqlsrv_query($conb, $query);
-                // Array tanggal yang punya data
-                    $tanggal_ada_data = [];
-                    while ($row = sqlsrv_fetch_array($result)) {
-						// print_r($row['tgl_cutoff']);
-                        $tanggal_ada_data[cekTanggal($row['tgl_cutoff'],'Y-m-d')] = true;
-                    }
+				$query = "SELECT DISTINCT CAST(tgl_buat AS DATE) AS tgl_cutoff
+							FROM db_brushing.tbl_produksi
+							WHERE tgl_buat >= '{$startDate->format("Y-m-d")} 23:00:00'
+							AND tgl_buat <= '{$endDate->format("Y-m-d")} 23:00:00'
+							ORDER BY tgl_cutoff ASC
+						";
+				$result = sqlsrv_query($conb, $query);
+
+				// Array tanggal yang punya data
+				$tanggal_ada_data = [];
+				while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+					// sqlsrv bisa return DateTime object
+					$tgl_cutoff = ($row['tgl_cutoff'] instanceof DateTime)
+						? $row['tgl_cutoff']->format('Y-m-d')
+						: $row['tgl_cutoff'];
+
+					$tanggal_ada_data[cekTanggal($tgl_cutoff,'Y-m-d')] = true;
+				}
 
                 // Loop dari awal sampai akhir bulan
                 $interval = new DateInterval('P1D');
@@ -384,7 +485,7 @@ border:hidden;
 								tgl_buat between'$start_time' and '$end_time'";
 							$stmt_tbl2 = sqlsrv_query($conb, $query_tbl2);
 							$row_tbl2 = sqlsrv_fetch_array($stmt_tbl2, SQLSRV_FETCH_ASSOC);
-							// $cek_tbl2 = mysqli_num_rows($stmt_tbl2);
+							// $cek_tbl2 = sqlsrv_num_rows($stmt_tbl2);
 						// End
 						// Jumlah KK perbaikan
 						
@@ -700,8 +801,8 @@ border:hidden;
                             // AND (
                             //     proses LIKE '%bantu%' OR proses LIKE '%NCP%'
                             // )";
-                            // $bantu_ncp_result = mysqli_query($conb, $bantu_ncp);
-                            // $bantu_ncp_row = mysqli_fetch_assoc($bantu_ncp_result);
+                            // $bantu_ncp_result = sqlsrv_query($conb, $bantu_ncp);
+                            // $bantu_ncp_row = sqlsrv_fetch_array($bantu_ncp_result);
                             $bantu_ncp_row = $data_table1['bantu'];
                                 $display_ncp = ($bantu_ncp_row != 0) ? $bantu_ncp_row : '-';
                                 echo "<td align='center'>{$display_ncp}</td>";
@@ -1022,555 +1123,619 @@ border:hidden;
             <!-- Untuk Kolom Garuk -->
                 <?php
                 $query_garuk9 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'TG' AND mesin IN ('P3RS1A1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_A_TG,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'TG' AND mesin IN ('P3RS1A1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_A_TG,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'TG' AND mesin IN ('P3RS1B1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_B_TG,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'TG' AND mesin IN ('P3RS1B1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_B_TG,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'TG' AND mesin IN ('P3RS1C1','P3RS1C2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_C_TG,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'TG' AND mesin IN ('P3RS1C1','P3RS1C2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_C_TG,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'TG' AND mesin IN ('P3RS1D1','P3RS1D2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_D_TG,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'TG' AND mesin IN ('P3RS1D1','P3RS1D2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_D_TG,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'TG' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_E_TG,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'TG' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_E_TG,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'TG' AND mesin IN ('P3RS1F1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_F_TG
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk9    = mysqli_query($cona,$query_garuk9);
-                            $tg_g           = mysqli_fetch_assoc($stmt_garuk9);
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'TG' AND mesin IN ('P3RS1F1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_F_TG
+					FROM
+						db_adm.tbl_stoppage
+					WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+
+                            $stmt_garuk9    = sqlsrv_query($cona,$query_garuk9);
+                            $tg_g           = sqlsrv_fetch_array($stmt_garuk9, SQLSRV_FETCH_ASSOC);
                 $query_garuk8 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'GT' AND mesin IN ('P3RS1A1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_A_GT,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'GT' AND mesin IN ('P3RS1A1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_A_GT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'GT' AND mesin IN ('P3RS1B1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_B_GT,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'GT' AND mesin IN ('P3RS1B1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_B_GT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'GT' AND mesin IN ('P3RS1C1','P3RS1C2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_C_GT,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'GT' AND mesin IN ('P3RS1C1','P3RS1C2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_C_GT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'GT' AND mesin IN ('P3RS1D1','P3RS1D2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_D_GT,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'GT' AND mesin IN ('P3RS1D1','P3RS1D2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_D_GT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'GT' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_E_GT,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'GT' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_E_GT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'GT' AND mesin IN ('P3RS1F1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_F_GT
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk8    = mysqli_query($cona,$query_garuk8);
-                            $gt_g             = mysqli_fetch_assoc($stmt_garuk8);
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'GT' AND mesin IN ('P3RS1F1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_F_GT
+					FROM
+						db_adm.tbl_stoppage
+					WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+                            $stmt_garuk8    = sqlsrv_query($cona,$query_garuk8);
+                            $gt_g             = sqlsrv_fetch_array($stmt_garuk8, SQLSRV_FETCH_ASSOC);
                 $query_garuk7 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PM' AND mesin IN ('P3RS1A1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_A_PM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PM' AND mesin IN ('P3RS1A1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_A_PM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PM' AND mesin IN ('P3RS1B1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_B_PM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PM' AND mesin IN ('P3RS1B1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_B_PM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PM' AND mesin IN ('P3RS1C1','P3RS1C2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_C_PM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PM' AND mesin IN ('P3RS1C1','P3RS1C2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_C_PM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PM' AND mesin IN ('P3RS1D1','P3RS1D2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_D_PM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PM' AND mesin IN ('P3RS1D1','P3RS1D2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_D_PM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PM' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_E_PM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PM' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_E_PM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PM' AND mesin IN ('P3RS1F1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_F_PM
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk7    = mysqli_query($cona,$query_garuk7);
-                            $pm_g             = mysqli_fetch_assoc($stmt_garuk7);
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PM' AND mesin IN ('P3RS1F1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_F_PM
+					FROM
+						db_adm.tbl_stoppage
+					WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+
+                            $stmt_garuk7    = sqlsrv_query($cona,$query_garuk7);
+                            $pm_g             = sqlsrv_fetch_array($stmt_garuk7, SQLSRV_FETCH_ASSOC);
                 $query_garuk6 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PA' AND mesin IN ('P3RS1A1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_A_PA,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PA' AND mesin IN ('P3RS1A1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_A_PA,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PA' AND mesin IN ('P3RS1B1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_B_PA,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PA' AND mesin IN ('P3RS1B1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_B_PA,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PA' AND mesin IN ('P3RS1C1','P3RS1C2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_C_PA,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PA' AND mesin IN ('P3RS1C1','P3RS1C2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_C_PA,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PA' AND mesin IN ('P3RS1D1','P3RS1D2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_D_PA,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PA' AND mesin IN ('P3RS1D1','P3RS1D2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_D_PA,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PA' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_E_PA,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PA' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_E_PA,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PA' AND mesin IN ('P3RS1F1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_F_PA
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk6    = mysqli_query($cona,$query_garuk6);
-                            $pa_g             = mysqli_fetch_assoc($stmt_garuk6);
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PA' AND mesin IN ('P3RS1F1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_F_PA
+					FROM
+						db_adm.tbl_stoppage
+					WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+
+                            $stmt_garuk6    = sqlsrv_query($cona,$query_garuk6);
+                            $pa_g             = sqlsrv_fetch_array($stmt_garuk6, SQLSRV_FETCH_ASSOC);
                 $query_garuk5 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'AP' AND mesin IN ('P3RS1A1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_A_AP,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'AP' AND mesin IN ('P3RS1A1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_A_AP,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'AP' AND mesin IN ('P3RS1B1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_B_AP,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'AP' AND mesin IN ('P3RS1B1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_B_AP,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'AP' AND mesin IN ('P3RS1C1','P3RS1C2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_C_AP,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'AP' AND mesin IN ('P3RS1C1','P3RS1C2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_C_AP,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'AP' AND mesin IN ('P3RS1D1','P3RS1D2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_D_AP,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'AP' AND mesin IN ('P3RS1D1','P3RS1D2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_D_AP,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'AP' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_E_AP,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'AP' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_E_AP,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'AP' AND mesin IN ('P3RS1F1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_F_AP
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk5    = mysqli_query($cona,$query_garuk5);
-                            $ap_g             = mysqli_fetch_assoc($stmt_garuk5);
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'AP' AND mesin IN ('P3RS1F1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_F_AP
+					FROM
+						db_adm.tbl_stoppage
+					WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+
+                            $stmt_garuk5    = sqlsrv_query($cona,$query_garuk5);
+                            $ap_g             = sqlsrv_fetch_array($stmt_garuk5, SQLSRV_FETCH_ASSOC);
                 $query_garuk4 = "SELECT
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KO' AND mesin IN ('P3RS1A1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_A_KO,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'KO' AND mesin IN ('P3RS1A1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_A_KO,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KO' AND mesin IN ('P3RS1B1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_B_KO,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'KO' AND mesin IN ('P3RS1B1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_B_KO,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KO' AND mesin IN ('P3RS1C1','P3RS1C2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_C_KO,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'KO' AND mesin IN ('P3RS1C1','P3RS1C2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_C_KO,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KO' AND mesin IN ('P3RS1D1','P3RS1D2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_D_KO,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'KO' AND mesin IN ('P3RS1D1','P3RS1D2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_D_KO,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KO' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_E_KO,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'KO' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_E_KO,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KO' AND mesin IN ('P3RS1F1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_F_KO
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk4    = mysqli_query($cona,$query_garuk4);
-                            $ko_g             = mysqli_fetch_assoc($stmt_garuk4);
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'KO' AND mesin IN ('P3RS1F1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_F_KO
+					FROM
+						db_adm.tbl_stoppage
+					WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+                            $stmt_garuk4    = sqlsrv_query($cona,$query_garuk4);
+                            $ko_g             = sqlsrv_fetch_array($stmt_garuk4, SQLSRV_FETCH_ASSOC);
                 $query_garuk3 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PT' AND mesin IN ('P3RS1A1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_A_PT,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PT' AND mesin IN ('P3RS1A1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_A_PT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PT' AND mesin IN ('P3RS1B1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_B_PT,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PT' AND mesin IN ('P3RS1B1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_B_PT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PT' AND mesin IN ('P3RS1C1','P3RS1C2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_C_PT,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PT' AND mesin IN ('P3RS1C1','P3RS1C2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_C_PT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PT' AND mesin IN ('P3RS1D1','P3RS1D2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_D_PT,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PT' AND mesin IN ('P3RS1D1','P3RS1D2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_D_PT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PT' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_E_PT,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PT' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_E_PT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PT' AND mesin IN ('P3RS1F1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_F_PT
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk3    = mysqli_query($cona,$query_garuk3);
-                            $pt_g             = mysqli_fetch_assoc($stmt_garuk3);
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'PT' AND mesin IN ('P3RS1F1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_F_PT
+					FROM
+						db_adm.tbl_stoppage
+					WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+                            $stmt_garuk3    = sqlsrv_query($cona,$query_garuk3);
+                            $pt_g             = sqlsrv_fetch_array($stmt_garuk3, SQLSRV_FETCH_ASSOC);
                 $query_garuk2 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KM' AND mesin IN ('P3RS1A1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_A_KM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'KM' AND mesin IN ('P3RS1A1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_A_KM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KM' AND mesin IN ('P3RS1B1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_B_KM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'KM' AND mesin IN ('P3RS1B1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_B_KM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KM' AND mesin IN ('P3RS1C1','P3RS1C2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_C_KM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'KM' AND mesin IN ('P3RS1C1','P3RS1C2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_C_KM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KM' AND mesin IN ('P3RS1D1','P3RS1D2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_D_KM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'KM' AND mesin IN ('P3RS1D1','P3RS1D2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_D_KM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KM' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_E_KM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'KM' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_E_KM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KM' AND mesin IN ('P3RS1F1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_F_KM
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk2    = mysqli_query($cona,$query_garuk2);
-                            $km_g             = mysqli_fetch_assoc($stmt_garuk2);
-                    $query_garuk1 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'LM' AND mesin IN ('P3RS1A1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_A_LM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'KM' AND mesin IN ('P3RS1F1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_F_KM
+					FROM
+						db_adm.tbl_stoppage
+					WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+                            $stmt_garuk2    = sqlsrv_query($cona,$query_garuk2);
+                            $km_g             = sqlsrv_fetch_array($stmt_garuk2, SQLSRV_FETCH_ASSOC);
+				$query_garuk1 = "SELECT
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'LM' AND mesin IN ('P3RS1A1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_A_LM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'LM' AND mesin IN ('P3RS1B1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_B_LM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'LM' AND mesin IN ('P3RS1B1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_B_LM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'LM' AND mesin IN ('P3RS1C1','P3RS1C2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_C_LM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'LM' AND mesin IN ('P3RS1C1','P3RS1C2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_C_LM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'LM' AND mesin IN ('P3RS1D1','P3RS1D2')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_D_LM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'LM' AND mesin IN ('P3RS1D1','P3RS1D2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_D_LM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'LM' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_E_LM,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'LM' AND mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_E_LM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'LM' AND mesin IN ('P3RS1F1')
-												THEN durasi_jam_stop * 60
-												ELSE 0 
-											END
-										)) * 60) AS garuk_F_LM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_garuk1    = mysqli_query($cona,$query_garuk1);
-                                    $lm_g             = mysqli_fetch_assoc($stmt_garuk1);
-                            // Total Garuk
-                    $query_mesin_garuk = "SELECT
-													SEC_TO_TIME(ROUND(SUM(
-														CASE
-															WHEN
-															mesin IN ('P3RS1A1')
-															THEN durasi_jam_stop*60 ELSE 0
-														END
-													)) * 60) AS menit_garuk_A,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN kode_stop = 'LM' AND mesin IN ('P3RS1F1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS garuk_F_LM
+					FROM
+						db_adm.tbl_stoppage
+					WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+								$stmt_garuk1    = sqlsrv_query($cona,$query_garuk1);
+								$lm_g             = sqlsrv_fetch_array($stmt_garuk1, SQLSRV_FETCH_ASSOC);
+						// Total Garuk
+				$query_mesin_garuk = "SELECT
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN mesin IN ('P3RS1A1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS menit_garuk_A,
 
-													SEC_TO_TIME(ROUND(SUM(
-														CASE
-															WHEN
-															mesin IN ('P3RS1B1')
-															THEN durasi_jam_stop*60 ELSE 0
-														END
-													)) * 60) AS menit_garuk_B,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN mesin IN ('P3RS1B1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS menit_garuk_B,
 
-													SEC_TO_TIME(ROUND(SUM(
-														CASE
-															WHEN 
-															mesin IN ('P3RS1C1','P3RS1C2')
-															THEN durasi_jam_stop*60 ELSE 0
-														END
-													)) * 60) AS menit_garuk_C,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN mesin IN ('P3RS1C1','P3RS1C2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS menit_garuk_C,
 
-													SEC_TO_TIME(ROUND(SUM(
-														CASE
-															WHEN
-															mesin IN ('P3RS1D1','P3RS1D2')
-															THEN durasi_jam_stop*60 ELSE 0
-														END
-													)) * 60) AS menit_garuk_D,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN mesin IN ('P3RS1D1','P3RS1D2')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS menit_garuk_D,
 
-													SEC_TO_TIME(ROUND(SUM(
-														CASE
-															WHEN mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
-															THEN durasi_jam_stop*60 ELSE 0
-														END
-													)) * 60) AS menit_garuk_E,
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN mesin IN ('P3RS1E1','P3RS1E2','P3RS1E3')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS menit_garuk_E,
 
-													SEC_TO_TIME(ROUND(SUM(
-														CASE
-															WHEN 
-															mesin IN ('P3RS1F1')
-															THEN durasi_jam_stop*60 ELSE 0
-														END
-													)) * 60) AS menit_garuk_F
-
-												FROM tbl_stoppage
-												WHERE dept = 'BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_garuk= mysqli_query($cona,$query_mesin_garuk);
-                        $sum_mesin_garuk= mysqli_fetch_assoc($stmt_mesin_garuk);
+						CONVERT(varchar(8), DATEADD(SECOND,
+							CAST(ROUND(SUM(
+								CASE
+									WHEN mesin IN ('P3RS1F1')
+									THEN durasi_jam_stop * 3600
+									ELSE 0
+								END
+							), 0) AS int), 0), 108) AS menit_garuk_F
+					FROM db_adm.tbl_stoppage
+					WHERE dept = 'BRS'
+					AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+					AND ISNULL(kode_stop,'') <> ''";
+					$stmt_mesin_garuk= sqlsrv_query($cona,$query_mesin_garuk);
+					$sum_mesin_garuk= sqlsrv_fetch_array($stmt_mesin_garuk, SQLSRV_FETCH_ASSOC);
                     ?>
                 <!-- Mesin A -->
                 <tr>
@@ -1662,165 +1827,166 @@ border:hidden;
                 <tr>
                     <?php 
                     $query_sisir9 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'TG'
-													AND mesin IN ('P3CO101','P3CO102')
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											)) * 60) AS sisir_TG
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir9    = mysqli_query($cona,$query_sisir9);
-                                    $tg_sisir             = mysqli_fetch_assoc($stmt_sisir9);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+											AND mesin IN ('P3CO101','P3CO102')
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS sisir_TG
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_sisir9    = sqlsrv_query($cona,$query_sisir9);
+						$tg_sisir             = sqlsrv_fetch_array($stmt_sisir9, SQLSRV_FETCH_ASSOC);
                     $query_sisir8 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'GT'
-													AND mesin IN ('P3CO101','P3CO102')
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											)) * 60) AS sisir_GT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir8    = mysqli_query($cona,$query_sisir8);
-                                    $gt_sisir             = mysqli_fetch_assoc($stmt_sisir8);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+											AND mesin IN ('P3CO101','P3CO102')
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS sisir_GT
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_sisir8    = sqlsrv_query($cona,$query_sisir8);
+						$gt_sisir             = sqlsrv_fetch_array($stmt_sisir8, SQLSRV_FETCH_ASSOC);
                     $query_sisir7 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PM'
-													AND mesin IN ('P3CO101','P3CO102')
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											)) * 60) AS sisir_PM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir7    = mysqli_query($cona,$query_sisir7);
-                                    $pm_sisir             = mysqli_fetch_assoc($stmt_sisir7);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+											AND mesin IN ('P3CO101','P3CO102')
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS sisir_PM
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_sisir7    = sqlsrv_query($cona,$query_sisir7);
+						$pm_sisir             = sqlsrv_fetch_array($stmt_sisir7, SQLSRV_FETCH_ASSOC);
                     $query_sisir6 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PA'
-													AND mesin IN ('P3CO101','P3CO102')
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											)) * 60) AS sisir_PA
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir6    = mysqli_query($cona,$query_sisir6);
-                                    $pa_sisir             = mysqli_fetch_assoc($stmt_sisir6);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+											AND mesin IN ('P3CO101','P3CO102')
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS sisir_PA
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_sisir6    = sqlsrv_query($cona,$query_sisir6);
+						$pa_sisir             = sqlsrv_fetch_array($stmt_sisir6, SQLSRV_FETCH_ASSOC);
                     $query_sisir5 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'AP'
-													AND mesin IN ('P3CO101','P3CO102')
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											)) * 60) AS sisir_AP
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir5    = mysqli_query($cona,$query_sisir5);
-                                    $ap_sisir             = mysqli_fetch_assoc($stmt_sisir5);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+											AND mesin IN ('P3CO101','P3CO102')
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS sisir_AP
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_sisir5    = sqlsrv_query($cona,$query_sisir5);
+						$ap_sisir             = sqlsrv_fetch_array($stmt_sisir5, SQLSRV_FETCH_ASSOC);
                     $query_sisir4 = "SELECT
-											SEC_TO_TIME(FLOOR(SUM(
-												CASE 
-													WHEN kode_stop = 'KO'
-													AND mesin IN ('P3CO101','P3CO102')
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											)) * 60) AS sisir_KO
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir4    = mysqli_query($cona,$query_sisir4);
-                                    $ko_sisir             = mysqli_fetch_assoc($stmt_sisir4);
-                    $query_sisir3 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PT'
-													AND mesin IN ('P3CO101','P3CO102')
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											)) * 60) AS sisir_PT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir3    = mysqli_query($cona,$query_sisir3);
-                                    $pt_sisir             = mysqli_fetch_assoc($stmt_sisir3);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(FLOOR(SUM(
+									CASE
+										WHEN kode_stop = 'KO'
+											AND mesin IN ('P3CO101','P3CO102')
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								)) AS int), 0), 108) AS sisir_KO
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_sisir4    = sqlsrv_query($cona,$query_sisir4);
+						$ko_sisir             = sqlsrv_fetch_array($stmt_sisir4, SQLSRV_FETCH_ASSOC);
+					$query_sisir3 = "SELECT
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+											AND mesin IN ('P3CO101','P3CO102')
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS sisir_PT
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_sisir3    = sqlsrv_query($cona,$query_sisir3);
+						$pt_sisir             = sqlsrv_fetch_array($stmt_sisir3, SQLSRV_FETCH_ASSOC);
                     $query_sisir2 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'KM'
-													AND mesin IN ('P3CO101','P3CO102')
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											)) * 60) AS sisir_KM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir2    = mysqli_query($cona,$query_sisir2);
-                                    $km_sisir             = mysqli_fetch_assoc($stmt_sisir2);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+											AND mesin IN ('P3CO101','P3CO102')
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS sisir_KM
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_sisir2    = sqlsrv_query($cona,$query_sisir2);
+						$km_sisir             = sqlsrv_fetch_array($stmt_sisir2, SQLSRV_FETCH_ASSOC);
                     $query_sisir1 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'LM'
-													AND mesin IN ('P3CO101','P3CO102')
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											)) * 60) AS sisir_LM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir1    = mysqli_query($cona,$query_sisir1);
-                                    $lm_sisir             = mysqli_fetch_assoc($stmt_sisir1);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+											AND mesin IN ('P3CO101','P3CO102')
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS sisir_LM
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_sisir1    = sqlsrv_query($cona,$query_sisir1);
+						$lm_sisir             = sqlsrv_fetch_array($stmt_sisir1, SQLSRV_FETCH_ASSOC);
                             // Total Sisir
                     $query_mesin_sisir = "SELECT
-											SEC_TO_TIME(ROUND(SUM(
-												CASE
-													WHEN mesin IN ('P3CO101','P3CO102')
-													THEN durasi_jam_stop*60 ELSE 0
-												END
-											)) * 60) AS menit_sisir
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_sisir= mysqli_query($cona,$query_mesin_sisir);
-                        $sum_mesin_sisir= mysqli_fetch_assoc($stmt_mesin_sisir);
-                        ?>
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin IN ('P3CO101','P3CO102')
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_sisir
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+                        $stmt_mesin_sisir= sqlsrv_query($cona,$query_mesin_sisir);
+                        $sum_mesin_sisir= sqlsrv_fetch_array($stmt_mesin_sisir, SQLSRV_FETCH_ASSOC);
+                    ?>
                     <td align="left"><strong>SISIR</strong></td>
                     <td align="center">01</td>
                     <td align="center"><?php echo $lm_sisir['sisir_LM']; ?></td>
@@ -1839,772 +2005,858 @@ border:hidden;
                 <tr>
                     <?php
                     $query_pb2 = "SELECT
-                                        SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KM' 
-												AND mesin = 'P3SH101'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_01_KM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+										AND mesin = 'P3SH101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_01_KM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KM' 
-												AND mesin = 'P3SH102'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_02_KM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+										AND mesin = 'P3SH102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_02_KM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KM' 
-												AND mesin = 'P3SH103'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_03_KM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+										AND mesin = 'P3SH103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_03_KM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KM' 
-												AND mesin = 'P3SH104'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_04_KM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+										AND mesin = 'P3SH104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_04_KM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KM' 
-												AND mesin = 'P3SH105'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_05_KM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+										AND mesin = 'P3SH105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_05_KM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KM' 
-												AND mesin = 'P3SH106'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_06_KM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+										AND mesin = 'P3SH106'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_06_KM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KM' 
-												AND mesin = 'P3SH107'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_07_KM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+										AND mesin = 'P3SH107'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_07_KM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KM' 
-												AND mesin = 'P3SH108'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_08_KM
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb2    = mysqli_query($cona,$query_pb2);
-                                $km_pb             = mysqli_fetch_assoc($stmt_pb2);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+										AND mesin = 'P3SH108'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_08_KM
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_pb2    = sqlsrv_query($cona,$query_pb2);
+						$km_pb             = sqlsrv_fetch_array($stmt_pb2, SQLSRV_FETCH_ASSOC);
                     $query_pb3 = "SELECT
-                                        SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PT' 
-												AND mesin = 'P3SH101'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_01_PT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+										AND mesin = 'P3SH101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_01_PT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PT' 
-												AND mesin = 'P3SH102'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_02_PT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+										AND mesin = 'P3SH102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_02_PT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PT' 
-												AND mesin = 'P3SH103'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_03_PT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+										AND mesin = 'P3SH103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_03_PT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PT' 
-												AND mesin = 'P3SH104'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_04_PT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+										AND mesin = 'P3SH104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_04_PT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PT' 
-												AND mesin = 'P3SH105'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_05_PT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+										AND mesin = 'P3SH105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_05_PT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PT' 
-												AND mesin = 'P3SH106'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_06_PT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+										AND mesin = 'P3SH106'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_06_PT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PT' 
-												AND mesin = 'P3SH107'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_07_PT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+										AND mesin = 'P3SH107'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_07_PT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PT' 
-												AND mesin = 'P3SH108'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_08_PT
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb3    = mysqli_query($cona,$query_pb3);
-                                $pt_pb             = mysqli_fetch_assoc($stmt_pb3);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+										AND mesin = 'P3SH108'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_08_PT
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_pb3    = sqlsrv_query($cona,$query_pb3);
+						$pt_pb             = sqlsrv_fetch_array($stmt_pb3, SQLSRV_FETCH_ASSOC);
                     $query_pb4 = "SELECT
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KO' 
-												AND mesin = 'P3SH101'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_01_KO,
+								CONVERT(varchar(8), DATEADD(SECOND,
+									CAST(ROUND(SUM(
+										CASE
+											WHEN kode_stop = 'KO'
+											AND mesin = 'P3SH101'
+											THEN durasi_jam_stop * 3600
+											ELSE 0
+										END
+									), 0) AS int), 0), 108) AS pb_01_KO,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KO' 
-												AND mesin = 'P3SH102'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_02_KO,
+								CONVERT(varchar(8), DATEADD(SECOND,
+									CAST(ROUND(SUM(
+										CASE
+											WHEN kode_stop = 'KO'
+											AND mesin = 'P3SH102'
+											THEN durasi_jam_stop * 3600
+											ELSE 0
+										END
+									), 0) AS int), 0), 108) AS pb_02_KO,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KO' 
-												AND mesin = 'P3SH103'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_03_KO,
+								CONVERT(varchar(8), DATEADD(SECOND,
+									CAST(ROUND(SUM(
+										CASE
+											WHEN kode_stop = 'KO'
+											AND mesin = 'P3SH103'
+											THEN durasi_jam_stop * 3600
+											ELSE 0
+										END
+									), 0) AS int), 0), 108) AS pb_03_KO,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KO' 
-												AND mesin = 'P3SH104'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_04_KO,
+								CONVERT(varchar(8), DATEADD(SECOND,
+									CAST(ROUND(SUM(
+										CASE
+											WHEN kode_stop = 'KO'
+											AND mesin = 'P3SH104'
+											THEN durasi_jam_stop * 3600
+											ELSE 0
+										END
+									), 0) AS int), 0), 108) AS pb_04_KO,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KO' 
-												AND mesin = 'P3SH105'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_05_KO,
+								CONVERT(varchar(8), DATEADD(SECOND,
+									CAST(ROUND(SUM(
+										CASE
+											WHEN kode_stop = 'KO'
+											AND mesin = 'P3SH105'
+											THEN durasi_jam_stop * 3600
+											ELSE 0
+										END
+									), 0) AS int), 0), 108) AS pb_05_KO,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KO' 
-												AND mesin = 'P3SH106'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_06_KO,
+								CONVERT(varchar(8), DATEADD(SECOND,
+									CAST(ROUND(SUM(
+										CASE
+											WHEN kode_stop = 'KO'
+											AND mesin = 'P3SH106'
+											THEN durasi_jam_stop * 3600
+											ELSE 0
+										END
+									), 0) AS int), 0), 108) AS pb_06_KO,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KO' 
-												AND mesin = 'P3SH107'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_07_KO,
+								CONVERT(varchar(8), DATEADD(SECOND,
+									CAST(ROUND(SUM(
+										CASE
+											WHEN kode_stop = 'KO'
+											AND mesin = 'P3SH107'
+											THEN durasi_jam_stop * 3600
+											ELSE 0
+										END
+									), 0) AS int), 0), 108) AS pb_07_KO,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'KO' 
-												AND mesin = 'P3SH108'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_08_KO
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb4    = mysqli_query($cona,$query_pb4);
-                                $ko_pb             = mysqli_fetch_assoc($stmt_pb4);
+								CONVERT(varchar(8), DATEADD(SECOND,
+									CAST(ROUND(SUM(
+										CASE
+											WHEN kode_stop = 'KO'
+											AND mesin = 'P3SH108'
+											THEN durasi_jam_stop * 3600
+											ELSE 0
+										END
+									), 0) AS int), 0), 108) AS pb_08_KO
+							FROM db_adm.tbl_stoppage
+							WHERE dept = 'BRS'
+							AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+							AND ISNULL(kode_stop,'') <> ''";
+							$stmt_pb4    = sqlsrv_query($cona,$query_pb4);
+							$ko_pb             = sqlsrv_fetch_array($stmt_pb4, SQLSRV_FETCH_ASSOC);
                     $query_pb5 = "SELECT
-                                        SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'AP' 
-												AND mesin = 'P3SH101'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_01_AP,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+										AND mesin = 'P3SH101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_01_AP,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'AP' 
-												AND mesin = 'P3SH102'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_02_AP,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+										AND mesin = 'P3SH102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_02_AP,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'AP' 
-												AND mesin = 'P3SH103'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_03_AP,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+										AND mesin = 'P3SH103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_03_AP,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'AP' 
-												AND mesin = 'P3SH104'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_04_AP,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+										AND mesin = 'P3SH104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_04_AP,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'AP' 
-												AND mesin = 'P3SH105'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_05_AP,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+										AND mesin = 'P3SH105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_05_AP,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'AP' 
-												AND mesin = 'P3SH106'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_06_AP,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+										AND mesin = 'P3SH106'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_06_AP,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'AP' 
-												AND mesin = 'P3SH107'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_07_AP,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+										AND mesin = 'P3SH107'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_07_AP,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'AP' 
-												AND mesin = 'P3SH108'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_08_AP
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb5    = mysqli_query($cona,$query_pb5);
-                                $ap_pb             = mysqli_fetch_assoc($stmt_pb5);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+										AND mesin = 'P3SH108'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_08_AP
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_pb5    = sqlsrv_query($cona,$query_pb5);
+						$ap_pb             = sqlsrv_fetch_array($stmt_pb5, SQLSRV_FETCH_ASSOC);
                     $query_pb6 = "SELECT
-                                        SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PA' 
-												AND mesin = 'P3SH101'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_01_PA,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+										AND mesin = 'P3SH101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_01_PA,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PA' 
-												AND mesin = 'P3SH102'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_02_PA,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+										AND mesin = 'P3SH102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_02_PA,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PA' 
-												AND mesin = 'P3SH103'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_03_PA,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+										AND mesin = 'P3SH103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_03_PA,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PA' 
-												AND mesin = 'P3SH104'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_04_PA,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+										AND mesin = 'P3SH104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_04_PA,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PA' 
-												AND mesin = 'P3SH105'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_05_PA,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+										AND mesin = 'P3SH105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_05_PA,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PA' 
-												AND mesin = 'P3SH106'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_06_PA,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+										AND mesin = 'P3SH106'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_06_PA,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PA' 
-												AND mesin = 'P3SH107'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_07_PA,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+										AND mesin = 'P3SH107'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_07_PA,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PA' 
-												AND mesin = 'P3SH108'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_08_PA
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb6    = mysqli_query($cona,$query_pb6);
-                                $pa_pb             = mysqli_fetch_assoc($stmt_pb6);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+										AND mesin = 'P3SH108'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_08_PA
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_pb6    = sqlsrv_query($cona,$query_pb6);
+						$pa_pb             = sqlsrv_fetch_array($stmt_pb6, SQLSRV_FETCH_ASSOC);
                     $query_pb7 = "SELECT
-                                        SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PM' 
-												AND mesin = 'P3SH101'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_01_PM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+										AND mesin = 'P3SH101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_01_PM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PM' 
-												AND mesin = 'P3SH102'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_02_PM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+										AND mesin = 'P3SH102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_02_PM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PM' 
-												AND mesin = 'P3SH103'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_03_PM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+										AND mesin = 'P3SH103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_03_PM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PM' 
-												AND mesin = 'P3SH104'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_04_PM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+										AND mesin = 'P3SH104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_04_PM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PM' 
-												AND mesin = 'P3SH105'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_05_PM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+										AND mesin = 'P3SH105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_05_PM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PM' 
-												AND mesin = 'P3SH106'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_06_PM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+										AND mesin = 'P3SH106'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_06_PM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PM' 
-												AND mesin = 'P3SH107'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_07_PM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+										AND mesin = 'P3SH107'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_07_PM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'PM' 
-												AND mesin = 'P3SH108'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_08_PM
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb7    = mysqli_query($cona,$query_pb7);
-                                $pm_pb             = mysqli_fetch_assoc($stmt_pb7);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+										AND mesin = 'P3SH108'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_08_PM
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_pb7    = sqlsrv_query($cona,$query_pb7);
+						$pm_pb             = sqlsrv_fetch_array($stmt_pb7, SQLSRV_FETCH_ASSOC);
                     $query_pb8 = "SELECT
-                                        SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'GT' 
-												AND mesin = 'P3SH101'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_01_GT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+										AND mesin = 'P3SH101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_01_GT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'GT' 
-												AND mesin = 'P3SH102'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_02_GT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+										AND mesin = 'P3SH102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_02_GT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'GT' 
-												AND mesin = 'P3SH103'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_03_GT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+										AND mesin = 'P3SH103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_03_GT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'GT' 
-												AND mesin = 'P3SH104'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_04_GT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+										AND mesin = 'P3SH104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_04_GT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'GT' 
-												AND mesin = 'P3SH105'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_05_GT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+										AND mesin = 'P3SH105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_05_GT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'GT' 
-												AND mesin = 'P3SH106'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_06_GT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+										AND mesin = 'P3SH106'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_06_GT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'GT' 
-												AND mesin = 'P3SH107'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_07_GT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+										AND mesin = 'P3SH107'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_07_GT,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'GT' 
-												AND mesin = 'P3SH108'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_08_GT
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb8    = mysqli_query($cona,$query_pb8);
-                                $gt_pb             = mysqli_fetch_assoc($stmt_pb8);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+										AND mesin = 'P3SH108'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_08_GT
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_pb8    = sqlsrv_query($cona,$query_pb8);
+						$gt_pb             = sqlsrv_fetch_array($stmt_pb8, SQLSRV_FETCH_ASSOC);
                     $query_pb9 = "SELECT
-                                        SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'TG' 
-												AND mesin = 'P3SH101'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_01_TG,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+										AND mesin = 'P3SH101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_01_TG,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'TG' 
-												AND mesin = 'P3SH102'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_02_TG,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+										AND mesin = 'P3SH102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_02_TG,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'TG' 
-												AND mesin = 'P3SH103'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_03_TG,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+										AND mesin = 'P3SH103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_03_TG,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'TG' 
-												AND mesin = 'P3SH104'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_04_TG,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+										AND mesin = 'P3SH104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_04_TG,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'TG' 
-												AND mesin = 'P3SH105'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_05_TG,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+										AND mesin = 'P3SH105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_05_TG,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'TG' 
-												AND mesin = 'P3SH106'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_06_TG,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+										AND mesin = 'P3SH106'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_06_TG,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'TG' 
-												AND mesin = 'P3SH107'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_07_TG,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+										AND mesin = 'P3SH107'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_07_TG,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'TG' 
-												AND mesin = 'P3SH108'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_08_TG
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb9    = mysqli_query($cona,$query_pb9);
-                                $tg_pb             = mysqli_fetch_assoc($stmt_pb9);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+										AND mesin = 'P3SH108'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_08_TG
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_pb9    = sqlsrv_query($cona,$query_pb9);
+						$tg_pb             = sqlsrv_fetch_array($stmt_pb9, SQLSRV_FETCH_ASSOC);
                     $query_pb1 = "SELECT
-                                        SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'LM' 
-												AND mesin = 'P3SH101'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_01_LM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+										AND mesin = 'P3SH101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_01_LM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'LM' 
-												AND mesin = 'P3SH102'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_02_LM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+										AND mesin = 'P3SH102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_02_LM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'LM' 
-												AND mesin = 'P3SH103'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_03_LM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+										AND mesin = 'P3SH103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_03_LM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'LM' 
-												AND mesin = 'P3SH104'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_04_LM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+										AND mesin = 'P3SH104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_04_LM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'LM' 
-												AND mesin = 'P3SH105'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_05_LM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+										AND mesin = 'P3SH105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_05_LM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'LM' 
-												AND mesin = 'P3SH106'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_06_LM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+										AND mesin = 'P3SH106'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_06_LM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'LM' 
-												AND mesin = 'P3SH107'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_07_LM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+										AND mesin = 'P3SH107'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_07_LM,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE 
-												WHEN kode_stop = 'LM' 
-												AND mesin = 'P3SH108'
-												THEN durasi_jam_stop * 60 
-												ELSE 0 
-											END
-										))*60) AS pb_08_LM
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb1    = mysqli_query($cona,$query_pb1);
-                                $lm_pb             = mysqli_fetch_assoc($stmt_pb1);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+										AND mesin = 'P3SH108'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS pb_08_LM
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_pb1    = sqlsrv_query($cona,$query_pb1);
+						$lm_pb             = sqlsrv_fetch_array($stmt_pb1, SQLSRV_FETCH_ASSOC);
                             // Total Pb
                     $query_mesin_pb = "SELECT
-									SEC_TO_TIME(ROUND(SUM(
-										CASE
-											WHEN mesin = 'P3SH101'
-											THEN durasi_jam_stop*60 ELSE 0
-										END) * 60)) AS menit_pb_01,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3SH101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_pb_01,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE
-											WHEN mesin = 'P3SH102'
-											THEN durasi_jam_stop*60 ELSE 0
-										END)) * 60) AS menit_pb_02,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3SH102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_pb_02,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE
-											WHEN mesin = 'P3SH103'
-											THEN durasi_jam_stop*60 ELSE 0
-										END)) * 60) AS menit_pb_03,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3SH103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_pb_03,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE
-											WHEN mesin = 'P3SH104'
-											THEN durasi_jam_stop*60 ELSE 0
-										END)) * 60) AS menit_pb_04,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3SH104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_pb_04,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE
-											WHEN mesin = 'P3SH105'
-											THEN durasi_jam_stop*60 ELSE 0
-										END)) * 60) AS menit_pb_05,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3SH105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_pb_05,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE
-											WHEN mesin = 'P3SH106'
-											THEN durasi_jam_stop*60 ELSE 0
-										END)) * 60) AS menit_pb_06,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3SH106'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_pb_06,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE
-											WHEN mesin = 'P3SH107'
-											THEN durasi_jam_stop*60 ELSE 0
-										END)) * 60) AS menit_pb_07,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3SH107'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_pb_07,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE
-											WHEN mesin = 'P3SH108'
-											THEN durasi_jam_stop*60 ELSE 0
-										END)) * 60) AS menit_pb_08
-
-								FROM tbl_stoppage
-								WHERE dept = 'BRS'
-								  AND DATE_FORMAT(tgl_buat, '%Y-%m-%d') BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-								  AND kode_stop <> ''";
-                        $stmt_mesin_pb= mysqli_query($cona,$query_mesin_pb);
-                        $sum_mesin_pb= mysqli_fetch_assoc($stmt_mesin_pb);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3SH108'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_pb_08
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+                        $stmt_mesin_pb= sqlsrv_query($cona,$query_mesin_pb);
+                        $sum_mesin_pb= sqlsrv_fetch_array($stmt_mesin_pb, SQLSRV_FETCH_ASSOC);
                     ?>
                 <!-- Mesin 01 -->
                     <td rowspan="8" align="left"><strong>POTONG BULU</strong></td>
@@ -2720,514 +2972,519 @@ border:hidden;
                 </tr>
             <!-- End Potong Bulu -->
             <!-- Untuk Kolom Peach Skin -->
-             <?php 
+             	<?php 
                     $query_peach9 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'LM'
-																AND mesin = 'P3SU105' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_05_LM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM' AND mesin = 'P3SU105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_05_LM,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'LM' 
-																AND mesin = 'P3SU104' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_04_LM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM' AND mesin = 'P3SU104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_04_LM,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'LM' 
-																AND mesin = 'P3SU103' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_03_LM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM' AND mesin = 'P3SU103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_03_LM,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'LM' 
-																AND mesin = 'P3SU102' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_02_LM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM' AND mesin = 'P3SU102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_02_LM,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'LM' 
-																AND mesin = 'P3SU101' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_01_LM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach9    = mysqli_query($cona,$query_peach9);
-                                    $lm             = mysqli_fetch_assoc($stmt_peach9);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM' AND mesin = 'P3SU101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_01_LM
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_peach9    = sqlsrv_query($cona,$query_peach9);
+						$lm             = sqlsrv_fetch_array($stmt_peach9, SQLSRV_FETCH_ASSOC);
                     $query_peach8 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'KM'
-																AND mesin = 'P3SU105' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_05_KM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM' AND mesin = 'P3SU105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_05_KM,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'KM' 
-																AND mesin = 'P3SU104' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_04_KM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM' AND mesin = 'P3SU104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_04_KM,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'KM' 
-																AND mesin = 'P3SU103' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_03_KM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM' AND mesin = 'P3SU103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_03_KM,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'KM' 
-																AND mesin = 'P3SU102' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_02_KM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM' AND mesin = 'P3SU102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_02_KM,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'KM' 
-																AND mesin = 'P3SU101' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_01_KM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach8    = mysqli_query($cona,$query_peach8);
-                                    $km             = mysqli_fetch_assoc($stmt_peach8);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM' AND mesin = 'P3SU101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_01_KM
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_peach8    = sqlsrv_query($cona,$query_peach8);
+						$km             = sqlsrv_fetch_array($stmt_peach8, SQLSRV_FETCH_ASSOC);
                     $query_peach7 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PT'
-																AND mesin = 'P3SU105' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_05_PT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT' AND mesin = 'P3SU105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_05_PT,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PT' 
-																AND mesin = 'P3SU104' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_04_PT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT' AND mesin = 'P3SU104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_04_PT,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PT' 
-																AND mesin = 'P3SU103' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_03_PT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT' AND mesin = 'P3SU103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_03_PT,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PT' 
-																AND mesin = 'P3SU102' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_02_PT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT' AND mesin = 'P3SU102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_02_PT,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PT' 
-																AND mesin = 'P3SU101' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_01_PT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach7    = mysqli_query($cona,$query_peach7);
-                                    $pt             = mysqli_fetch_assoc($stmt_peach7);
-                    $query_peach6 = " SELECT
-										SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'KO'
-																AND mesin = 'P3SU105' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_05_KO,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT' AND mesin = 'P3SU101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_01_PT
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_peach7    = sqlsrv_query($cona,$query_peach7);
+						$pt             = sqlsrv_fetch_array($stmt_peach7, SQLSRV_FETCH_ASSOC);
+                    $query_peach6 = "SELECT
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KO' AND mesin = 'P3SU105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_05_KO,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'KO' 
-																AND mesin = 'P3SU104' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_04_KO,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KO' AND mesin = 'P3SU104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_04_KO,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'KO' 
-																AND mesin = 'P3SU103' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_03_KO,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KO' AND mesin = 'P3SU103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_03_KO,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'KO' 
-																AND mesin = 'P3SU102' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_02_KO,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KO' AND mesin = 'P3SU102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_02_KO,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'KO' 
-																AND mesin = 'P3SU101' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_01_KO
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach6    = mysqli_query($cona,$query_peach6);
-                                    $ko             = mysqli_fetch_assoc($stmt_peach6);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KO' AND mesin = 'P3SU101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_01_KO
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_peach6    = sqlsrv_query($cona,$query_peach6);
+						$ko             = sqlsrv_fetch_array($stmt_peach6, SQLSRV_FETCH_ASSOC);
                     $query_peach5 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'AP'
-																AND mesin = 'P3SU105' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_05_AP,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP' AND mesin = 'P3SU105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_05_AP,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'AP' 
-																AND mesin = 'P3SU104' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_04_AP,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP' AND mesin = 'P3SU104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_04_AP,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'AP' 
-																AND mesin = 'P3SU103' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_03_AP,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP' AND mesin = 'P3SU103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_03_AP,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'AP' 
-																AND mesin = 'P3SU102' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_02_AP,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP' AND mesin = 'P3SU102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_02_AP,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'AP' 
-																AND mesin = 'P3SU101' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_01_AP
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach5    = mysqli_query($cona,$query_peach5);
-                                    $ap             = mysqli_fetch_assoc($stmt_peach5);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP' AND mesin = 'P3SU101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_01_AP
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_peach5    = sqlsrv_query($cona,$query_peach5);
+						$ap             = sqlsrv_fetch_array($stmt_peach5, SQLSRV_FETCH_ASSOC);
                     $query_peach4 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PA'
-																AND mesin = 'P3SU105' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_05_PA,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA' AND mesin = 'P3SU105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_05_PA,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PA' 
-																AND mesin = 'P3SU104' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_04_PA,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA' AND mesin = 'P3SU104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_04_PA,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PA' 
-																AND mesin = 'P3SU103' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_03_PA,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA' AND mesin = 'P3SU103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_03_PA,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PA' 
-																AND mesin = 'P3SU102' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_02_PA,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA' AND mesin = 'P3SU102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_02_PA,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PA' 
-																AND mesin = 'P3SU101' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_01_PA
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach4    = mysqli_query($cona,$query_peach4);
-                                    $pa             = mysqli_fetch_assoc($stmt_peach4);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA' AND mesin = 'P3SU101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_01_PA
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_peach4    = sqlsrv_query($cona,$query_peach4);
+						$pa             = sqlsrv_fetch_array($stmt_peach4, SQLSRV_FETCH_ASSOC);
                     $query_peach3 = "SELECT
-                                           SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PM'
-																AND mesin = 'P3SU105' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_05_PM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM' AND mesin = 'P3SU105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_05_PM,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PM' 
-																AND mesin = 'P3SU104' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_04_PM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM' AND mesin = 'P3SU104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_04_PM,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PM' 
-																AND mesin = 'P3SU103' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_03_PM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM' AND mesin = 'P3SU103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_03_PM,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PM' 
-																AND mesin = 'P3SU102' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_02_PM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM' AND mesin = 'P3SU102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_02_PM,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'PM' 
-																AND mesin = 'P3SU101' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_01_PM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach3    = mysqli_query($cona,$query_peach3);
-                                    $pm             = mysqli_fetch_assoc($stmt_peach3);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM' AND mesin = 'P3SU101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_01_PM
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_peach3    = sqlsrv_query($cona,$query_peach3);
+						$pm             = sqlsrv_fetch_array($stmt_peach3, SQLSRV_FETCH_ASSOC);
                     $query_peach2 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'GT'
-																AND mesin = 'P3SU105' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_05_GT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT' AND mesin = 'P3SU105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_05_GT,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'GT' 
-																AND mesin = 'P3SU104' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_04_GT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT' AND mesin = 'P3SU104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_04_GT,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'GT' 
-																AND mesin = 'P3SU103' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_03_GT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT' AND mesin = 'P3SU103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_03_GT,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'GT' 
-																AND mesin = 'P3SU102' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_02_GT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT' AND mesin = 'P3SU102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_02_GT,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'GT' 
-																AND mesin = 'P3SU101' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_01_GT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach2    = mysqli_query($cona,$query_peach2);
-                                    $gt             = mysqli_fetch_assoc($stmt_peach2);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT' AND mesin = 'P3SU101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_01_GT
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_peach2    = sqlsrv_query($cona,$query_peach2);
+						$gt             = sqlsrv_fetch_array($stmt_peach2, SQLSRV_FETCH_ASSOC);
                     $query_peach1 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'TG'
-																AND mesin = 'P3SU105' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_05_TG,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG' AND mesin = 'P3SU105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_05_TG,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'TG' 
-																AND mesin = 'P3SU104' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_04_TG,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG' AND mesin = 'P3SU104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_04_TG,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'TG' 
-																AND mesin = 'P3SU103' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_03_TG,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG' AND mesin = 'P3SU103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_03_TG,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'TG' 
-																AND mesin = 'P3SU102' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_02_TG,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG' AND mesin = 'P3SU102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_02_TG,
 
-														SEC_TO_TIME(ROUND(SUM(
-															CASE 
-																WHEN kode_stop = 'TG' 
-																AND mesin = 'P3SU101' 
-																THEN durasi_jam_stop * 60 
-																ELSE 0 
-															END
-														))*60) AS peach_01_TG
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_peach1= mysqli_query($cona,$query_peach1);
-                        $tg= mysqli_fetch_assoc($stmt_peach1);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG' AND mesin = 'P3SU101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS peach_01_TG
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+                        $stmt_peach1= sqlsrv_query($cona,$query_peach1);
+                        $tg= sqlsrv_fetch_array($stmt_peach1, SQLSRV_FETCH_ASSOC);
                     // Total Peach
                     $query_mesin_peach1 = "SELECT
-										SEC_TO_TIME(ROUND(SUM(
-											CASE
-												WHEN mesin = 'P3SU105'
-												THEN durasi_jam_stop*60 ELSE 0
-											END)) * 60) AS menit_peach_05,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3SU105'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_peach_05,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE
-												WHEN mesin = 'P3SU104'
-												THEN durasi_jam_stop*60 ELSE 0
-											END)) * 60) AS menit_peach_04,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3SU104'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_peach_04,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE
-												WHEN mesin = 'P3SU103'
-												THEN durasi_jam_stop*60 ELSE 0
-											END)) * 60) AS menit_peach_03,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3SU103'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_peach_03,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE
-												WHEN mesin = 'P3SU102'
-												THEN durasi_jam_stop*60 ELSE 0
-											END)) * 60) AS menit_peach_02,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3SU102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_peach_02,
 
-										SEC_TO_TIME(ROUND(SUM(
-											CASE
-												WHEN mesin = 'P3SU101'
-												THEN durasi_jam_stop*60 ELSE 0
-											END)) * 60) AS menit_peach_01
-
-									FROM tbl_stoppage
-									WHERE dept = 'BRS'
-									  AND DATE_FORMAT(tgl_buat, '%Y-%m-%d') BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-									  AND kode_stop <> ''";
-                        $stmt_mesin_peach1= mysqli_query($cona,$query_mesin_peach1);
-                        $sum_mesin_peach= mysqli_fetch_assoc($stmt_mesin_peach1);
-                                        ?>
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3SU101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_peach_01
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+                        $stmt_mesin_peach1= sqlsrv_query($cona,$query_mesin_peach1);
+                        $sum_mesin_peach= sqlsrv_fetch_array($stmt_mesin_peach1, SQLSRV_FETCH_ASSOC);
+                ?>
                 <!-- Untuk Mesin 01 -->
                     <tr>
                     <td rowspan="5" align="left"><strong>PEACH SKIN</strong></td>
@@ -3306,250 +3563,265 @@ border:hidden;
                 <tr>
                     <?php 
                     $query_airo9 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'TG' 
-											AND mesin = 'P3AR101' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_01_TG,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+											AND mesin = 'P3AR101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_01_TG,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'TG' 
-											AND mesin = 'P3AR102' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_02_TG
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo9    = mysqli_query($cona,$query_airo9);
-                                    $tg_airo             = mysqli_fetch_assoc($stmt_airo9);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+											AND mesin = 'P3AR102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_02_TG
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_airo9    = sqlsrv_query($cona,$query_airo9);
+						$tg_airo             = sqlsrv_fetch_array($stmt_airo9, SQLSRV_FETCH_ASSOC);
                     $query_airo8 = "SELECT
-                                        SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'GT' 
-											AND mesin = 'P3AR101' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_01_GT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+											AND mesin = 'P3AR101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_01_GT,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'GT' 
-											AND mesin = 'P3AR102' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_02_GT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo8    = mysqli_query($cona,$query_airo8);
-                                    $gt_airo             = mysqli_fetch_assoc($stmt_airo8);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+											AND mesin = 'P3AR102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_02_GT
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_airo8    = sqlsrv_query($cona,$query_airo8);
+						$gt_airo             = sqlsrv_fetch_array($stmt_airo8, SQLSRV_FETCH_ASSOC);
                     $query_airo7 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'PM' 
-											AND mesin = 'P3AR101' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_01_PM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+											AND mesin = 'P3AR101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_01_PM,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'PM' 
-											AND mesin = 'P3AR102' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_02_PM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo7    = mysqli_query($cona,$query_airo7);
-                                    $pm_airo             = mysqli_fetch_assoc($stmt_airo7);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+											AND mesin = 'P3AR102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_02_PM
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_airo7    = sqlsrv_query($cona,$query_airo7);
+						$pm_airo             = sqlsrv_fetch_array($stmt_airo7, SQLSRV_FETCH_ASSOC);
                     $query_airo6 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'PA' 
-											AND mesin = 'P3AR101' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_01_PA,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+											AND mesin = 'P3AR101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_01_PA,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'PA' 
-											AND mesin = 'P3AR102' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_02_PA
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo6    = mysqli_query($cona,$query_airo6);
-                                    $pa_airo             = mysqli_fetch_assoc($stmt_airo6);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+											AND mesin = 'P3AR102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_02_PA
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_airo6    = sqlsrv_query($cona,$query_airo6);
+						$pa_airo             = sqlsrv_fetch_array($stmt_airo6, SQLSRV_FETCH_ASSOC);
                     $query_airo5 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'AP' 
-											AND mesin = 'P3AR101' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_01_AP,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+											AND mesin = 'P3AR101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_01_AP,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'AP' 
-											AND mesin = 'P3AR102' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_02_AP
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo5    = mysqli_query($cona,$query_airo5);
-                                    $ap_airo             = mysqli_fetch_assoc($stmt_airo5);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+											AND mesin = 'P3AR102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_02_AP
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_airo5    = sqlsrv_query($cona,$query_airo5);
+						$ap_airo             = sqlsrv_fetch_array($stmt_airo5, SQLSRV_FETCH_ASSOC);
                     $query_airo4 = "SELECT
-                                        SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'KO' 
-											AND mesin = 'P3AR101' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_01_KO,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KO'
+											AND mesin = 'P3AR101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_01_KO,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'KO' 
-											AND mesin = 'P3AR102' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_02_KO
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo4    = mysqli_query($cona,$query_airo4);
-                                    $ko_airo       = mysqli_fetch_assoc($stmt_airo4);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KO'
+											AND mesin = 'P3AR102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_02_KO
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_airo4    = sqlsrv_query($cona,$query_airo4);
+						$ko_airo       = sqlsrv_fetch_array($stmt_airo4, SQLSRV_FETCH_ASSOC);
                     $query_airo3 = "SELECT
-                                        SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'PT' 
-											AND mesin = 'P3AR101' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_01_PT,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+											AND mesin = 'P3AR101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_01_PT,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'PT' 
-											AND mesin = 'P3AR102' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_02_PT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo3    = mysqli_query($cona,$query_airo3);
-                                    $pt_airo       = mysqli_fetch_assoc($stmt_airo3);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+											AND mesin = 'P3AR102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_02_PT
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_airo3    = sqlsrv_query($cona,$query_airo3);
+						$pt_airo       = sqlsrv_fetch_array($stmt_airo3, SQLSRV_FETCH_ASSOC);
                     $query_airo2 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'KM' 
-											AND mesin = 'P3AR101' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_01_KM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+											AND mesin = 'P3AR101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_01_KM,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'KM' 
-											AND mesin = 'P3AR102' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_02_KM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo2    = mysqli_query($cona,$query_airo2);
-                                    $km_airo             = mysqli_fetch_assoc($stmt_airo2);
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+											AND mesin = 'P3AR102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_02_KM
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_airo2    = sqlsrv_query($cona,$query_airo2);
+						$km_airo             = sqlsrv_fetch_array($stmt_airo2, SQLSRV_FETCH_ASSOC);
                     $query_airo1 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'LM' 
-											AND mesin = 'P3AR101' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_01_LM,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+											AND mesin = 'P3AR101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_01_LM,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE 
-											WHEN kode_stop = 'LM' 
-											AND mesin = 'P3AR102' 
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
-										END
-									))* 60) AS airo_02_LM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo1    = mysqli_query($cona,$query_airo1);
-                                    $lm_airo             = mysqli_fetch_assoc($stmt_airo1);
-                            // Total airo
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+											AND mesin = 'P3AR102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS airo_02_LM
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_airo1    = sqlsrv_query($cona,$query_airo1);
+						$lm_airo             = sqlsrv_fetch_array($stmt_airo1, SQLSRV_FETCH_ASSOC);
+                    // Total airo
                     $query_mesin_airo = "SELECT
-									SEC_TO_TIME(ROUND(SUM(
-										CASE
-											WHEN mesin = 'P3AR101'
-											THEN durasi_jam_stop*60 ELSE 0
-										END))* 60) AS menit_01_airo,
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3AR101'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_01_airo,
 
-									SEC_TO_TIME(ROUND(SUM(
-										CASE
-											WHEN mesin = 'P3AR102'
-											THEN durasi_jam_stop*60 ELSE 0
-										END))* 60) AS menit_02_airo
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN mesin = 'P3AR102'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_02_airo
 
-								FROM tbl_stoppage
-								WHERE dept = 'BRS'
-								  AND DATE_FORMAT(tgl_buat, '%Y-%m-%d') BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-								  AND kode_stop <> ''";
-                        $stmt_mesin_airo= mysqli_query($cona,$query_mesin_airo);
-                        $sum_mesin_airo= mysqli_fetch_assoc($stmt_mesin_airo);
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+                        $stmt_mesin_airo= sqlsrv_query($cona,$query_mesin_airo);
+                        $sum_mesin_airo= sqlsrv_fetch_array($stmt_mesin_airo, SQLSRV_FETCH_ASSOC);
                         ?>
                     <td rowspan="2" align="left"><strong>AIRO</strong></td>
                     <td align="center">01</td>
@@ -3580,400 +3852,473 @@ border:hidden;
             <!-- End Airo -->
             <!-- Untuk Kolom Anti Piling1 -->
                 <tr>
-                    <?php $query_ap9 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'LM' 
-                                                    AND mesin LIKE 'P3TD201'
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_01_LM,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'LM' 
-                                                    AND mesin LIKE 'P3TD202' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_02_LM,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'LM'                                                     
-                                                    AND mesin LIKE 'P3TD203' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_03_LM,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'LM' 
-                                                    AND mesin LIKE 'P3TD204' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_04_LM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap9    = mysqli_query($cona,$query_ap9);
-                                    $lm_ap             = mysqli_fetch_assoc($stmt_ap9);
-                    $query_ap8 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'KM' 
-                                                    AND mesin LIKE 'P3TD201' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_01_KM,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'KM' 
-                                                    AND mesin LIKE 'P3TD202' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_02_KM,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'KM' 
-                                                    AND mesin LIKE 'P3TD203' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_03_KM,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'KM' 
-                                                    AND mesin LIKE 'P3TD204' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_04_KM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap8    = mysqli_query($cona,$query_ap8);
-                                    $km_ap             = mysqli_fetch_assoc($stmt_ap8);
-                    $query_ap7 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PT' 
-                                                    AND mesin LIKE 'P3TD201' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_01_PT,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PT' 
-                                                    AND mesin LIKE 'P3TD202' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_02_PT,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PT' 
-                                                    AND mesin LIKE 'P3TD203' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_03_PT,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PT' 
-                                                    AND mesin LIKE 'P3TD204' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_04_PT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap7    = mysqli_query($cona,$query_ap7);
-                                    $pt_ap             = mysqli_fetch_assoc($stmt_ap7);
-                    $query_ap6 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'KO' 
-                                                    AND mesin LIKE 'P3TD201' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_01_KO,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'KO' 
-                                                    AND mesin LIKE 'P3TD202'
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_02_KO,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'KO' 
-                                                    AND mesin LIKE 'P3TD203' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_03_KO,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'KO' 
-                                                    AND mesin LIKE 'P3TD204'
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_04_KO
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap6    = mysqli_query($cona,$query_ap6);
-                                    $ko_ap             = mysqli_fetch_assoc($stmt_ap6);
-                    $query_ap5 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'AP' 
-                                                    AND mesin = 'P3TD201' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_01_AP,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'AP' 
-                                                    AND mesin = 'P3TD202' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_02_AP,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'AP' 
-                                                    AND mesin = 'P3TD203' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_03_AP,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'AP' 
-                                                    AND mesin = 'P3TD204' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_04_AP
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap5    = mysqli_query($cona,$query_ap5);
-                                    $ap_ap             = mysqli_fetch_assoc($stmt_ap5);
-                    $query_ap4 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PA' 
-                                                    AND mesin = 'P3TD201' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_01_PA,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PA' 
-                                                    AND mesin = 'P3TD202' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_02_PA,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PA' 
-                                                    AND mesin = 'P3TD203' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_03_PA,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PA' 
-                                                    AND mesin = 'P3TD204'
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_04_PA
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap4    = mysqli_query($cona,$query_ap4);
-                                    $pa_ap             = mysqli_fetch_assoc($stmt_ap4);
-                    $query_ap3 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PM' 
-                                                    AND mesin = 'P3TD201' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_01_PM,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PM' 
-                                                    AND mesin = 'P3TD202'
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_02_PM,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PM' 
-                                                    AND mesin = 'P3TD203' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_03_PM,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'PM' 
-                                                    AND mesin = 'P3TD204' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_04_PM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap3    = mysqli_query($cona,$query_ap3);
-                                    $pm_ap             = mysqli_fetch_assoc($stmt_ap3);
-                    $query_ap2 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'GT' 
-                                                    AND mesin = 'P3TD201' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_01_GT,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'GT' 
-                                                    AND mesin = 'P3TD202' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_02_GT,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'GT' 
-                                                    AND mesin = 'P3TD203' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_03_GT,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'GT' 
-                                                    AND mesin = 'P3TD204'
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_04_GT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap2    = mysqli_query($cona,$query_ap2);
-                                    $gt_ap             = mysqli_fetch_assoc($stmt_ap2);
-                    $query_ap1 = "SELECT
-                                            SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'TG' 
-                                                    AND mesin = 'P3TD201' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_01_TG,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'TG' 
-                                                    AND mesin = 'P3TD202' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_02_TG,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'TG' 
-                                                    AND mesin = 'P3TD203' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_03_TG,
-											SEC_TO_TIME(ROUND(SUM(
-												CASE 
-													WHEN kode_stop = 'TG' 
-                                                    AND mesin = 'P3TD204' 
-													THEN durasi_jam_stop * 60 
-													ELSE 0 
-												END
-											))* 60) AS ap_04_TG
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_ap1= mysqli_query($cona,$query_ap1);
-                        $tg_ap= mysqli_fetch_assoc($stmt_ap1);
-                    // Total ap
-                    $query_mesin_ap1 = "SELECT						
+                    <?php 
+					$query_ap9 = "SELECT
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+											AND mesin LIKE 'P3TD201'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_01_LM,
 
-								SEC_TO_TIME(ROUND(SUM(
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+											AND mesin LIKE 'P3TD202'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_02_LM,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+											AND mesin LIKE 'P3TD203'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_03_LM,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'LM'
+											AND mesin LIKE 'P3TD204'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_04_LM
+
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_ap9    = sqlsrv_query($cona,$query_ap9);
+						$lm_ap             = sqlsrv_fetch_array($stmt_ap9, SQLSRV_FETCH_ASSOC);
+                    $query_ap8 = "SELECT
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+											AND mesin LIKE 'P3TD201'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_01_KM,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+											AND mesin LIKE 'P3TD202'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_02_KM,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+											AND mesin LIKE 'P3TD203'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_03_KM,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KM'
+											AND mesin LIKE 'P3TD204'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_04_KM
+
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_ap8    = sqlsrv_query($cona,$query_ap8);
+						$km_ap             = sqlsrv_fetch_array($stmt_ap8, SQLSRV_FETCH_ASSOC);
+                    $query_ap7 = "SELECT
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+											AND mesin LIKE 'P3TD201'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_01_PT,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+											AND mesin LIKE 'P3TD202'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_02_PT,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+											AND mesin LIKE 'P3TD203'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_03_PT,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PT'
+											AND mesin LIKE 'P3TD204'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_04_PT
+
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_ap7    = sqlsrv_query($cona,$query_ap7);
+						$pt_ap             = sqlsrv_fetch_array($stmt_ap7, SQLSRV_FETCH_ASSOC);
+                    $query_ap6 = "SELECT
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KO'
+											AND mesin LIKE 'P3TD201'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_01_KO,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KO'
+											AND mesin LIKE 'P3TD202'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_02_KO,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KO'
+											AND mesin LIKE 'P3TD203'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_03_KO,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'KO'
+											AND mesin LIKE 'P3TD204'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_04_KO
+
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_ap6    = sqlsrv_query($cona,$query_ap6);
+						$ko_ap             = sqlsrv_fetch_array($stmt_ap6, SQLSRV_FETCH_ASSOC);
+                    $query_ap5 = "SELECT
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+											AND mesin = 'P3TD201'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_01_AP,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+											AND mesin = 'P3TD202'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_02_AP,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+											AND mesin = 'P3TD203'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_03_AP,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'AP'
+											AND mesin = 'P3TD204'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_04_AP
+
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_ap5    = sqlsrv_query($cona,$query_ap5);
+						$ap_ap             = sqlsrv_fetch_array($stmt_ap5, SQLSRV_FETCH_ASSOC);
+                    $query_ap4 = "SELECT
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+											AND mesin = 'P3TD201'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_01_PA,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+											AND mesin = 'P3TD202'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_02_PA,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+											AND mesin = 'P3TD203'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_03_PA,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PA'
+											AND mesin = 'P3TD204'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_04_PA
+
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_ap4    = sqlsrv_query($cona,$query_ap4);
+						$pa_ap             = sqlsrv_fetch_array($stmt_ap4, SQLSRV_FETCH_ASSOC);
+                    $query_ap3 = "SELECT
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+											AND mesin = 'P3TD201'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_01_PM,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+											AND mesin = 'P3TD202'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_02_PM,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+											AND mesin = 'P3TD203'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_03_PM,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'PM'
+											AND mesin = 'P3TD204'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_04_PM
+
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_ap3    = sqlsrv_query($cona,$query_ap3);
+						$pm_ap             = sqlsrv_fetch_array($stmt_ap3, SQLSRV_FETCH_ASSOC);
+                    $query_ap2 = "SELECT
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+											AND mesin = 'P3TD201'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_01_GT,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+											AND mesin = 'P3TD202'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_02_GT,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+											AND mesin = 'P3TD203'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_03_GT,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'GT'
+											AND mesin = 'P3TD204'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_04_GT
+
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_ap2    = sqlsrv_query($cona,$query_ap2);
+						$gt_ap             = sqlsrv_fetch_array($stmt_ap2, SQLSRV_FETCH_ASSOC);
+                    $query_ap1 = "SELECT
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+											AND mesin = 'P3TD201'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_01_TG,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+											AND mesin = 'P3TD202'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_02_TG,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+											AND mesin = 'P3TD203'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_03_TG,
+
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
+									CASE
+										WHEN kode_stop = 'TG'
+											AND mesin = 'P3TD204'
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS ap_04_TG
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+                        $stmt_ap1= sqlsrv_query($cona,$query_ap1);
+                        $tg_ap= sqlsrv_fetch_array($stmt_ap1, SQLSRV_FETCH_ASSOC);
+                    // Total ap
+                    $query_mesin_ap1 = "SELECT
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
 									CASE
 										WHEN mesin LIKE 'P3TD204'
-										THEN durasi_jam_stop*60 ELSE 0
-									END)) * 60) AS menit_ap_04,
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_ap_04,
 
-								SEC_TO_TIME(ROUND(SUM(
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
 									CASE
 										WHEN mesin LIKE 'P3TD203'
-										THEN durasi_jam_stop*60 ELSE 0
-									END)) * 60) AS menit_ap_03,
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_ap_03,
 
-								SEC_TO_TIME(ROUND(SUM(
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
 									CASE
 										WHEN mesin LIKE 'P3TD202'
-										THEN durasi_jam_stop*60 ELSE 0
-									END)) * 60) AS menit_ap_02,
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_ap_02,
 
-								SEC_TO_TIME(ROUND(SUM(
+							CONVERT(varchar(8), DATEADD(SECOND,
+								CAST(ROUND(SUM(
 									CASE
 										WHEN mesin LIKE 'P3TD201'
-										THEN durasi_jam_stop*60 ELSE 0
-									END)) * 60) AS menit_ap_01
-
-							FROM tbl_stoppage
-							WHERE dept = 'BRS'
-							  AND DATE_FORMAT(tgl_buat, '%Y-%m-%d') BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-							  AND kode_stop <> ''";
-                        $stmt_mesin_ap1= mysqli_query($cona,$query_mesin_ap1);
-                        $sum_mesin_ap= mysqli_fetch_assoc($stmt_mesin_ap1);
-                                        ?>
+										THEN durasi_jam_stop * 3600
+										ELSE 0
+									END
+								), 0) AS int), 0), 108) AS menit_ap_01
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+                        $stmt_mesin_ap1= sqlsrv_query($cona,$query_mesin_ap1);
+                        $sum_mesin_ap= sqlsrv_fetch_array($stmt_mesin_ap1, SQLSRV_FETCH_ASSOC);
+                    ?>
                     <td align="left"><strong>ANTI PILLING 01</strong></td>
                     <td align="center">01</td>
                     <td align="center"><?php echo $lm_ap['ap_01_LM'];?></td>
@@ -4038,163 +4383,197 @@ border:hidden;
             <!-- End Anti Piling4 -->
             <!-- Untuk Kolom Wet Sue -->
                 <tr>
-                    <?php $query_wet9 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
+                    <?php
+					$query_wet9 = "SELECT
+							CONVERT(varchar(8),
+								DATEADD(SECOND,
+									CAST(ROUND(SUM(
 										CASE 
 											WHEN kode_stop = 'TG' 
-											AND mesin IN ('P3SU201')
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
+												AND mesin IN ('P3SU201')
+											THEN (durasi_jam_stop * 60) * 60
+											ELSE 0
 										END
-									))*60) AS wet_F_TG
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet9    = mysqli_query($cona,$query_wet9);
-                            $tg_wet             = mysqli_fetch_assoc($stmt_wet9);
-                $query_wet8 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
+									),0) AS int),
+								0),
+							108) AS wet_F_TG
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_wet9    = sqlsrv_query($cona,$query_wet9);
+						$tg_wet             = sqlsrv_fetch_array($stmt_wet9, SQLSRV_FETCH_ASSOC);
+					$query_wet8 = "SELECT
+							CONVERT(varchar(8),
+								DATEADD(SECOND,
+									CAST(ROUND(SUM(
 										CASE 
-											WHEN kode_stop = 'GT' 
-											AND mesin IN ('P3SU201')
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
+											WHEN kode_stop = 'GT'
+												AND mesin IN ('P3SU201')
+											THEN (durasi_jam_stop * 60) * 60
+											ELSE 0
 										END
-									))*60) AS wet_F_GT
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet8    = mysqli_query($cona,$query_wet8);
-                            $gt_wet             = mysqli_fetch_assoc($stmt_wet8);
-                $query_wet7 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
+									),0) AS int),
+								0),
+							108) AS wet_F_GT
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_wet8    = sqlsrv_query($cona,$query_wet8);
+						$gt_wet             = sqlsrv_fetch_array($stmt_wet8, SQLSRV_FETCH_ASSOC);
+					$query_wet7 = "SELECT
+							CONVERT(varchar(8),
+								DATEADD(SECOND,
+									CAST(ROUND(SUM(
 										CASE 
-											WHEN kode_stop = 'PM' 
-											AND mesin IN ('P3SU201')
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
+											WHEN kode_stop = 'PM'
+												AND mesin IN ('P3SU201')
+											THEN (durasi_jam_stop * 60) * 60
+											ELSE 0
 										END
-									))*60) AS wet_F_PM
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet7    = mysqli_query($cona,$query_wet7);
-                            $pm_wet             = mysqli_fetch_assoc($stmt_wet7);
-                $query_wet6 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
+									),0) AS int),
+								0),
+							108) AS wet_F_PM
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_wet7    = sqlsrv_query($cona,$query_wet7);
+						$pm_wet             = sqlsrv_fetch_array($stmt_wet7, SQLSRV_FETCH_ASSOC);
+                	$query_wet6 = "SELECT
+							CONVERT(varchar(8),
+								DATEADD(SECOND,
+									CAST(ROUND(SUM(
 										CASE 
-											WHEN kode_stop = 'PA' 
-											AND mesin IN ('P3SU201')
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
+											WHEN kode_stop = 'PA'
+												AND mesin IN ('P3SU201')
+											THEN (durasi_jam_stop * 60) * 60
+											ELSE 0
 										END
-									))*60) AS wet_F_PA
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet6    = mysqli_query($cona,$query_wet6);
-                            $pa_wet             = mysqli_fetch_assoc($stmt_wet6);
-                $query_wet5 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
+									),0) AS int),
+								0),
+							108) AS wet_F_PA
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_wet6    = sqlsrv_query($cona,$query_wet6);
+						$pa_wet             = sqlsrv_fetch_array($stmt_wet6, SQLSRV_FETCH_ASSOC);
+					$query_wet5 = "SELECT
+							CONVERT(varchar(8),
+								DATEADD(SECOND,
+									CAST(ROUND(SUM(
 										CASE 
-											WHEN kode_stop = 'AP' 
-											AND mesin IN ('P3SU201')
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
+											WHEN kode_stop = 'AP'
+												AND mesin IN ('P3SU201')
+											THEN (durasi_jam_stop * 60) * 60
+											ELSE 0
 										END
-									))*60) AS wet_F_AP
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet5    = mysqli_query($cona,$query_wet5);
-                            $ap_wet             = mysqli_fetch_assoc($stmt_wet5);
-                $query_wet4 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
+									),0) AS int),
+								0),
+							108) AS wet_F_AP
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_wet5    = sqlsrv_query($cona,$query_wet5);
+						$ap_wet             = sqlsrv_fetch_array($stmt_wet5, SQLSRV_FETCH_ASSOC);
+					$query_wet4 = "SELECT
+							CONVERT(varchar(8),
+								DATEADD(SECOND,
+									CAST(ROUND(SUM(
 										CASE 
-											WHEN kode_stop = 'KO' 
-											AND mesin IN ('P3SU201')
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
+											WHEN kode_stop = 'KO'
+												AND mesin IN ('P3SU201')
+											THEN (durasi_jam_stop * 60) * 60
+											ELSE 0
 										END
-									))*60) AS wet_F_KO
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet4    = mysqli_query($cona,$query_wet4);
-                            $ko_wet             = mysqli_fetch_assoc($stmt_wet4);
-                $query_wet3 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
+									),0) AS int),
+								0),
+							108) AS wet_F_KO
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_wet4    = sqlsrv_query($cona,$query_wet4);
+						$ko_wet             = sqlsrv_fetch_array($stmt_wet4, SQLSRV_FETCH_ASSOC);
+					$query_wet3 = "SELECT
+							CONVERT(varchar(8),
+								DATEADD(SECOND,
+									CAST(ROUND(SUM(
 										CASE 
-											WHEN kode_stop = 'PT' 
-											AND mesin IN ('P3SU201')
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
+											WHEN kode_stop = 'PT'
+												AND mesin IN ('P3SU201')
+											THEN (durasi_jam_stop * 60) * 60
+											ELSE 0
 										END
-									))*60) AS wet_F_PT
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet3    = mysqli_query($cona,$query_wet3);
-                            $pt_wet             = mysqli_fetch_assoc($stmt_wet3);
-                $query_wet2 = "SELECT
-                                    SEC_TO_TIME(ROUND(SUM(
+									),0) AS int),
+								0),
+							108) AS wet_F_PT
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_wet3    = sqlsrv_query($cona,$query_wet3);
+						$pt_wet             = sqlsrv_fetch_array($stmt_wet3, SQLSRV_FETCH_ASSOC);
+					$query_wet2 = "SELECT
+							CONVERT(varchar(8),
+								DATEADD(SECOND,
+									CAST(ROUND(SUM(
 										CASE 
-											WHEN kode_stop = 'KM' 
-											AND mesin IN ('P3SU201')
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
+											WHEN kode_stop = 'KM'
+												AND mesin IN ('P3SU201')
+											THEN (durasi_jam_stop * 60) * 60
+											ELSE 0
 										END
-									))*60) AS wet_F_KM
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet2    = mysqli_query($cona,$query_wet2);
-                            $km_wet             = mysqli_fetch_assoc($stmt_wet2);
+									),0) AS int),
+								0),
+							108) AS wet_F_KM
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_wet2    = sqlsrv_query($cona,$query_wet2);
+						$km_wet             = sqlsrv_fetch_array($stmt_wet2, SQLSRV_FETCH_ASSOC);
                     $query_wet1 = "SELECT
-                                           SEC_TO_TIME(ROUND(SUM(
+							CONVERT(varchar(8),
+								DATEADD(SECOND,
+									CAST(ROUND(SUM(
 										CASE 
-											WHEN kode_stop = 'LM' 
-											AND mesin IN ('P3SU201')
-											THEN durasi_jam_stop * 60 
-											ELSE 0 
+											WHEN kode_stop = 'LM'
+												AND mesin IN ('P3SU201')
+											THEN (durasi_jam_stop * 60) * 60
+											ELSE 0
 										END
-									))*60) AS wet_F_LM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND  DATE_FORMAT( tgl_buat, '%Y-%m-%d' ) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_wet1    = mysqli_query($cona,$query_wet1);
-                                    $lm_wet             = mysqli_fetch_assoc($stmt_wet1);
-                            // Total Garuk
+									),0) AS int),
+								0),
+							108) AS wet_F_LM
+						FROM db_adm.tbl_stoppage
+						WHERE dept ='BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+						$stmt_wet1    = sqlsrv_query($cona,$query_wet1);
+						$lm_wet             = sqlsrv_fetch_array($stmt_wet1, SQLSRV_FETCH_ASSOC);
+                    // Total Garuk
                     $query_mesin_wet = "SELECT
-										SEC_TO_TIME(ROUND(SUM(
-											CASE
-												WHEN mesin IN ('P3SU201')
-												THEN durasi_jam_stop*60 ELSE 0
-											END) * 60)) AS menit_wet_F
-									FROM tbl_stoppage
-									WHERE dept = 'BRS'
-									  AND DATE_FORMAT(tgl_buat, '%Y-%m-%d') BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
-									  AND kode_stop <> ''";
-                        $stmt_mesin_wet= mysqli_query($cona,$query_mesin_wet);
-                        $sum_mesin_wet= mysqli_fetch_assoc($stmt_mesin_wet);
+							CONVERT(varchar(8),
+								DATEADD(SECOND,
+									CAST(ROUND(SUM(
+										CASE
+											WHEN mesin IN ('P3SU201')
+											THEN (durasi_jam_stop*60) * 60
+											ELSE 0
+										END
+									),0) AS int),
+								0),
+							108) AS menit_wet_F
+						FROM db_adm.tbl_stoppage
+						WHERE dept = 'BRS'
+						AND CONVERT(date, tgl_buat) BETWEEN '$tanggalAkhir_tbl3' AND '$tanggalAkhir_tbl3'
+						AND ISNULL(kode_stop,'') <> ''";
+                        $stmt_mesin_wet= sqlsrv_query($cona,$query_mesin_wet);
+                        $sum_mesin_wet= sqlsrv_fetch_array($stmt_mesin_wet, SQLSRV_FETCH_ASSOC);
                     ?>
                     <td align="left"><strong>WET SUEDING</strong></td>
                     <td align="center">01</td>

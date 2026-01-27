@@ -7,58 +7,82 @@
 ?>
 
 <?php
-  mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
   $daftarProses = [];
-  $queryProses = mysqli_query($con, "SELECT DISTINCT proses FROM tbl_proses ORDER BY proses ASC");
-  while ($rowProses = mysqli_fetch_assoc($queryProses)) {
-    $daftarProses[] = $rowProses['proses'];
+  $queryProses  = sqlsrv_query($con, "SELECT DISTINCT proses FROM db_dying.tbl_proses ORDER BY proses ASC");
+  if ($queryProses !== false) {
+    while ($rowProses = sqlsrv_fetch_array($queryProses, SQLSRV_FETCH_ASSOC)) {
+      $daftarProses[] = $rowProses['proses'];
+    }
   }
+
   $statusProses = [];
-  $queryStatusProses = mysqli_query($con, "SELECT * FROM tbl_status_proses ORDER BY nama ASC");
-  while ($rowStatusProses = mysqli_fetch_assoc($queryStatusProses)) {
-    $statusProses[] = $rowStatusProses['nama'];
+  $queryStatusProses = sqlsrv_query($con, "SELECT nama FROM db_dying.tbl_status_proses ORDER BY nama ASC");
+  if ($queryStatusProses !== false) {
+    while ($rowStatusProses = sqlsrv_fetch_array($queryStatusProses, SQLSRV_FETCH_ASSOC)) {
+      $statusProses[] = $rowStatusProses['nama'];
+    }
   }
 ?>
 <?php
   $Awal  = isset($_POST['awal']) ? $_POST['awal'] : '';
-  $Akhir  = isset($_POST['akhir']) ? $_POST['akhir'] : '';
+  $Akhir = isset($_POST['akhir']) ? $_POST['akhir'] : '';
   $GShift  = isset($_POST['gshift']) ? $_POST['gshift'] : '';
   $Fs    = isset($_POST['fasilitas']) ? $_POST['fasilitas'] : '';
   $jamA  = isset($_POST['jam_awal']) ? $_POST['jam_awal'] : '';
-  $jamAr  = isset($_POST['jam_akhir']) ? $_POST['jam_akhir'] : '';
-  $Rcode  = isset($_POST['rcode']) ? $_POST['rcode'] : '';
-  if (strlen($jamA) == 5) {
-    $start_date = $Awal . ' ' . $jamA;
-  } else {
-    $start_date = $Awal . ' 0' . $jamA;
+  $jamAr = isset($_POST['jam_akhir']) ? $_POST['jam_akhir'] : '';
+  $Rcode = isset($_POST['rcode']) ? $_POST['rcode'] : '';
+
+  $start_date = '';
+  $stop_date  = '';
+
+  if ($Awal !== '') {
+    if ($jamA !== '') {
+      if (strlen($jamA) === 5) {
+        $start_date = $Awal . ' ' . $jamA;
+      } else {
+        $start_date = $Awal . ' 0' . $jamA;
+      }
+    } else {
+      $start_date = $Awal;
+    }
   }
-  if (strlen($jamAr) == 5) {
-    $stop_date  = $Akhir . ' ' . $jamAr;
-  } else {
-    $stop_date  = $Akhir . ' 0' . $jamAr;
+
+  if ($Akhir !== '') {
+    if ($jamAr !== '') {
+      if (strlen($jamAr) === 5) {
+        $stop_date = $Akhir . ' ' . $jamAr;
+      } else {
+        $stop_date = $Akhir . ' 0' . $jamAr;
+      }
+    } else {
+      $stop_date = $Akhir;
+    }
   }	
     
   if($Awal!="" && $Akhir!=""){
+    $start_date = str_replace('T',' ', $start_date);
+    $stop_date  = str_replace('T',' ', $stop_date);
+
     $Tgl = substr($start_date, 0, 10);
+
     if ($start_date != $stop_date) {
-      $Where = " DATE_FORMAT(c.tgl_update, '%Y-%m-%d %H:%i') BETWEEN '$start_date' AND '$stop_date' ";
+      $Where = " c.tgl_update BETWEEN CONVERT(datetime, '$start_date', 120) AND CONVERT(datetime, '$stop_date', 120) ";
     } else {
-      $Where = " DATE_FORMAT(c.tgl_update, '%Y-%m-%d')='$Tgl' ";
+      $Where = " CONVERT(date, c.tgl_update) = CONVERT(date, '$Tgl', 23) ";
     }
+
     if ($GShift == "ALL") {
       $shft = " ";
     } else {
-      $shft = " if(ISNULL(a.g_shift),c.g_shift,a.g_shift)='$GShift' AND ";
+      $shft = " ISNULL(a.g_shift, c.g_shift)='$GShift' AND ";
     }
-    $sql = mysqli_query($con, "SELECT x.*, a.no_mesin as mc 
-                                  FROM tbl_mesin a
+    $sql = sqlsrv_query($con, "SELECT x.*, a.no_mesin as mc 
+                                  FROM db_dying.tbl_mesin a
                                       LEFT JOIN
                                       (SELECT
-                                      a.ket,	if(ISNULL(TIMEDIFF(c.tgl_mulai,c.tgl_stop)),a.lama_proses,CONCAT(LPAD(FLOOR((((HOUR(a.lama_proses)*60)+MINUTE(a.lama_proses))-((HOUR(TIMEDIFF(c.tgl_mulai,c.tgl_stop))*60)+MINUTE(TIMEDIFF(c.tgl_mulai,c.tgl_stop))))/60),2,0),':',LPAD(((((HOUR(a.lama_proses)*60)+MINUTE(a.lama_proses))-((HOUR(TIMEDIFF(c.tgl_mulai,c.tgl_stop))*60)+MINUTE(TIMEDIFF(c.tgl_mulai,c.tgl_stop))))%60),2,0))) as lama_proses,
+                                      a.ket,
+                                      a.lama_proses,
                                       a.status as sts,
-                                      TIME_FORMAT(if(ISNULL(TIMEDIFF(c.tgl_mulai,c.tgl_stop)),a.lama_proses,CONCAT(LPAD(FLOOR((((HOUR(a.lama_proses)*60)+MINUTE(a.lama_proses))-((HOUR(TIMEDIFF(c.tgl_mulai,c.tgl_stop))*60)+MINUTE(TIMEDIFF(c.tgl_mulai,c.tgl_stop))))/60),2,0),':',LPAD(((((HOUR(a.lama_proses)*60)+MINUTE(a.lama_proses))-((HOUR(TIMEDIFF(c.tgl_mulai,c.tgl_stop))*60)+MINUTE(TIMEDIFF(c.tgl_mulai,c.tgl_stop))))%60),2,0))),'%H') as jam,
-                                      TIME_FORMAT(if(ISNULL(TIMEDIFF(c.tgl_mulai,c.tgl_stop)),a.lama_proses,CONCAT(LPAD(FLOOR((((HOUR(a.lama_proses)*60)+MINUTE(a.lama_proses))-((HOUR(TIMEDIFF(c.tgl_mulai,c.tgl_stop))*60)+MINUTE(TIMEDIFF(c.tgl_mulai,c.tgl_stop))))/60),2,0),':',LPAD(((((HOUR(a.lama_proses)*60)+MINUTE(a.lama_proses))-((HOUR(TIMEDIFF(c.tgl_mulai,c.tgl_stop))*60)+MINUTE(TIMEDIFF(c.tgl_mulai,c.tgl_stop))))%60),2,0))),'%i') as menit,
                                       a.proses as proses,
                                       b.proses as schedule_proses,
                                       b.buyer,
@@ -71,12 +95,12 @@
                                       b.loading,
                                       a.resep,
                                       CASE
-                                        WHEN SUBSTR(b.kategori_warna, 1,1) = 'D' THEN 'Dark'
-                                        WHEN SUBSTR(b.kategori_warna, 1,1) = 'H' THEN 'Heater'
-                                        WHEN SUBSTR(b.kategori_warna, 1,1) = 'L' THEN 'Light'
-                                        WHEN SUBSTR(b.kategori_warna, 1,1) = 'M' THEN 'Medium'
-                                        WHEN SUBSTR(b.kategori_warna, 1,1) = 'S' THEN 'Dark'
-                                        WHEN SUBSTR(b.kategori_warna, 1,1) = 'W' THEN 'White'
+                                        WHEN SUBSTRING(b.kategori_warna, 1,1) = 'D' THEN 'Dark'
+                                        WHEN SUBSTRING(b.kategori_warna, 1,1) = 'H' THEN 'Heater'
+                                        WHEN SUBSTRING(b.kategori_warna, 1,1) = 'L' THEN 'Light'
+                                        WHEN SUBSTRING(b.kategori_warna, 1,1) = 'M' THEN 'Medium'
+                                        WHEN SUBSTRING(b.kategori_warna, 1,1) = 'S' THEN 'Dark'
+                                        WHEN SUBSTRING(b.kategori_warna, 1,1) = 'W' THEN 'White'
                                       END AS kategori_warna,
                                       c.l_r,
                                       c.rol,
@@ -98,12 +122,12 @@
                                       a.id as idhslclp,   
                                       b.id as idshedule,
                                       c.id as idmontemp,
-		                                  a.status_proses,
+		                              a.status_proses,
                                       COALESCE(a.point2, b.target) as point2
                                     FROM
-                                      tbl_schedule b
-                                        LEFT JOIN  tbl_montemp c ON c.id_schedule = b.id
-                                        LEFT JOIN tbl_hasilcelup a ON a.id_montemp=c.id	
+                                      db_dying.tbl_schedule b
+                                        LEFT JOIN  db_dying.tbl_montemp c ON c.id_schedule = b.id
+                                        LEFT JOIN db_dying.tbl_hasilcelup a ON a.id_montemp=c.id	
                                     WHERE
                                       $shft 
                                       $Where
@@ -115,7 +139,16 @@
     $data=array();
     $mc_all=array();
     $nokk_all=array();
-    while ($rowd = mysqli_fetch_assoc($sql)) {
+    
+if ($sql === false) {
+    echo "<pre>";
+    echo "===== SQLSRV ERROR (not_achieved_DOM) =====\n";
+    echo $sql . "\n\n";
+    print_r(sqlsrv_errors());
+    echo "</pre>";
+    exit;
+}
+    while ($rowd = sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC)) {
       $rl ="";
       if (strlen($rowd['rol']) > 5) {
         $jk = strlen($rowd['rol']) - 5;
@@ -138,16 +171,12 @@
       $shftSM = " g_shift='$GShift' AND ";
     }
     $mesin=array();
-    $sqlSM = mysqli_query($con, "SELECT *, TIME_FORMAT(timediff(selesai,mulai),'%H:%i') as menitSM,
-                    DATE_FORMAT(mulai,'%Y-%m-%d') as tgl_masuk,
-                    DATE_FORMAT(selesai,'%Y-%m-%d') as tgl_selesai,
-                    TIME_FORMAT(mulai,'%H:%i') as jam_masuk,
-                    TIME_FORMAT(selesai,'%H:%i') as jam_selesai,
+    $sqlSM = sqlsrv_query($con, "SELECT *,
                     kapasitas as kapSM,
                     g_shift as shiftSM
-                    FROM tbl_stopmesin
+                    FROM db_dying.tbl_stopmesin
                     WHERE $shftSM tgl_update BETWEEN '$start_date' AND '$stop_date' AND no_mesin IN ('$mesin_join')");
-    while ($rowSM = mysqli_fetch_assoc($sqlSM)) {
+    while ($rowSM = sqlsrv_fetch_array($sqlSM, SQLSRV_FETCH_ASSOC)) {
       $mesin[$rowSM['no_mesin']]=$rowSM;
     }
                 
@@ -165,17 +194,17 @@
       $subcode_all[$rowCode['PRODUCTIONORDERCODE']]=$rowCode;
     }
     $lama_proses_all=array();
-    $qryLama = mysqli_query($con, "SELECT b.nokk,
-                                      TIME_FORMAT( timediff( now(), b.tgl_buat ), '%H:%i' ) AS lama 
+    $qryLama = sqlsrv_query($con, "SELECT b.nokk,
+                                      DATEDIFF(MINUTE, b.tgl_buat, GETDATE()) AS lama 
                                     FROM
-                                      tbl_schedule a
-                                    LEFT JOIN tbl_montemp b ON a.id = b.id_schedule 
+                                      db_dying.tbl_schedule a
+                                    LEFT JOIN db_dying.tbl_montemp b ON a.id = b.id_schedule 
                                     WHERE
                                        b.nokk IN ('$nokk_join')
                                     AND b.STATUS = 'sedang jalan' 
                                       ORDER BY
                                     a.no_urut ASC");
-    while ($rLama = mysqli_fetch_array($qryLama)) {
+    while ($rLama = sqlsrv_fetch_array($qryLama, SQLSRV_FETCH_ASSOC)) {
       $lama_proses_all[$rLama['nokk']]=$rLama;
     }
   }  
@@ -430,7 +459,7 @@
                     <td id="kategori_warna<?= $rowd['idhslclp'] ?>"><?=$rowd['kategori_warna']?></td>
                     <td><?=$rowd['warna']?></td></td>
                     <td id="proses<?= $rowd['idhslclp'] ?>"><?=$rowd['proses']?></td>
-                    <td><?=$rowd['loading']?> %</td>
+                    <td><?= number_format((float)$rowd['loading'], 2, '.', '') ?> %</td>
                     <td><?=$rowd['proses_point']?></td>
                     <td><?=$rowd['schedule_proses']?></td>
                     <td><?=$rowd['l_r']?></td>
@@ -441,7 +470,7 @@
                     <td><?=$rowd['status_proses']?></td>
                     <td><?=$rowd['dyestuff']?></td>
                     <td><?=$rowd['lama_proses']?></td>
-                    <td><?=$rowd['point2']?></td>
+                    <td><?=number_format((float)$rowd['point2'], 2, '.', '')?></td>
                   </tr>
                 <?php
                   $no++;
@@ -687,8 +716,8 @@
 						<tbody>
 							<?php
 							$c = 1;
-							$sqlAn1 = mysqli_query($con, "SELECT * FROM tbl_status_proses ORDER BY nama ASC");
-							while ($rAn1 = mysqli_fetch_array($sqlAn1)) {
+							$sqlAn1 = sqlsrv_query($con, "SELECT * FROM db_dying.tbl_status_proses ORDER BY nama ASC");
+							while ($rAn1 = sqlsrv_fetch_array($sqlAn1, SQLSRV_FETCH_ASSOC)) {
 								$bgcolor = ($c++ & 1) ? '#33CCFF' : '#FFCC99';
 							?>
 								<tr bgcolor="<?php echo $bgcolor; ?>">
@@ -794,7 +823,11 @@
         };
 
         for (const key in originalData) {
-          $('#input' + toCamelCase(key)).val(originalData[key]);
+          let val = originalData[key];
+          if ((key === 'loading' || key === 'point2') && val !== null && val !== '' && !isNaN(val)) {
+            val = parseFloat(val).toFixed(2);
+          }
+          $('#input' + toCamelCase(key)).val(val);
         }
 
         $('#typeSave').val(btn.data('id'));
