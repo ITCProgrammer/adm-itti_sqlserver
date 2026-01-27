@@ -8,20 +8,22 @@ if (!isset($_SESSION['user_id10']) || !isset($_POST['pk']) || !isset($_POST['val
     exit();
 }
 
-$pk = $_POST['pk'];
+$pk       = $_POST['pk'];
 $newValue = $_POST['value'];
-$user = $_SESSION['user_id10'];
-$today = date('Y-m-d H:i:s');
-$columnToUpdate = 'resep'; 
+$user     = $_SESSION['user_id10'];
+$today    = date('Y-m-d H:i:s');
+$columnToUpdate = 'resep';
+$sql = "UPDATE db_dying.tbl_schedule SET $columnToUpdate = ? WHERE id = ?";
+$params = [$newValue, $pk];
+$stmt = sqlsrv_query($con, $sql, $params);
 
-$stmt_update = $con->prepare("UPDATE tbl_schedule SET {$columnToUpdate} = ? WHERE id = ?");
-$stmt_update->bind_param("ss", $newValue, $pk);
-if ($stmt_update->execute()) {
-    http_response_code(200);
-    echo "Update berhasil.";
-} else {
+if ($stmt === false) {
     http_response_code(400);
-    echo "Error saat update: " . $stmt_update->error;
+    $errors = sqlsrv_errors();
+    echo "Error saat update: " . ($errors[0]['message'] ?? 'Unknown error');
+    exit();
 }
-$stmt_update->close();
+
+http_response_code(200);
+echo "Update berhasil.";
 ?>

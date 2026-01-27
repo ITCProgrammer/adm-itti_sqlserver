@@ -29,14 +29,15 @@ if (strlen($jamA) == 5) {
   } else {
     $stop_date = $Akhir . " 0" . $jamAr;
   }
- if($Awal!="" and $Akhir!="" && $jamA=="" && $jamAr==""){ 
-    $where=" AND DATE_FORMAT( tgl_update, '%Y-%m-%d' ) BETWEEN '$Awal' AND '$Akhir' ";
+  if ($Awal != "" && $Akhir != "" && $jamA=="" && $jamAr=="") {
+    $where = " AND CONVERT(date, tgl_update) BETWEEN '".$Awal."' AND '".$Akhir."' ";
+  } else if ($Awal != "" && $Akhir != "" && $jamA!="" && $jamAr!="") {
+    $where = " AND tgl_update BETWEEN '".$start_date."' AND '".$stop_date."' ";
+  } else {
+    $where = " ";
   }
- else if($Awal!="" && $Akhir!="" && $jamA!="" && $jamAr!=""){ 
-    $where=" AND tgl_update BETWEEN '$start_date' AND '$stop_date' ";
-  }else{ $where=" ";}  
  if($Awal!="" and $Akhir!=""){
-    $qry1=mysqli_query($cond,"SELECT 
+    $qry1=sqlsrv_query($cond,"SELECT 
                                   t.*,
                                   p.hasil_tindak_lanjut,
                                   p.tindak_lanjut,
@@ -44,8 +45,8 @@ if (strlen($jamA) == 5) {
                                   p.pemberi_instruksi,
                                   p.keterangan  
                                 FROM 
-                                  tbl_cocok_warna_dye t
-                                LEFT JOIN penyelesaian_tolakbasah p
+                                  db_qc.tbl_cocok_warna_dye t
+                                LEFT JOIN db_qc.penyelesaian_tolakbasah p
                                   ON t.id = p.id_cocok_warna 
                                 WHERE 
                                   t.status_warna 
@@ -53,21 +54,19 @@ if (strlen($jamA) == 5) {
                                 ORDER BY 
                                   t.id DESC");
   }else{
-    $qry1=mysqli_query($cond,"SELECT 
-                                  t.*,
-                                  p.hasil_tindak_lanjut,
-                                  p.tindak_lanjut,
-                                  p.tindakan,
-                                  p.pemberi_instruksi,
-                                  p.keterangan
-                                FROM 
-                                  tbl_cocok_warna_dye t
-                                LEFT JOIN penyelesaian_tolakbasah p
-                                  ON t.id = p.id_cocok_warna 
-                                WHERE t.status_warna like '%TOLAK BASAH%' 
-                                ORDER BY 
-                                  t.id DESC 
-                                LIMIT 100");
+    $qry1 = sqlsrv_query($cond,"SELECT TOP 100
+        t.*,
+        p.hasil_tindak_lanjut,
+        p.tindak_lanjut,
+        p.tindakan,
+        p.pemberi_instruksi,
+        p.keterangan
+      FROM db_qc.tbl_cocok_warna_dye t
+      LEFT JOIN db_qc.penyelesaian_tolakbasah p
+        ON t.id = p.id_cocok_warna
+      WHERE t.status_warna like '%TOLAK BASAH%'
+      ORDER BY t.id DESC
+    ");
   }
 ?>
 <div class="box">
@@ -163,35 +162,34 @@ if (strlen($jamA) == 5) {
         <tbody>
 		<?php
     $no=1;
-        while($row1=mysqli_fetch_array($qry1)){
-          $q_user = mysqli_query($cona,"SELECT * FROM tbl_user_tindaklanjut WHERE id = '$row1[pemberi_instruksi]'");
-          $row_user = mysqli_fetch_array($q_user);
-          $qdye = mysqli_query($con,"SELECT 
-                                        b.langganan,
-                                        b.po,
-                                        b.no_order,
-                                        b.jenis_kain,
-                                        CASE
-                                            WHEN b.no_item = '' OR b.no_item = null THEN b.no_hanger
-                                            ELSE b.no_item 
-                                        END AS no_item,
-                                        b.warna,
-                                        b.no_warna,
-                                        b.no_mesin,
-                                        a.acc_keluar,
-                                        a.tgl_buat,
-                                        a.nokk,
-                                        b.rol,
-                                        b.bruto
-                                    FROM
-                                        tbl_hasilcelup a
-                                        LEFT JOIN tbl_montemp c ON a.id_montemp = c.id
-                                        LEFT JOIN tbl_schedule b ON c.id_schedule = b.id
-                                    WHERE
-                                        a.nodemand LIKE '%$row1[nodemand]%'
-                                    ORDER BY 
-	                                    a.id DESC LIMIT 1");
-              $row_dye=mysqli_fetch_array($qdye);
+        while($row1=sqlsrv_fetch_array($qry1, SQLSRV_FETCH_ASSOC)){
+          $q_user = sqlsrv_query($cona,"SELECT * FROM db_adm.tbl_user_tindaklanjut WHERE id = '$row1[pemberi_instruksi]'");
+          $row_user = sqlsrv_fetch_array($q_user, SQLSRV_FETCH_ASSOC);
+          $qdye = sqlsrv_query($con, "
+                    SELECT TOP 1
+                        b.langganan,
+                        b.po,
+                        b.no_order,
+                        b.jenis_kain,
+                        CASE
+                            WHEN b.no_item = '' OR b.no_item IS NULL THEN b.no_hanger
+                            ELSE b.no_item
+                        END AS no_item,
+                        b.warna,
+                        b.no_warna,
+                        b.no_mesin,
+                        a.acc_keluar,
+                        a.tgl_buat,
+                        a.nokk,
+                        b.rol,
+                        b.bruto
+                    FROM db_dying.tbl_hasilcelup a
+                    LEFT JOIN db_dying.tbl_montemp c ON a.id_montemp = c.id
+                    LEFT JOIN db_dying.tbl_schedule b ON c.id_schedule = b.id
+                    WHERE a.nodemand LIKE '%".$row1['nodemand']."%'
+                    ORDER BY a.id DESC
+                ");
+              $row_dye=sqlsrv_fetch_array($qdye, SQLSRV_FETCH_ASSOC);
               $pos=strpos($row1['pelanggan'],"/");
               if($pos>0) {
               $lgg1=substr($row1['pelanggan'],0,$pos);
@@ -204,7 +202,11 @@ if (strlen($jamA) == 5) {
           <tr> 
             <td align="left"><?= $no++; ?></td>
             <td align="left"><a href="?p=Penyelesaian-tolakbasah&id=<?php echo $row1['id']; ?>" class="fa fa-pencil-square-o btn"><span class="label label-danger"></span></a></td>
-            <td align="left"><?= $row1['tgl_celup']?></td>
+            <td align="left">
+              <?= ($row1['tgl_celup'] instanceof DateTime)
+                    ? $row1['tgl_celup']->format('Y-m-d')
+                    : $row1['tgl_celup']; ?>
+            </td>
             <td align="left"><?= $row_dye['nokk']?></td>
             <td align="left"><a target="_BLANK" href="http://online.indotaichen.com/laporan/ppc_filter_steps.php?demand=<?= $row1['nodemand']; ?>"><?= $row1['nodemand'];?></a></td>
             <td align="center"><?= $lgg1?></td>

@@ -8,31 +8,43 @@ if (!isset($_SESSION['user_id10']) || !isset($_POST['pk']) || !isset($_POST['val
     exit();
 }
 
-$pk = $_POST['pk'];
-$user = $_SESSION['user_id10'];
+$pk    = $_POST['pk'];
+$user  = $_SESSION['user_id10'];
 $today = date('Y-m-d H:i:s');
 
 $search  = ["'", '"'];
 $replace = ["`", "``"];
 $newValue = str_replace($search, $replace, $_POST['value']);
+
 $columnToUpdate = 'suffix';
 
-$stmt_cek = $con->prepare("SELECT id FROM tbl_schedule WHERE id = ?");
-$stmt_cek->bind_param("s", $pk);
-$stmt_cek->execute();
-$stmt_cek->store_result();
+$sqlCek = "SELECT TOP 1 id FROM db_dying.tbl_schedule WHERE id = ?";
+$stmtCek = sqlsrv_query($con, $sqlCek, [$pk]);
 
-$stmt_update = $con->prepare("UPDATE tbl_schedule SET {$columnToUpdate} = ? WHERE id = ?");
-$stmt_update->bind_param("ss", $newValue, $pk);
-if ($stmt_update->execute()) {
-    http_response_code(200);
-    echo "Update berhasil.";
-} else {
+if ($stmtCek === false) {
     http_response_code(400);
-    echo "Error saat update: " . $stmt_update->error;
+    $e = sqlsrv_errors();
+    echo "Error cek data: " . ($e[0]['message'] ?? 'Unknown error');
+    exit();
 }
-$stmt_update->close();
 
-$stmt_cek->close();
-$con->close();
+$row = sqlsrv_fetch_array($stmtCek, SQLSRV_FETCH_ASSOC);
+if (!$row) {
+    http_response_code(404);
+    echo "Data tidak ditemukan.";
+    exit();
+}
+
+$sqlUpdate = "UPDATE db_dying.tbl_schedule SET $columnToUpdate = ? WHERE id = ?";
+$stmtUpdate = sqlsrv_query($con, $sqlUpdate, [$newValue, $pk]);
+
+if ($stmtUpdate === false) {
+    http_response_code(400);
+    $e = sqlsrv_errors();
+    echo "Error saat update: " . ($e[0]['message'] ?? 'Unknown error');
+    exit();
+}
+
+http_response_code(200);
+echo "Update berhasil.";
 ?>

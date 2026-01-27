@@ -24,114 +24,99 @@
   }
 ?>
 <?php
-  $Awal  = isset($_POST['awal']) ? $_POST['awal'] : '';
-  $Akhir = isset($_POST['akhir']) ? $_POST['akhir'] : '';
-  $GShift  = isset($_POST['gshift']) ? $_POST['gshift'] : '';
-  $Fs    = isset($_POST['fasilitas']) ? $_POST['fasilitas'] : '';
-  $jamA  = isset($_POST['jam_awal']) ? $_POST['jam_awal'] : '';
-  $jamAr = isset($_POST['jam_akhir']) ? $_POST['jam_akhir'] : '';
-  $Rcode = isset($_POST['rcode']) ? $_POST['rcode'] : '';
-
-  $start_date = '';
-  $stop_date  = '';
-
-  if ($Awal !== '') {
-    if ($jamA !== '') {
-      if (strlen($jamA) === 5) {
-        $start_date = $Awal . ' ' . $jamA;
-      } else {
-        $start_date = $Awal . ' 0' . $jamA;
-      }
-    } else {
-      $start_date = $Awal;
-    }
+  $Awal   = isset($_POST['awal']) ? $_POST['awal'] : '';
+  $Akhir  = isset($_POST['akhir']) ? $_POST['akhir'] : '';
+  $jamA   = isset($_POST['jam_awal']) ? $_POST['jam_awal'] : '';
+  $jamAr  = isset($_POST['jam_akhir']) ? $_POST['jam_akhir'] : '';
+  $GShift = isset($_POST['gshift']) ? $_POST['gshift'] : '';
+  if (strlen($jamA) == 5) {
+      $start_date = $Awal . ' ' . $jamA;
+  } else {
+      $start_date = $Awal . ' 0' . $jamA;
   }
-
-  if ($Akhir !== '') {
-    if ($jamAr !== '') {
-      if (strlen($jamAr) === 5) {
-        $stop_date = $Akhir . ' ' . $jamAr;
-      } else {
-        $stop_date = $Akhir . ' 0' . $jamAr;
-      }
-    } else {
-      $stop_date = $Akhir;
-    }
-  }	
+  if (strlen($jamAr) == 5) {
+      $stop_date  = $Akhir . ' ' . $jamAr;
+  } else {
+      $stop_date  = $Akhir . ' 0' . $jamAr;
+  }
+  if ($jamA & $jamAr) {
+      $where_jam  = "createdatetime BETWEEN '$start_date' AND '$stop_date'";
+  } else {
+      $where_jam  = "DATE(createdatetime) BETWEEN '$Awal' AND '$Akhir'";
+  }
     
   if($Awal!="" && $Akhir!=""){
-    $start_date = str_replace('T',' ', $start_date);
-    $stop_date  = str_replace('T',' ', $stop_date);
-
     $Tgl = substr($start_date, 0, 10);
-
     if ($start_date != $stop_date) {
-      $Where = " c.tgl_update BETWEEN CONVERT(datetime, '$start_date', 120) AND CONVERT(datetime, '$stop_date', 120) ";
+      $Where = " c.tgl_update BETWEEN '$start_date' AND '$stop_date' ";
     } else {
-      $Where = " CONVERT(date, c.tgl_update) = CONVERT(date, '$Tgl', 23) ";
+      $Where = " CONVERT(date, c.tgl_update) = CONVERT(date, '$Tgl') ";
     }
-
     if ($GShift == "ALL") {
       $shft = " ";
     } else {
       $shft = " ISNULL(a.g_shift, c.g_shift)='$GShift' AND ";
     }
-    $sql = sqlsrv_query($con, "SELECT x.*, a.no_mesin as mc 
-                                  FROM db_dying.tbl_mesin a
-                                      LEFT JOIN
-                                      (SELECT
-                                      a.ket,
-                                      a.lama_proses,
-                                      a.status as sts,
-                                      a.proses as proses,
-                                      b.proses as schedule_proses,
-                                      b.buyer,
-                                      b.langganan,
-                                      b.no_order,
-                                      b.no_mesin,
-                                      b.warna,
-                                      b.dyestuff,	
-                                      b.kapasitas,
-                                      b.loading,
-                                      a.resep,
-                                      CASE
-                                        WHEN SUBSTRING(b.kategori_warna, 1,1) = 'D' THEN 'Dark'
-                                        WHEN SUBSTRING(b.kategori_warna, 1,1) = 'H' THEN 'Heater'
-                                        WHEN SUBSTRING(b.kategori_warna, 1,1) = 'L' THEN 'Light'
-                                        WHEN SUBSTRING(b.kategori_warna, 1,1) = 'M' THEN 'Medium'
-                                        WHEN SUBSTRING(b.kategori_warna, 1,1) = 'S' THEN 'Dark'
-                                        WHEN SUBSTRING(b.kategori_warna, 1,1) = 'W' THEN 'White'
-                                      END AS kategori_warna,
-                                      c.l_r,
-                                      c.rol,
-                                      c.bruto,
-                                      a.g_shift as shft,
-                                      a.k_resep,
-                                      a.status,
-                                      a.proses_point,
-                                      b.nokk,
-                                      b.lebar,
-                                      c.carry_over,
-                                      b.po,	
-                                      b.kk_kestabilan,
-                                      b.kk_normal,
-                                      c.air_awal,
-                                      a.air_akhir,
-                                      c.nodemand,
-                                      c.operator,
-                                      a.id as idhslclp,   
-                                      b.id as idshedule,
-                                      c.id as idmontemp,
-		                              a.status_proses,
-                                      COALESCE(a.point2, b.target) as point2
-                                    FROM
-                                      db_dying.tbl_schedule b
-                                        LEFT JOIN  db_dying.tbl_montemp c ON c.id_schedule = b.id
-                                        LEFT JOIN db_dying.tbl_hasilcelup a ON a.id_montemp=c.id	
-                                    WHERE
-                                      $shft 
-                                      $Where
-                                      )x ON (a.no_mesin=x.no_mesin) ORDER BY a.no_mesin");
+
+    $query = "SELECT x.*, a.no_mesin as mc
+          FROM db_dying.tbl_mesin a
+          LEFT JOIN (
+              SELECT
+                  a.ket,
+                  a.lama_proses,
+                  a.status as sts,
+                  a.proses as proses,
+                  b.proses as schedule_proses,
+                  b.buyer,
+                  b.langganan,
+                  b.no_order,
+                  b.no_mesin,
+                  b.warna,
+                  b.dyestuff,
+                  b.kapasitas,
+                  b.loading,
+                  a.resep,
+                  CASE
+                      WHEN SUBSTRING(b.kategori_warna, 1,1) = 'D' THEN 'Dark'
+                      WHEN SUBSTRING(b.kategori_warna, 1,1) = 'H' THEN 'Heater'
+                      WHEN SUBSTRING(b.kategori_warna, 1,1) = 'L' THEN 'Light'
+                      WHEN SUBSTRING(b.kategori_warna, 1,1) = 'M' THEN 'Medium'
+                      WHEN SUBSTRING(b.kategori_warna, 1,1) = 'S' THEN 'Dark'
+                      WHEN SUBSTRING(b.kategori_warna, 1,1) = 'W' THEN 'White'
+                  END AS kategori_warna,
+                  c.l_r,
+                  c.rol,
+                  c.bruto,
+                  a.g_shift as shft,
+                  a.k_resep,
+                  a.status,
+                  a.proses_point,
+                  b.nokk,
+                  b.lebar,
+                  c.carry_over,
+                  b.po,
+                  b.kk_kestabilan,
+                  b.kk_normal,
+                  c.air_awal,
+                  a.air_akhir,
+                  c.nodemand,
+                  c.operator,
+                  a.id as idhslclp,
+                  b.id as idshedule,
+                  c.id as idmontemp,
+                  a.status_proses,
+                  COALESCE(
+                    TRY_CONVERT(decimal(18,2), NULLIF(NULLIF(LTRIM(RTRIM(a.point2)), '-'), '')),
+                    TRY_CONVERT(decimal(18,2), REPLACE(b.target, ',', '.'))
+                  ) AS point2
+              FROM db_dying.tbl_schedule b
+              LEFT JOIN db_dying.tbl_montemp c ON c.id_schedule = b.id
+              LEFT JOIN db_dying.tbl_hasilcelup a ON a.id_montemp = c.id
+              WHERE $shft $Where
+          ) x ON a.no_mesin = x.no_mesin
+          ORDER BY a.no_mesin";
+
+    $sql = sqlsrv_query($con, $query, $params ?? []);
     $no = 1;
     $c = 0;
     $totrol = 0;
@@ -139,15 +124,6 @@
     $data=array();
     $mc_all=array();
     $nokk_all=array();
-    
-if ($sql === false) {
-    echo "<pre>";
-    echo "===== SQLSRV ERROR (not_achieved_DOM) =====\n";
-    echo $sql . "\n\n";
-    print_r(sqlsrv_errors());
-    echo "</pre>";
-    exit;
-}
     while ($rowd = sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC)) {
       $rl ="";
       if (strlen($rowd['rol']) > 5) {
@@ -164,20 +140,29 @@ if ($sql === false) {
         $nokk_all[]=$rowd['nokk'];
       }
     }
-    $mesin_join= join("','",$mc_all);
+    $mesin_join = join("','", $mc_all);
+
     if ($GShift == "ALL") {
       $shftSM = " ";
     } else {
       $shftSM = " g_shift='$GShift' AND ";
     }
-    $mesin=array();
-    $sqlSM = sqlsrv_query($con, "SELECT *,
-                    kapasitas as kapSM,
-                    g_shift as shiftSM
-                    FROM db_dying.tbl_stopmesin
-                    WHERE $shftSM tgl_update BETWEEN '$start_date' AND '$stop_date' AND no_mesin IN ('$mesin_join')");
+
+    $mesin = [];
+
+    $sqlSM = sqlsrv_query($con, "
+      SELECT *, kapasitas as kapSM, g_shift as shiftSM
+      FROM db_dying.tbl_stopmesin
+      WHERE $shftSM tgl_update BETWEEN '$start_date' AND '$stop_date'
+        AND no_mesin IN ('$mesin_join')
+    ");
+
+    if ($sqlSM === false) {
+      die(print_r(sqlsrv_errors(), true));
+    }
+
     while ($rowSM = sqlsrv_fetch_array($sqlSM, SQLSRV_FETCH_ASSOC)) {
-      $mesin[$rowSM['no_mesin']]=$rowSM;
+      $mesin[$rowSM['no_mesin']] = $rowSM;
     }
                 
     $subcode_all=array();
@@ -253,14 +238,20 @@ if ($sql === false) {
               <input name="awal" type="text" class="form-control pull-right" id="datepicker" placeholder="Tanggal Awal" value="<?php echo $Awal; ?>" autocomplete="off" />
             </div>
           </div>
-          <div class="col-sm-2">
+          <!-- <div class="col-sm-2">
             <div class="input-group">
               <input type="text" class="form-control " name="jam_awal" placeholder="00:00" value="<?php echo $jamA; ?>"  autocomplete="off">
               <div class="input-group-addon">
                 <i class="fa fa-clock-o"></i>
               </div>
             </div>
-            <div>
+          </div> -->
+          <div class="col-sm-2">
+            <div class="input-group">
+              <input type="text" class="form-control timepicker" name="jam_awal" placeholder="00:00" value="<?php echo $jamA; ?>" autocomplete="off">
+              <div class="input-group-addon">
+                <i class="fa fa-clock-o"></i>
+              </div>
             </div>
           </div>
           <!-- /.input group -->
@@ -273,9 +264,17 @@ if ($sql === false) {
               <input name="akhir" type="text" class="form-control pull-right" id="datepicker1" placeholder="Tanggal Akhir" value="<?php echo $Akhir;  ?>" autocomplete="off" />
             </div>
           </div>
-          <div class="col-sm-2">
+          <!-- <div class="col-sm-2">
             <div class="input-group">
               <input type="text" class="form-control " name="jam_akhir" placeholder="00:00" value="<?php echo $jamAr; ?>" autocomplete="off">
+              <div class="input-group-addon">
+                <i class="fa fa-clock-o"></i>
+              </div>
+            </div>
+          </div> -->
+          <div class="col-sm-2">
+            <div class="input-group">
+              <input type="text" class="form-control timepicker" name="jam_akhir" placeholder="00:00" value="<?php echo $jamAr; ?>" autocomplete="off">
               <div class="input-group-addon">
                 <i class="fa fa-clock-o"></i>
               </div>
