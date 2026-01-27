@@ -1,15 +1,24 @@
 <?php
-include "../../koneksi.php"; // Pastikan file ini benar-benar memuat koneksi DB2
-if(isset($_POST['id']) && isset($_POST['penanggungjawabbuyer'])){
-  $id = intval($_POST['id']);
-  $penanggungjawabbuyer = mysqli_real_escape_string($con, $_POST['penanggungjawabbuyer']);
+include "../../koneksi2.php";
 
-  $sql = "UPDATE tbl_hasilcelup SET penanggungjawabbuyer = '$penanggungjawabbuyer' WHERE id = $id";
-  if(mysqli_query($con, $sql)){
-    echo "Sukses";
-  } else {
+if (isset($_POST['id']) && isset($_POST['penanggungjawabbuyer'])) {
+
+  $id = (int) $_POST['id'];
+  $penanggungjawabbuyer = $_POST['penanggungjawabbuyer'];
+
+  $sql = "UPDATE db_dying.tbl_hasilcelup
+          SET penanggungjawabbuyer = ?
+          WHERE id = ?";
+
+  $stmt = sqlsrv_query($con, $sql, [$penanggungjawabbuyer, $id]);
+
+  if ($stmt === false) {
     http_response_code(500);
-    echo "Gagal: " . mysqli_error($con);
+    echo "Gagal: " . print_r(sqlsrv_errors(), true);
+    exit();
   }
+
+  sqlsrv_free_stmt($stmt);
+  echo "Sukses";
 }
 ?>
