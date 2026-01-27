@@ -1,5 +1,6 @@
 <?PHP
 ini_set("error_reporting", 1);
+
 session_start();
 include"koneksi.php";
 
@@ -21,41 +22,36 @@ $Awal_Sebelum = date('Y-m-d', strtotime($Awal . ' -1 day'));
 $Akhir_Sebelum = date('Y-m-d', strtotime($Akhir . ' -1 day'));	
 
 // Untuk SQL Outpuput Greige, SQL Outpuput Greige+perbaikan, Gagal Proses, Disposisi Gagal Proses
- function generateWeeklySqlBetween($startDate, $endDate, &$weekRanges = [])
+function generateWeeklySqlBetween($startDate, $endDate, &$weekRanges = [])
 {
     $start = new DateTime($startDate);
-    $end = new DateTime($endDate);
+    $end   = new DateTime($endDate);
     $monthlySql = [];
 
     // Loop per bulan
     while ($start <= $end) {
-        $year = $start->format('Y');
-        $month = $start->format('m');
+        $year      = $start->format('Y');
+        $month     = $start->format('m');
         $monthName = strtolower($start->format('M'));
 
         $firstOfMonth = new DateTime("$year-$month-01");
-        $lastOfMonth = (clone $firstOfMonth)->modify('last day of this month')->setTime(23, 0, 0);
+        $lastOfMonth  = (clone $firstOfMonth)->modify('last day of this month')->setTime(23, 0, 0);
 
-        // Jika endDate di tengah bulan, pakai endDate
         if ($lastOfMonth > $end) {
             $lastOfMonth = (clone $end)->setTime(23, 0, 0);
         }
 
-        // Tentukan start minggu pertama
-        $weekday = (int)$firstOfMonth->format('w'); // 0=Sunday, 1=Monday,...
+        $weekday = (int) $firstOfMonth->format('w');
         if ($weekday === 6) {
-            // Jika 1 = Sabtu → start = tanggal 1
             $weekStart = (clone $firstOfMonth)->setTime(23, 1, 0);
         } elseif ($weekday === 0) {
-            // Jika 1 = Minggu → start = Sabtu sebelumnya
             $weekStart = (clone $firstOfMonth)->modify('-1 day')->setTime(23, 1, 0);
         } else {
-            // Selain itu → start = sehari sebelum tanggal 1
             $weekStart = (clone $firstOfMonth)->modify('-1 day')->setTime(23, 1, 0);
         }
 
         $weekNumber = 1;
-        $sqlParts = [];
+        $sqlParts   = [];
 
         // Loop per minggu dalam bulan
         while ($weekStart <= $lastOfMonth) {
@@ -66,35 +62,34 @@ $Akhir_Sebelum = date('Y-m-d', strtotime($Akhir . ' -1 day'));
             }
 
             $startStr = $weekStart->format('Y-m-d H:i:s');
-            $endStr = $weekEnd->format('Y-m-d H:i:s');
+            $endStr   = $weekEnd->format('Y-m-d H:i:s');
 
             $rangeKey = "w{$weekNumber}_{$monthName}";
             $weekRanges[$rangeKey] = "$startStr s/d $endStr";
 
-            // Tambahkan bagian SQL
-            $sqlParts[] = "SUM(CASE 
+            $sqlParts[] = "SUM(CASE
                 WHEN c.tgl_update BETWEEN '$startStr' AND '$endStr'
-                AND (
-                    IF(a.proses = '' OR a.proses IS NULL, b.proses, a.proses) = 'Celup Greige' 
-                    OR IF(a.proses = '' OR a.proses IS NULL, b.proses, a.proses) LIKE '%CUCI YARN DYE%' 
-                    OR IF(a.proses = '' OR a.proses IS NULL, b.proses, a.proses) LIKE '%CUCI MISTY%'
-                )
+                 AND (
+                      x.proses_eff = 'Celup Greige'
+                      OR x.proses_eff LIKE '%CUCI YARN DYE%'
+                      OR x.proses_eff LIKE '%CUCI MISTY%'
+                 )
                 THEN c.bruto ELSE 0 END) AS kg_w{$weekNumber}_{$monthName}";
 
-            $sqlParts[] = "SUM(CASE 
+            $sqlParts[] = "SUM(CASE
                 WHEN c.tgl_update BETWEEN '$startStr' AND '$endStr'
-                AND a.status = 'Gagal Proses'
+                 AND a.status = 'Gagal Proses'
                 THEN c.bruto ELSE 0 END) AS kg_gp_w{$weekNumber}_{$monthName}";
 
-            $sqlParts[] = "SUM(CASE 
+            $sqlParts[] = "SUM(CASE
                 WHEN c.tgl_update BETWEEN '$startStr' AND '$endStr'
-                AND p.tindakan = 'Disposisi'
-                AND a.status = 'Gagal Proses'
+                 AND p.tindakan = 'Disposisi'
+                 AND a.status = 'Gagal Proses'
                 THEN c.bruto ELSE 0 END) AS kg_dispgp_w{$weekNumber}_{$monthName}";
 
-            $sqlParts[] = "SUM(CASE 
+            $sqlParts[] = "SUM(CASE
                 WHEN c.tgl_update BETWEEN '$startStr' AND '$endStr'
-                AND IF(a.proses = '' OR a.proses IS NULL, b.proses, a.proses) NOT IN ('Bakar Bulu','Relaxing - Priset','Scouring - Priset','Continuous - Bleaching')
+                 AND x.proses_eff NOT IN ('Bakar Bulu','Relaxing - Priset','Scouring - Priset','Continuous - Bleaching')
                 THEN c.bruto ELSE 0 END) AS kg_ogreige_w{$weekNumber}_{$monthName}";
 
             $weekNumber++;
@@ -108,78 +103,74 @@ $Akhir_Sebelum = date('Y-m-d', strtotime($Akhir . ' -1 day'));
         $start = (clone $lastOfMonth)->modify('+1 day')->setTime(0, 0, 0);
     }
 
-    $sql = "SELECT\n    " . implode(",\n    ", $monthlySql) . "\nFROM tbl_schedule b
-        LEFT JOIN tbl_montemp c ON c.id_schedule = b.id
-        LEFT JOIN tbl_hasilcelup a ON a.id_montemp = c.id
-        LEFT JOIN penyelesaian_gagalproses p ON p.id_schedule = b.id
-            AND p.id_hasil_celup = a.id
-            AND p.id_montemp = c.id;";
+    $sql = "SELECT\n    " . implode(",\n    ", $monthlySql) . "
+            FROM db_dying.tbl_schedule b
+            LEFT JOIN db_dying.tbl_montemp c
+                ON c.id_schedule = b.id
+            LEFT JOIN db_dying.tbl_hasilcelup a
+                ON a.id_montemp = c.id
+            LEFT JOIN db_dying.penyelesaian_gagalproses p
+                ON p.id_schedule = b.id
+              AND p.id_hasil_celup = a.id
+              AND p.id_montemp = c.id
+            CROSS APPLY (
+                SELECT COALESCE(NULLIF(LTRIM(RTRIM(a.proses)), ''), b.proses) AS proses_eff
+            ) x;";
 
     return $sql;
 }
 // End of SQL Output Greige, SQL Output Greige+perbaikan, Gagal Proses, Disposisi Gagal Proses
-
 // Untuk SQL Tolak Basah
 function generateTolakBasahSqlBetween($startDate, $endDate)
 {
     $start = new DateTime($startDate);
-    $end = new DateTime($endDate);
+    $end   = new DateTime($endDate);
     $monthlySql = [];
 
     // Loop per bulan
     while ($start <= $end) {
-        $year = $start->format('Y');
-        $month = $start->format('m');
+        $year      = $start->format('Y');
+        $month     = $start->format('m');
         $monthName = strtolower($start->format('M'));
 
         $firstOfMonth = new DateTime("$year-$month-01");
-        $lastOfMonth = (clone $firstOfMonth)->modify('last day of this month')->setTime(23, 0, 0);
+        $lastOfMonth  = (clone $firstOfMonth)->modify('last day of this month')->setTime(23, 0, 0);
 
-        // Jika endDate di tengah bulan, pakai endDate
         if ($lastOfMonth > $end) {
             $lastOfMonth = (clone $end)->setTime(23, 0, 0);
         }
 
         // Tentukan start minggu pertama
-        $weekday = (int)$firstOfMonth->format('w'); // 0=Sunday, 1=Monday,...
+        $weekday = (int)$firstOfMonth->format('w');
         if ($weekday === 6) {
-            // Jika 1 = Sabtu → start = tanggal 1
             $weekStart = (clone $firstOfMonth)->setTime(23, 1, 0);
         } elseif ($weekday === 0) {
-            // Jika 1 = Minggu → start = Sabtu sebelumnya
             $weekStart = (clone $firstOfMonth)->modify('-1 day')->setTime(23, 1, 0);
         } else {
-            // Selain itu → start = sehari sebelum tanggal 1
             $weekStart = (clone $firstOfMonth)->modify('-1 day')->setTime(23, 1, 0);
         }
 
         $weekNumber = 1;
-        $sqlParts = [];
+        $sqlParts   = [];
 
-        // Loop per minggu dalam bulan
         while ($weekStart <= $lastOfMonth) {
-            // Akhir minggu = Jumat 23:00
             $weekEnd = (clone $weekStart)->modify('next friday')->setTime(23, 0, 0);
             if ($weekEnd > $lastOfMonth) {
                 $weekEnd = clone $lastOfMonth;
             }
 
             $startStr = $weekStart->format('Y-m-d H:i:s');
-            $endStr = $weekEnd->format('Y-m-d H:i:s');
+            $endStr   = $weekEnd->format('Y-m-d H:i:s');
 
-            $rangeKey = "w{$weekNumber}_{$monthName}";
-            $weekRanges[$rangeKey] = "$startStr s/d $endStr";
-
-            // Tambahkan bagian SQL
-           $sqlParts[] = "SUM(CASE 
-                  WHEN t.tgl_update BETWEEN '$startStr' AND '$endStr'
-                  AND t.status_warna LIKE '%TOLAK BASAH%'
-                  THEN t.bruto ELSE 0 END) AS kg_tb_w{$weekNumber}_{$monthName}";
-
-            $sqlParts[] = "SUM(CASE 
+            $sqlParts[] = "SUM(CASE
                 WHEN t.tgl_update BETWEEN '$startStr' AND '$endStr'
-                AND t.status_warna LIKE '%TOLAK BASAH%'
-                AND p.tindakan = 'Disposisi'
+                 AND t.status_warna LIKE '%TOLAK BASAH%'
+                THEN t.bruto ELSE 0 END) AS kg_tb_w{$weekNumber}_{$monthName}";
+
+            $sqlParts[] = "SUM(CASE
+                WHEN t.tgl_update BETWEEN '$startStr' AND '$endStr'
+                 AND t.status_warna LIKE '%TOLAK BASAH%'
+                 AND p.tindakan = 'Disposisi'
                 THEN t.bruto ELSE 0 END) AS kg_disptb_w{$weekNumber}_{$monthName}";
 
             $weekNumber++;
@@ -193,115 +184,101 @@ function generateTolakBasahSqlBetween($startDate, $endDate)
         $start = (clone $lastOfMonth)->modify('+1 day')->setTime(0, 0, 0);
     }
 
-    $sql = "SELECT\n    " . implode(",\n    ", $monthlySql) . "\nFROM tbl_cocok_warna_dye t
-          LEFT JOIN penyelesaian_tolakbasah p ON t.id = p.id_cocok_warna;";
+    $sql = "SELECT\n    " . implode(",\n    ", $monthlySql) . "
+            FROM db_qc.tbl_cocok_warna_dye t
+            LEFT JOIN db_qc.penyelesaian_tolakbasah p
+                ON t.id = p.id_cocok_warna;";
 
     return $sql;
 }
+
 // End
 
 // Untuk SQL NCP
 function generateNCPSqlBetween($startDate, $endDate)
 {
     $start = new DateTime($startDate);
-    $end = new DateTime($endDate);
+    $end   = new DateTime($endDate);
     $monthlySql = [];
 
-    // Loop per bulan
     while ($start <= $end) {
-        $year = $start->format('Y');
-        $month = $start->format('m');
+        $year      = $start->format('Y');
+        $month     = $start->format('m');
         $monthName = strtolower($start->format('M'));
 
         $firstOfMonth = new DateTime("$year-$month-01");
-        $lastOfMonth = (clone $firstOfMonth)->modify('last day of this month')->setTime(23, 0, 0);
+        $lastOfMonth  = (clone $firstOfMonth)->modify('last day of this month')->setTime(23, 0, 0);
 
-        // Jika endDate di tengah bulan, pakai endDate
         if ($lastOfMonth > $end) {
             $lastOfMonth = (clone $end)->setTime(23, 0, 0);
         }
 
-        // Tentukan start minggu pertama
-        $weekday = (int)$firstOfMonth->format('w'); // 0=Sunday, 1=Monday,...
+        $weekday = (int)$firstOfMonth->format('w');
         if ($weekday === 6) {
-            // Jika 1 = Sabtu → start = tanggal 1
             $weekStart = (clone $firstOfMonth)->setTime(23, 1, 0);
         } elseif ($weekday === 0) {
-            // Jika 1 = Minggu → start = Sabtu sebelumnya
             $weekStart = (clone $firstOfMonth)->modify('-1 day')->setTime(23, 1, 0);
         } else {
-            // Selain itu → start = sehari sebelum tanggal 1
             $weekStart = (clone $firstOfMonth)->modify('-1 day')->setTime(23, 1, 0);
         }
 
         $weekNumber = 1;
-        $sqlParts = [];
+        $sqlParts   = [];
 
-        // Loop per minggu dalam bulan
         while ($weekStart <= $lastOfMonth) {
-            // Akhir minggu = Jumat 23:00
             $weekEnd = (clone $weekStart)->modify('next friday')->setTime(23, 0, 0);
             if ($weekEnd > $lastOfMonth) {
                 $weekEnd = clone $lastOfMonth;
             }
 
             $startStr = $weekStart->format('Y-m-d H:i:s');
-            $endStr = $weekEnd->format('Y-m-d H:i:s');
+            $endStr   = $weekEnd->format('Y-m-d H:i:s');
 
-            $rangeKey = "w{$weekNumber}_{$monthName}";
-            $weekRanges[$rangeKey] = "$startStr s/d $endStr";
+            $sqlParts[] = "SUM(CASE
+                WHEN tgl_buat BETWEEN '$startStr' AND '$endStr'
+                 AND ncp_hitung = 'ya'
+                 AND dept = 'CQA'
+                 AND [status] IN ('Belum OK', 'OK', 'BS', 'Cancel', 'Disposisi')
+                THEN berat ELSE 0 END) AS kg_ncp_w{$weekNumber}_{$monthName}";
 
-            // Tambahkan bagian SQL
-           $sqlParts[] = "SUM(CASE 
-                  WHEN tgl_buat BETWEEN '$startStr' AND '$endStr'
-                  AND ncp_hitung = 'ya'
-                  AND dept = 'CQA'
-                  AND status in ('Belum OK', 'OK', 'BS', 'Cancel', 'Disposisi')
-                  THEN berat ELSE 0 END) AS kg_ncp_w{$weekNumber}_{$monthName}";
+            $sqlParts[] = "SUM(CASE
+                WHEN tgl_buat BETWEEN '$startStr' AND '$endStr'
+                 AND [status] = 'Disposisi'
+                 AND dept = 'CQA'
+                 AND ncp_hitung = 'ya'
+                THEN berat ELSE 0 END) AS kg_dispncp_w{$weekNumber}_{$monthName}";
 
-              $sqlParts[] = "SUM(CASE 
-                  WHEN tgl_buat BETWEEN '$startStr' AND '$endStr'
-                  AND status = 'Disposisi' 
-                  AND dept='CQA' 
-                  AND ncp_hitung = 'ya'
-                  THEN berat ELSE 0 END) AS 
-                  kg_dispncp_w{$weekNumber}_{$monthName}";
+            $sqlParts[] = "SUM(CASE
+                WHEN tgl_buat BETWEEN '$startStr' AND '$endStr'
+                 AND dept = 'CQA'
+                 AND [status] IN ('Belum OK', 'OK', 'BS', 'Cancel', 'Disposisi')
+                 AND masalah_dominan NOT LIKE '%BEDA WARNA%'
+                 AND ncp_hitung = 'ya'
+                THEN berat ELSE 0 END) AS kg_ncpq_w{$weekNumber}_{$monthName}";
 
-              $sqlParts[] = "SUM(CASE 
-                  WHEN tgl_buat BETWEEN '$startStr' AND '$endStr'
-                  AND dept='CQA' 
-                  AND status in ('Belum OK', 'OK', 'BS', 'Cancel', 'Disposisi')
-                  AND masalah_dominan NOT LIKE '%BEDA WARNA%' 
-                  AND ncp_hitung = 'ya'
-                  THEN berat ELSE 0 END) AS 
-                  kg_ncpq_w{$weekNumber}_{$monthName}";
+            $sqlParts[] = "SUM(CASE
+                WHEN tgl_buat BETWEEN '$startStr' AND '$endStr'
+                 AND [status] = 'Disposisi'
+                 AND masalah_dominan NOT LIKE '%BEDA WARNA%'
+                 AND dept = 'CQA'
+                 AND ncp_hitung = 'ya'
+                THEN berat ELSE 0 END) AS kg_dispncpq_w{$weekNumber}_{$monthName}";
 
-              $sqlParts[] = "SUM(CASE 
-                  WHEN tgl_buat BETWEEN '$startStr' AND '$endStr'
-                  AND status = 'Disposisi' 
-                  AND masalah_dominan NOT LIKE '%BEDA WARNA%' 
-                  AND dept='CQA' 
-                  AND ncp_hitung = 'ya'
-                  THEN berat ELSE 0 END) AS 
-                  kg_dispncpq_w{$weekNumber}_{$monthName}";
+            $sqlParts[] = "SUM(CASE
+                WHEN tgl_buat BETWEEN '$startStr' AND '$endStr'
+                 AND dept = 'CQA'
+                 AND [status] IN ('Belum OK', 'OK', 'BS', 'Cancel', 'Disposisi')
+                 AND masalah_dominan LIKE '%BEDA WARNA%'
+                 AND ncp_hitung = 'ya'
+                THEN berat ELSE 0 END) AS kg_ncpbw_w{$weekNumber}_{$monthName}";
 
-              $sqlParts[] = "SUM(CASE 
-                  WHEN tgl_buat BETWEEN '$startStr' AND '$endStr'
-                  AND dept='CQA' 
-                  AND status in ('Belum OK', 'OK', 'BS', 'Cancel', 'Disposisi')
-                  AND masalah_dominan LIKE '%BEDA WARNA%' 
-                  AND ncp_hitung = 'ya'
-                  THEN berat ELSE 0 END) AS 
-                  kg_ncpbw_w{$weekNumber}_{$monthName}";
-
-              $sqlParts[] = "SUM(CASE 
-                  WHEN tgl_buat BETWEEN '$startStr' AND '$endStr'
-                  AND status = 'Disposisi' 
-                  AND masalah_dominan LIKE '%BEDA WARNA%' 
-                  AND dept='CQA' 
-                  AND ncp_hitung = 'ya'
-                  THEN berat ELSE 0 END) AS 
-                  kg_dispncpbw_w{$weekNumber}_{$monthName}";
+            $sqlParts[] = "SUM(CASE
+                WHEN tgl_buat BETWEEN '$startStr' AND '$endStr'
+                 AND [status] = 'Disposisi'
+                 AND masalah_dominan LIKE '%BEDA WARNA%'
+                 AND dept = 'CQA'
+                 AND ncp_hitung = 'ya'
+                THEN berat ELSE 0 END) AS kg_dispncpbw_w{$weekNumber}_{$monthName}";
 
             $weekNumber++;
             $weekStart = (clone $weekEnd)->modify('+1 minute');
@@ -314,10 +291,12 @@ function generateNCPSqlBetween($startDate, $endDate)
         $start = (clone $lastOfMonth)->modify('+1 day')->setTime(0, 0, 0);
     }
 
-    $sql = "SELECT\n    " . implode(",\n    ", $monthlySql) . "\nFROM tbl_ncp_qcf_now t;";
+    $sql = "SELECT\n    " . implode(",\n    ", $monthlySql) . "
+            FROM db_qc.tbl_ncp_qcf_now t;";
 
     return $sql;
 }
+
 // End
 ?>
 <div class="box">
@@ -376,23 +355,46 @@ function generateNCPSqlBetween($startDate, $endDate)
        <?php
   // echo "Awal: $Awal<br>";
   // echo "Akhir: $Akhir<br>";
-  $weekRanges = []; 
-  $sqlQuery = generateWeeklySqlBetween($Awal, $Akhir, $weekRanges);
+  $weekRanges = [];
+  $sqlQuery   = generateWeeklySqlBetween($Awal, $Akhir, $weekRanges);
   // echo "<pre>$sqlQuery</pre>";
-  $stmt_dye = mysqli_query($con, $sqlQuery);
-  $d_dye = mysqli_fetch_assoc($stmt_dye);
+  $stmt_dye = sqlsrv_query($con, $sqlQuery);
+  if ($stmt_dye === false) {
+      die(print_r(sqlsrv_errors(), true));
+  }
+  $d_dye = sqlsrv_fetch_array($stmt_dye, SQLSRV_FETCH_ASSOC);
 
   $sqlQuery2 = generateTolakBasahSqlBetween($Awal, $Akhir);
-  $stmt_qc = mysqli_query($cond, $sqlQuery2);
-  $d_qc = mysqli_fetch_assoc($stmt_qc);
+  $stmt_qc = sqlsrv_query($cond, $sqlQuery2);
+  if ($stmt_qc === false) {
+      die(print_r(sqlsrv_errors(), true));
+  }
+  $d_qc = sqlsrv_fetch_array($stmt_qc, SQLSRV_FETCH_ASSOC);
 
-  $sqlQuery3 = generateNcpSqlBetween($Awal, $Akhir);
-  $stmt_qc2 = mysqli_query($cond, $sqlQuery3);
-  $d_qc2 = mysqli_fetch_assoc($stmt_qc2);
+  $sqlQuery3 = generateNCPSqlBetween($Awal, $Akhir);
+  $stmt_qc2 = sqlsrv_query($cond, $sqlQuery3);
+  if ($stmt_qc2 === false) {
+      die(print_r(sqlsrv_errors(), true));
+  }
+  $d_qc2 = sqlsrv_fetch_array($stmt_qc2, SQLSRV_FETCH_ASSOC);
+
   // echo "<pre>$sqlQuery3</pre>";
   // Step 1: Ambil nama bulan dari key hasil query (contoh: roll_w1_jun)
-  preg_match('/kg_w\d+_(\w+)/', array_keys($d_dye)[0], $matches);
-  $monthKey = $matches[1] ?? 'jun';
+  $monthKey = null;
+
+  if (is_array($d_dye)) {
+      foreach (array_keys($d_dye) as $k) {
+          if (preg_match('/^kg_w\d+_(\w+)$/', $k, $m)) {
+              $monthKey = strtolower($m[1]);
+              break;
+          }
+      }
+  }
+
+  if ($monthKey === null) {
+      $monthKey = strtolower(date('M', strtotime($Awal)));
+  }
+
   // print_r($search);
   // Step 2: Mapping nama bulan
   $monthMap = [
@@ -641,19 +643,22 @@ function generateNCPSqlBetween($startDate, $endDate)
        <?php
   // echo "Awal: $Awal<br>";
   // echo "Akhir: $Akhir<br>";
-  $weekRanges = []; 
-  $sqlQuery = generateWeeklySqlBetween($Awal, $Akhir, $weekRanges);
+  $weekRanges = [];
+  $sqlQuery  = generateWeeklySqlBetween($Awal, $Akhir, $weekRanges);
   // echo "<pre>$sqlQuery</pre>";
-  $stmt_dye = mysqli_query($con, $sqlQuery);
-  $d_dye = mysqli_fetch_assoc($stmt_dye);
+  $stmt_dye  = sqlsrv_query($con, $sqlQuery);
+  if ($stmt_dye === false) { die(print_r(sqlsrv_errors(), true)); }
+  $d_dye     = sqlsrv_fetch_array($stmt_dye, SQLSRV_FETCH_ASSOC);
 
   $sqlQuery2 = generateTolakBasahSqlBetween($Awal, $Akhir);
-  $stmt_qc = mysqli_query($cond, $sqlQuery2);
-  $d_qc = mysqli_fetch_assoc($stmt_qc);
+  $stmt_qc   = sqlsrv_query($cond, $sqlQuery2);
+  if ($stmt_qc === false) { die(print_r(sqlsrv_errors(), true)); }
+  $d_qc      = sqlsrv_fetch_array($stmt_qc, SQLSRV_FETCH_ASSOC);
 
   $sqlQuery3 = generateNcpSqlBetween($Awal, $Akhir);
-  $stmt_qc2 = mysqli_query($cond, $sqlQuery3);
-  $d_qc2 = mysqli_fetch_assoc($stmt_qc2);
+  $stmt_qc2  = sqlsrv_query($cond, $sqlQuery3);
+  if ($stmt_qc2 === false) { die(print_r(sqlsrv_errors(), true)); }
+  $d_qc2     = sqlsrv_fetch_array($stmt_qc2, SQLSRV_FETCH_ASSOC);
   // echo "<pre>$sqlQuery3</pre>";
   // Step 1: Ambil nama bulan dari key hasil query (contoh: roll_w1_jun)
   preg_match('/kg_w\d+_(\w+)/', array_keys($d_dye)[0], $matches);

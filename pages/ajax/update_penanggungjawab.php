@@ -15,5 +15,8 @@ if (isset($_POST['id']) && isset($_POST['penanggungjawabbuyer'])) {
   } else {
     echo "Sukses";
   }
+
+  sqlsrv_free_stmt($stmt);
+  echo "Sukses";
 }
 ?>
