@@ -668,12 +668,10 @@ include "koneksi.php";
                 <th>
                   <div align="center">Status</div>
                 </th>
-
                 <th align="center" class="table-list1">No Registrasi</th>
                 <th align="center" class="table-list1">Production Order</th>
                 <th align="center" class="table-list1">Production Demand</th>
                 <th align="center" class="table-list1">Original PD Code</th>
-
                 <th>
                   <div align="center">Langganan</div>
                 </th>
@@ -703,7 +701,7 @@ include "koneksi.php";
                 </th>
                 <th>
                   <div align="center">Lot Legacy</div>
-                </th>
+                </th>  
                 <th>
                   <div align="center">Lot Salinan</div>
                 </th>
@@ -808,244 +806,270 @@ include "koneksi.php";
                 <th align="center" class="table-list1">ACC Perbaikan</th>
                 <th align="center" class="table-list1">Status Warna</th>
                 <th align="center" class="table-list1">Disposisi</th>
+                <th align="center" class="table-list1">Prod Order Asal</th>
+                <th align="center" class="table-list1">Qty Asal</th>
+                <th align="center" class="table-list1">Nomer Lot Asal</th>
               </tr>
             </thead>
             <tbody>
               <?php
+              if (!function_exists('getQtySalinByRootOriginal')) {
+
+                function getRootOriginalPDCode($noDemand)
+                {
+                  global $conn2;
+                  if (!isset($conn2) || !is_resource($conn2)) return '';
+
+                  static $cacheRoot = [];
+                  static $stmtQ1 = null;
+                  static $stmtQ2 = null;
+                  static $safetyMax = 30;
+
+                  $start = substr(trim((string)$noDemand), 0, 8);
+                  if ($start === '') return '';
+
+                  if (isset($cacheRoot[$start])) return $cacheRoot[$start];
+
+                  if ($stmtQ1 === null) {
+                    $sqlQ1 = "SELECT RIGHT(a.VALUESTRING, 8) AS ORIGINALPDCODE
+                              FROM PRODUCTIONDEMAND p
+                              LEFT JOIN ADSTORAGE a
+                                ON a.UNIQUEID = p.ABSUNIQUEID
+                              AND a.FIELDNAME = 'OriginalPDCode'
+                              WHERE TRIM(p.CODE) = ?
+                              FETCH FIRST 1 ROW ONLY";
+                    $stmtQ1 = db2_prepare($conn2, $sqlQ1);
+                  }
+
+                  if ($stmtQ2 === null) {
+                    $sqlQ2 = "SELECT RIGHT(a.VALUESTRING, 8) AS ORIGINALPDCODE
+                              FROM PRODUCTIONDEMAND p
+                              LEFT JOIN ADSTORAGE a
+                                ON a.UNIQUEID = p.ABSUNIQUEID
+                              AND a.FIELDNAME = 'OriginalPDCode'
+                              WHERE LEFT(TRIM(p.CODE), 8) = ?
+                              FETCH FIRST 1 ROW ONLY";
+                    $stmtQ2 = db2_prepare($conn2, $sqlQ2);
+                  }
+
+                  $cur = $start;
+                  $lastNonNull = '';
+                  $seen = [];
+
+                  for ($i = 0; $i < $safetyMax; $i++) {
+                    if (isset($seen[$cur])) break;
+                    $seen[$cur] = true;
+
+                    $parent = '';
+
+                    // coba Q1 dulu
+                    if ($stmtQ1 && db2_execute($stmtQ1, [$cur])) {
+                      $r = db2_fetch_assoc($stmtQ1);
+                      $parent = isset($r['ORIGINALPDCODE']) ? trim($r['ORIGINALPDCODE']) : '';
+                    }
+
+                    // kalau Q1 kosong, coba Q2
+                    if ($parent === '' && $stmtQ2 && db2_execute($stmtQ2, [$cur])) {
+                      $r2 = db2_fetch_assoc($stmtQ2);
+                      $parent = isset($r2['ORIGINALPDCODE']) ? trim($r2['ORIGINALPDCODE']) : '';
+                    }
+
+                    $parent = substr($parent, 0, 8);
+                    if ($parent === '') break;
+
+                    $lastNonNull = $parent;
+                    $cur = $parent;
+                  }
+
+                  return $cacheRoot[$start] = $lastNonNull;
+                }
+
+                function getQtySalinByRootOriginal($noDemand)
+                {
+                  global $conn2;
+                  if (!isset($conn2) || !is_resource($conn2)) return 0;
+
+                  static $cacheQty = [];
+                  static $stmtQty = null;
+
+                  $root = getRootOriginalPDCode($noDemand);
+                  if ($root === '') return 0;
+
+                  if (isset($cacheQty[$root])) return $cacheQty[$root];
+
+                  if ($stmtQty === null) {
+                    $sqlQty = "SELECT p.USEDUSERPRIMARYQUANTITY AS QTY_SALIN
+                              FROM ITXVIEW_RESERVATION_KK p
+                              WHERE p.ORDERCODE = ?
+                              FETCH FIRST 1 ROW ONLY";
+                    $stmtQty = db2_prepare($conn2, $sqlQty);
+                  }
+
+                  $qty = 0;
+                  if ($stmtQty && db2_execute($stmtQty, [$root])) {
+                    $r = db2_fetch_assoc($stmtQty);
+                    $qty = (isset($r['QTY_SALIN']) && $r['QTY_SALIN'] !== null) ? (float)$r['QTY_SALIN'] : 0;
+                  }
+
+                  return $cacheQty[$root] = $qty;
+                }
+
+                function getRootDescription($noDemand)
+                {
+                  global $conn2;
+                  if (!isset($conn2) || !is_resource($conn2)) return '';
+
+                  static $cacheDesc = [];  // root8 => desc
+                  static $stmtDesc = null;
+
+                  $root = getRootOriginalPDCode($noDemand);
+                  if ($root === '') return '';
+
+                  if (isset($cacheDesc[$root])) return $cacheDesc[$root];
+
+                  if ($stmtDesc === null) {
+                    $sqlDesc = "SELECT p.DESCRIPTION
+                                FROM PRODUCTIONDEMAND p
+                                WHERE TRIM(p.CODE) = ?
+                                FETCH FIRST 1 ROW ONLY";
+                    $stmtDesc = db2_prepare($conn2, $sqlDesc);
+                  }
+
+                  $desc = '';
+                  if ($stmtDesc && db2_execute($stmtDesc, [$root])) {
+                    $r = db2_fetch_assoc($stmtDesc);
+                    $desc = trim($r['DESCRIPTION'] ?? '');
+                  }
+
+                  return $cacheDesc[$root] = $desc;
+                }
+              }
+              if (!isset($stmtPDInfo)) {
+                $stmtPDInfo = db2_prepare($conn2, "
+                  SELECT
+                    p.DESCRIPTION,
+                    SUBSTRING(a.VALUESTRING, 5) AS VALUESTRING
+                  FROM PRODUCTIONDEMAND p
+                  LEFT JOIN ADSTORAGE a
+                    ON a.UNIQUEID = p.ABSUNIQUEID
+                  AND a.FIELDNAME = 'OriginalPDCode'
+                  WHERE p.CODE = ?
+                  FETCH FIRST 1 ROW ONLY
+                ");
+              }
+
               $no = 1;
-              while ($row1 = sqlsrv_fetch_array($qry1)) {
+              while ($row1 = sqlsrv_fetch_array($qry1, SQLSRV_FETCH_ASSOC)) {
+
                 if ($row1['nokk_salinan'] != "") {
                   $nokk1 = $row1['nokk_salinan'];
                 } else {
                   $nokk1 = $row1['nokk'];
                 }
-                $qryckw = sqlsrv_query($cond, "SELECT * FROM tbl_cocok_warna_dye WHERE `dept`='QCF' AND nodemand='$row1[nodemand]' ORDER BY id DESC");
-                $rowckw = sqlsrv_fetch_array($qryckw);
-                $sqlDB2 = "SELECT
-					p.DESCRIPTION
-				FROM
-					PRODUCTIONDEMAND p
-				WHERE
-					p.CODE = '$row1[nodemand]'";
-                $stmt = db2_exec($conn2, $sqlDB2, array('cursor' => DB2_SCROLLABLE));
-                $rowdb2 = db2_fetch_assoc($stmt);
+
+                $qryckw = sqlsrv_query($cond, "SELECT * FROM db_qc.tbl_cocok_warna_dye WHERE dept='QCF' AND nodemand=? ORDER BY id DESC", [$row1['nodemand']]);
+                $rowckw = sqlsrv_fetch_array($qryckw, SQLSRV_FETCH_ASSOC);
+
+                $rootOriginal  = getRootOriginalPDCode($row1['nodemand']);
+                $qtySalinInduk = ($rootOriginal !== '') ? getQtySalinByRootOriginal($row1['nodemand']) : 0;
+                $rootDesc       = ($rootOriginal !== '') ? getRootDescription($row1['nodemand']) : '';                
+
+                $pdDesc = '';
+                $pdValueString = '';
+                if ($stmtPDInfo && db2_execute($stmtPDInfo, [$row1['nodemand']])) {
+                  $pdRow = db2_fetch_assoc($stmtPDInfo);
+                  $pdDesc = trim($pdRow['DESCRIPTION'] ?? '');
+                  $pdValueString = $pdRow['VALUESTRING'] ?? '';
+                }
               ?>
-                <tr bgcolor="<?php echo $bgcolor; ?>">
-                  <td height="39" align="center">
-                    <?php echo $no; ?>
-                  </td>
-                  <td align="center">
-                    <?php echo $row1['tgl_buat']; ?><br>
-                    <div class="btn-group"><a href="pages/cetak/cetak_ncp_now.php?id=<?php echo $row1['id']; ?>" class="btn btn-xs btn-danger" target="_blank"><i class="fa fa-print"></i></a><a href="pages/cetak/cetak_ncp_now_pdf.php?id=<?php echo $row1['id']; ?>" class="btn btn-xs btn-info" target="_blank"><i class="fa fa-file-pdf-o"></i></a></div>
-                  </td>
+              <tr bgcolor="<?php echo $bgcolor; ?>">
+                <td height="39" align="center"><?php echo $no; ?></td>
+                <td align="center">
+                  <?php if (!empty($row1['tgl_buat'])) { echo $row1['tgl_buat']->format('Y-m-d H:i:s'); } else { echo '-'; }?><br>
+                  <div class="btn-group">
+                    <a href="pages/cetak/cetak_ncp_now.php?id=<?php echo $row1['id']; ?>" class="btn btn-xs btn-danger" target="_blank"><i class="fa fa-print"></i></a>
+                    <a href="pages/cetak/cetak_ncp_now_pdf.php?id=<?php echo $row1['id']; ?>" class="btn btn-xs btn-info" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+                  </div>
+                </td>
+                <td>
+                  <a href="#" class="btn sts_new_edit <?php if ($_SESSION['dept'] == "QC" or strtoupper($_SESSION['usrid']) == "TENNY" or strtoupper($_SESSION['usrid']) == "AISYAH" or strtoupper($_SESSION['usrid']) == "CRISTIN") { echo "enabled"; } else { echo "disabled"; } ?>" id="<?php echo $row1['id']; ?>">
+                    <span class="label <?php if ($row1['status'] == "OK") { echo "label-success"; } else if ($row1['status'] == "Cancel") { echo "label-danger"; } else { echo "label-warning"; } ?>">
+                      <?php echo $row1['status']; ?>
+                    </span>
+                  </a>
+                </td>
+                <td><?php echo $row1['reg_no']; ?></td>
+                <td><?php echo $row1['prod_order']; ?></td>
+                <td><?php echo $row1['nodemand']; ?></td>
+                <td><?php echo $pdValueString; ?></td>
+                <td><?php echo $row1['langganan']; ?></td>
+                <td><?php echo $row1['buyer']; ?></td>
+                <td align="center"><?php echo $row1['po']; ?></td>
+                <td align="center">
+                  <a href="PenyelesaianNew-<?php echo $row1['id']; ?>" class="btn <?php if (strtoupper($_SESSION['usrid']) != "ARIF") { echo "disabled"; } ?>">
+                    <span class="label label-danger"><?php echo $row1['no_ncp_gabungan']; ?></span>
+                  </a>
+                </td>
+                <td align="center"><?php echo $row1['no_order']; ?></td>
+                <td align="center"><?php echo $row1['no_hanger']; ?></td>
+                <td><?php echo $row1['jenis_kain']; ?></td>
+                <td align="center"><?php echo $row1['lebar'] . "x" . $row1['gramasi']; ?></td>
+                <td align="center"><?php echo $row1['lot']; ?></td>
+                <td align="center"><?php echo $pdDesc; ?></td>
+                <td align="center"><?php echo $row1['lot_salinan']; ?></td>
+                <td align="center"><?php echo $row1['warna']; ?></td>
+                <td align="center"><?php echo $row1['no_warna']; ?></td>
+                <td align="right"><?php echo $row1['rol']; ?></td>
+                <td align="right"><?php echo $row1['berat']; ?></td>
+                <td align="center"><?php echo $row1['dept']; ?></td>
+                <td><?php echo $row1['masalah']; ?></td>
+                <td><?php echo $row1['masalah_dominan']; ?></td>
+                <td><?php echo $row1['m_proses']; ?></td>
+                <td><?php echo $row1['ket']; ?></td>
+                <td><?php echo $row1['penyelesaian']; ?></td>
+                <td><?php echo $row1['rincian']; ?></td>
+                <td><?php echo $row1['penyebab']; ?></td>
+                <td><?php echo $row1['akar_masalah']; ?></td>
+                <td><?php echo $row1['solusi_panjang']; ?></td>
+                <td><?php echo $rowckw['colorist_dye']; ?></td>
+                <td><?php echo $row1['perbaikan']; ?></td>
+                <td><?php echo $row1['catat_verify']; ?></td>
+                <td><?php echo $row1['peninjau_akhir']; ?></td>
+                <td><?php echo $row1['nsp']; ?></td>
+                <td align="center"><?php if (!empty($row1['tgl_rencana'])) { echo ($row1['tgl_rencana'] instanceof DateTime) ? $row1['tgl_rencana']->format('d/m/y') : date('d/m/y', strtotime($row1['tgl_rencana'])); } ?></td>
+                <td align="center"><?php if (!empty($row1['tgl_selesai'])) { echo ($row1['tgl_selesai'] instanceof DateTime) ? $row1['tgl_selesai']->format('d/m/y') : date('d/m/y', strtotime($row1['tgl_selesai'])); } ?></td>
+                <td align="center"><?php if (!empty($row1['tgl_delivery'])) { echo ($row1['tgl_delivery'] instanceof DateTime) ? $row1['tgl_delivery']->format('d/m/y') : date('d/m/y', strtotime($row1['tgl_delivery'])); } ?></td>
+                <td align="center">'<?php if ($row1['nokk_salinan'] != "") { echo $row1['nokk_salinan']; } else { echo $row1['nokk']; } ?></td>
+                <td><?php echo $row1['ncp_hitung']; ?></td>
+                <td><?php echo $row1['tempat']; ?></td>
+                <?php if (strtoupper($_SESSION['usrid']) == "ADM-FIN") { ?>
                   <td>
-                    <a href="#" class="btn sts_new_edit <?php if ($_SESSION['dept'] == "QC" or strtoupper($_SESSION['usrid']) == "TENNY" or strtoupper($_SESSION['usrid']) == "AISYAH" or strtoupper($_SESSION['usrid']) == "CRISTIN") {
-                                                          echo "enabled";
-                                                        } else {
-                                                          echo "disabled";
-                                                        } ?>" id="<?php echo $row1['id']; ?>"><span class="label <?php if ($row1['status'] == "OK") {
-                                                                                                                    echo "label-success";
-                                                                                                                  } else if ($row1['status'] == "Cancel") {
-                                                                                                                    echo "label-danger";
-                                                                                                                  } else {
-                                                                                                                    echo "label-warning";
-                                                                                                                  } ?> ">
-                        <?php echo $row1['status']; ?>
-                      </span></a>
+                    <a href="#" class="btn fin_data_edit <?php if ($_SESSION['dept'] == "FIN" or strtoupper($_SESSION['usrid']) == "ADM-FIN") { echo "enabled"; } else { echo "disabled"; } ?>" id="<?php echo $row1['id']; ?>">
+                      <span class="label label-info"><i class="fa fa-edit"></i></span>
+                    </a>
                   </td>
-                  <td>
-                    <?php echo $row1['reg_no']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['prod_order']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['nodemand']; ?>
-                  </td>
-                  <td>
-                    <?php
-                    $sql_ori_pd_code = db2_exec($conn2, "SELECT p.CODE, SUBSTRING(a.VALUESTRING, 5) AS VALUESTRING 
-                                                            FROM
-                                                              PRODUCTIONDEMAND p
-                                                            LEFT JOIN ADSTORAGE a ON a.UNIQUEID = p.ABSUNIQUEID AND a.FIELDNAME = 'OriginalPDCode'
-                                                            WHERE p.CODE = '$row1[nodemand]'");
-                    $dt_ori_pd_code = db2_fetch_assoc($sql_ori_pd_code);
-                    echo $dt_ori_pd_code['VALUESTRING'];
-                    ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['langganan']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['buyer']; ?>
-                  </td>
-                  <td align="center">
-                    <?php echo $row1['po']; ?>
-                  </td>
-                  <td align="center"><a href="PenyelesaianNew-<?php echo $row1['id']; ?>" class="btn <?php if (strtoupper($_SESSION['usrid']) != "ARIF") {
-                                                                                                        echo "disabled";
-                                                                                                      } ?>"><span class="label label-danger">
-                        <?php echo $row1['no_ncp_gabungan']; ?>
-                      </span></a></td>
-                  <td align="center">
-                    <?php echo $row1['no_order']; ?>
-                  </td>
-                  <td align="center">
-                    <?php echo $row1['no_hanger']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['jenis_kain']; ?>
-                  </td>
-                  <td align="center">
-                    <?php echo $row1['lebar'] . "x" . $row1['gramasi']; ?>
-                  </td>
-                  <td align="center">
-                    <?php echo $row1['lot']; ?>
-                  </td>
-                  <td align="center">
-                    <?php echo trim($rowdb2['DESCRIPTION']); ?>
-                  </td>
-                  <td align="center">
-                    <?php echo $row1['lot_salinan']; ?>
-                  </td>
-                  <td align="center">
-                    <?php echo $row1['warna']; ?>
-                  </td>
-                  <td align="center">
-                    <?php echo $row1['no_warna']; ?>
-                  </td>
-                  <td align="right">
-                    <?php echo $row1['rol']; ?>
-                  </td>
-                  <td align="right">
-                    <?php echo $row1['berat']; ?>
-                  </td>
-                  <td align="center">
-                    <?php echo $row1['dept']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['masalah']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['masalah_dominan']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['m_proses']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['ket']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['penyelesaian']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['rincian']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['penyebab']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['akar_masalah']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['solusi_panjang']; ?>
-                  </td>
-                  <td>
-                    <?php echo $rowckw['colorist_dye']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['perbaikan']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['catat_verify']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['peninjau_akhir']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['nsp']; ?>
-                  </td>
-                  <td align="center">
-                    <?php if ($row1['tgl_rencana'] != "") {
-                      echo date("d/m/y", strtotime($row1['tgl_rencana']));
-                    } ?>
-                  </td>
-                  <td align="center">
-                    <?php if ($row1['tgl_selesai'] != "") {
-                      echo date("d/m/y", strtotime($row1['tgl_selesai']));
-                    } ?>
-                  </td>
-                  <td align="center">
-                    <?php if ($row1['tgl_delivery'] != "") {
-                      echo date("d/m/y", strtotime($row1['tgl_delivery']));
-                    } ?>
-                  </td>
-                  <td align="center">'
-                    <?php if ($row1['nokk_salinan'] != "") {
-                      echo $row1['nokk_salinan'];
-                    } else {
-                      echo $row1['nokk'];
-                    } ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['ncp_hitung']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['tempat']; ?>
-                  </td>
-                  <?php if (strtoupper($_SESSION['usrid']) == "ADM-FIN") { ?>
-                    <td>
-                      <a href="#" class="btn fin_data_edit <?php if ($_SESSION['dept'] == "FIN" or strtoupper($_SESSION['usrid']) == "ADM-FIN") {
-                                                              echo "enabled";
-                                                            } else {
-                                                              echo "disabled";
-                                                            } ?>" id="<?php echo $row1['id']; ?>">
-                        <span class="label label-info"> <i class="fa fa-edit"></i> </span>
-                      </a>
-                    </td>
-                    <td>
-                      <?php echo $row1['rekomendasi']; ?>
-                    </td>
-                    <td>
-                      <?php echo $row1['penyebab']; ?>
-                    </td>
-                  <?php } ?>
-                  <td>
-                    <?php echo $row1['shift']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['mesin']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['perbaikan']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['mesin_perbaikan']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['jml_perbaikan']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['kategori']; ?>
-                  </td>
-                  <td>
-                    <?php echo $rowckw['no_mesin']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['data_ke']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['nama_colorist']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['status_warna']; ?>
-                  </td>
-                  <td>
-                    <?php echo $row1['disposisi']; ?>
-                  </td>
-                </tr>
-              <?php $no++;
-              } ?>
+                  <td><?php echo $row1['rekomendasi']; ?></td>
+                  <td><?php echo $row1['penyebab']; ?></td>
+                <?php } ?>
+                <td><?php echo $row1['shift']; ?></td>
+                <td><?php echo $row1['mesin']; ?></td>
+                <td><?php echo $row1['perbaikan']; ?></td>
+                <td><?php echo $row1['mesin_perbaikan']; ?></td>
+                <td><?php echo $row1['jml_perbaikan']; ?></td>
+                <td><?php echo $row1['kategori']; ?></td>
+                <td><?php echo $rowckw['no_mesin']; ?></td>
+                <td><?php echo $row1['data_ke']; ?></td>
+                <td><?php echo $row1['nama_colorist']; ?></td>
+                <td><?php echo $row1['status_warna']; ?></td>
+                <td><?php echo $row1['disposisi']; ?></td>
+                <td><?php echo ($rootOriginal !== '' ? $rootOriginal : '-'); ?></td>
+                <td align="right"><?php echo number_format($qtySalinInduk, 2); ?></td>
+                <td><?php echo ($rootDesc !== '' ? $rootDesc : '-'); ?></td>
+              </tr>
+              <?php
+                $no++;
+              }
+              ?>
             </tbody>
           </table>
         </div>
