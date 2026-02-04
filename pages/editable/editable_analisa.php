@@ -1,4 +1,4 @@
-<?PHP
+<?php
 ini_set("error_reporting", 1);
 session_start();
 include "../../koneksi.php";
@@ -10,22 +10,54 @@ if (empty($_SESSION['user_id10'])) {
 }
 
 $ip_num = $_SERVER['REMOTE_ADDR'];
-$os= $_SERVER['HTTP_USER_AGENT'];
-$sqlCek = mysqli_query($cona,"SELECT tg.id_nsp, tb.id_nsp_gk,tb.no_bon FROM tbl_bonkain tb LEFT JOIN tbl_gantikain tg ON tg.id =tb.id_nsp WHERE tb.id='$_POST[pk]' ");
-$rCek = mysqli_fetch_array($sqlCek);
-$idnsp=$rCek['id_nsp'];
-$idnspgk=$rCek['id_nsp_gk'];
-$value = str_replace("'","''",$_POST['value']);
-mysqli_query($cona,"UPDATE tbl_bonkain SET `analisa` = '$value' where id = '$_POST[pk]'");
-mysqli_query($cond,"UPDATE tbl_ganti_kain_now SET `analisa` = '$value' where id = '$idnspgk'");
+$os     = $_SERVER['HTTP_USER_AGENT'];
 
-mysqli_query($cona,"INSERT into tbl_log SET
-	`what` = 'Update Analisa',
-	`what_do` = 'Edit Analisa ( $_POST[value] )',
-	`project` = '$rCek[no_bon]',
-	`do_by` = '$_SESSION[user_id10]',
-	`do_at` = now(),
-	`ip` = '$ip_num',
-	`os` = '$os'");
+$pk    = $_POST['pk'];
+$value = $_POST['value'];
+
+$sqlCek = sqlsrv_query(
+    $cona,
+    "SELECT tg.id_nsp, tb.id_nsp_gk, tb.no_bon
+     FROM db_adm.tbl_bonkain tb
+     LEFT JOIN db_adm.tbl_gantikain tg ON tg.id = tb.id_nsp
+     WHERE tb.id = ?",
+    array($pk)
+);
+
+$rCek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
+$idnsp   = $rCek['id_nsp'] ?? null;
+$idnspgk = $rCek['id_nsp_gk'] ?? null;
+
+sqlsrv_query(
+    $cona,
+    "UPDATE db_adm.tbl_bonkain
+     SET analisa = ?
+     WHERE id = ?",
+    array($value, $pk)
+);
+
+if ($idnspgk !== null && $idnspgk !== '') {
+    sqlsrv_query(
+        $cond,
+        "UPDATE db_qc.tbl_ganti_kain_now
+         SET analisa = ?
+         WHERE id = ?",
+        array($value, $idnspgk)
+    );
+}
+
+sqlsrv_query(
+    $cona,
+    "INSERT INTO db_adm.tbl_log (what, what_do, project, do_by, do_at, ip, os)
+     VALUES (?, ?, ?, ?, GETDATE(), ?, ?)",
+    array(
+        'Update Analisa',
+        "Edit Analisa ( $value )",
+        $rCek['no_bon'] ?? '',
+        $_SESSION['user_id10'],
+        $ip_num,
+        $os
+    )
+);
 
 echo json_encode('success');

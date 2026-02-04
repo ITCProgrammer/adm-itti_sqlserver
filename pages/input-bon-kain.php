@@ -613,15 +613,20 @@ if (!function_exists('sendEmailApproved')) {
                                               ?></td>
                 <td align="right"><?php
                                   if ($r['kg1'] > 0) {
-                                    echo "1. "; ?><a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['kg1']; ?>" class="kg1" href="javascipt:void(0)"><?php echo $r['kg1']; ?></a> <?php echo " Kg "; ?><a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['pjg1']; ?>" class="pjg1" href="javascipt:void(0)"><?php echo $r['pjg1']; ?></a> <?php echo " " . $r['satuan1'] . "<br>";
-                                                                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                                                                                if ($r['kg2'] > 0) {
-                                                                                                                                                                                                                                                                                                                                                  echo "2. "; ?><a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['kg2']; ?>" class="kg2" href="javascipt:void(0)"><?php echo $r['kg2']; ?></a> <?php echo " Kg "; ?><a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['pjg2']; ?>" class="pjg2" href="javascipt:void(0)"><?php echo $r['pjg2']; ?></a> <?php echo " " . $r['satuan2'] . "<br>";
-                                                                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                                                                                if ($r['kg3'] > 0) {
-                                                                                                                                                                                                                                                                                                                                                  echo "3. " . $r['kg3'] . " Kg "; ?><a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['pjg3']; ?>" class="pjg3" href="javascipt:void(0)"><?php echo $r['pjg3']; ?></a> <?php echo " " . $r['satuan3'] . "<br>";
-                                                                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                  ?></td>
+                                    echo "1. "; ?>
+                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['kg1']; ?>" class="kg1" href="javascipt:void(0)"><?php echo $r['kg1']; ?></a> <?php echo " Kg "; ?>
+                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['pjg1']; ?>" class="pjg1" href="javascipt:void(0)"><?php echo $r['pjg1']; ?></a> <?php echo " " . $r['satuan1'] . "<br>";
+                                  }
+                                  if ($r['kg2'] > 0) {
+                                    echo "2. "; ?>
+                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['kg2']; ?>" class="kg2" href="javascipt:void(0)"><?php echo $r['kg2']; ?></a> <?php echo " Kg "; ?>
+                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['pjg2']; ?>" class="pjg2" href="javascipt:void(0)"><?php echo $r['pjg2']; ?></a> <?php echo " " . $r['satuan2'] . "<br>";
+                                  }
+                                  if ($r['kg3'] > 0) {
+                                    echo "3. " . $r['kg3'] . " Kg "; ?>
+                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['pjg3']; ?>" class="pjg3" href="javascipt:void(0)"><?php echo $r['pjg3']; ?></a> <?php echo " " . $r['satuan3'] . "<br>";
+                                  }
+                                  ?></td>
                 <td align="center"><?php if (strtolower($_SESSION['nama10']) == "angela" or $_SESSION['dept10'] == "RMP" or $_SESSION['dept10'] == "PPC") { ?>
                     <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['kg_bruto']; ?>" class="kg_bruto" href="javascipt:void(0)"><?php echo $r['kg_bruto']; ?></a><?php } else {
                                                                                                                                                                               echo $r['kg_bruto'];
