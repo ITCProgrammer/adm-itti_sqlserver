@@ -145,7 +145,7 @@ include "koneksi.php";
       $sqlball = sqlsrv_query($cond, "
         SELECT COUNT(a.nokk) AS jml_kk_all
         FROM db_qc.tbl_lap_inspeksi a
-        WHERE a.proses NOT IN ('Oven', 'Fin 1X')
+        WHERE (a.proses <> 'Oven' OR a.proses <> 'Fin 1X')
           AND a.dept = 'QCF'
           AND CAST(a.tgl_update AS date) BETWEEN ? AND ?
       ", [$Awal, $Akhir]);
