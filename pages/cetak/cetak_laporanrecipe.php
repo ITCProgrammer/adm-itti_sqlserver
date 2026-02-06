@@ -8,7 +8,7 @@
 ?>
 <?php
   ini_set("error_reporting", 1);
-  include "../../koneksi.php";
+  include "../../koneksi2.php";
   include "../../koneksiLAB.php";
   include "../../tgl_indo.php";
   //--
@@ -141,7 +141,7 @@
       <th bgcolor="#99FF99">Fin Jadi</th>
     </tr>
     <?php
-        // ini_set("error_reporting", 0);
+        ini_set("error_reporting", 1);
         $Awal = $_GET['awal'];
         $jamA = $_GET['jam_awal'];
         $Akhir = $_GET['akhir'];
@@ -167,153 +167,181 @@
         $where2 ="";
       }
         $qry ="SELECT x.*
-                                      FROM (
-                                          SELECT
-                                              b.id AS id_schedule_1,
-                                              c.id AS id_montemp_1,
-                                              a.id AS id_hasil_celup_1,
-                                              a2.colorist_lab,
-                                              a2.colorist_dye,
-                                              a2.setting_sebelum,
-                                              a2.setting_sesudah,
-                                              a2.tindakan_perbaikan,
-                                              a2.analisa_penyebab,
-                                              a2.dept_penyebab2,
-                                              a2.akar_penyebab,
-                                              a2.ket_hitung,
-                                              a.penanggungjawabbuyer,
-                                              a.kd_stop,
-                                              a.mulai_stop,
-                                              a.selesai_stop,
-                                              a.ket,
-                                              CASE
-                                                  WHEN c.tgl_mulai IS NULL OR c.tgl_stop IS NULL THEN a.lama_proses
-                                                  ELSE CONVERT(varchar(5),
-                                                      DATEADD(
-                                                          MINUTE,
-                                                          (DATEDIFF(MINUTE, 0, a.lama_proses) - DATEDIFF(MINUTE, c.tgl_stop, c.tgl_mulai)),
-                                                          0
-                                                      ),
-                                                      108
-                                                  )
-                                              END AS lama_proses,
-                                              a.status AS sts,
-                                              CONVERT(varchar(2),
-                                                  CASE
-                                                      WHEN c.tgl_mulai IS NULL OR c.tgl_stop IS NULL THEN a.lama_proses
-                                                      ELSE DATEADD(
-                                                              MINUTE,
-                                                              (DATEDIFF(MINUTE, 0, a.lama_proses) - DATEDIFF(MINUTE, c.tgl_stop, c.tgl_mulai)),
-                                                              CAST('00:00:00' AS time)
-                                                          )
-                                                  END,
-                                                  108
-                                              ) AS jam,
-                                              RIGHT(CONVERT(varchar(5),
-                                                  CASE
-                                                      WHEN c.tgl_mulai IS NULL OR c.tgl_stop IS NULL THEN a.lama_proses
-                                                      ELSE DATEADD(
-                                                              MINUTE,
-                                                              (DATEDIFF(MINUTE, 0, a.lama_proses) - DATEDIFF(MINUTE, c.tgl_stop, c.tgl_mulai)),
-                                                              CAST('00:00:00' AS time)
-                                                          )
-                                                  END,
-                                                  108
-                                              ), 2) AS menit,
-                                              a.point,
-                                              CONVERT(date, a.mulai_stop) AS t_mulai,
-                                              CONVERT(date, a.selesai_stop) AS t_selesai,
-                                              CONVERT(varchar(5), a.mulai_stop, 108) AS j_mulai,
-                                              CONVERT(varchar(5), a.selesai_stop, 108) AS j_selesai,
-                                              DATEDIFF(MINUTE, a.mulai_stop, a.selesai_stop) AS lama_stop_menit,
-                                              a.acc_keluar,
-                                              CASE
-                                                  WHEN a.proses = '' OR a.proses IS NULL THEN b.proses
-                                                  ELSE a.proses
-                                              END AS proses,
-                                              b.buyer,
-                                              b.langganan,
-                                              b.no_order,
-                                              b.jenis_kain,
-                                              b.no_mesin,
-                                              b.warna,
-                                              b.lot,
-                                              b.energi,
-                                              b.dyestuff,
-                                              b.ket_status,
-                                              b.kapasitas,
-                                              b.loading,
-                                              b.resep,
-                                              b.kategori_warna,
-                                              b.target,
-                                              c.l_r,
-                                              c.rol,
-                                              c.bruto,
-                                              c.pakai_air,
-                                              c.no_program,
-                                              c.pjng_kain,
-                                              c.cycle_time,
-                                              c.rpm,
-                                              c.tekanan,
-                                              c.nozzle,
-                                              c.plaiter,
-                                              c.blower,
-                                              CONVERT(date, c.tgl_buat) AS tgl_in,
-                                              CONVERT(date, a.tgl_buat) AS tgl_out,
-                                              CONVERT(varchar(5), c.tgl_buat, 108) AS jam_in,
-                                              CONVERT(varchar(5), a.tgl_buat, 108) AS jam_out,
-                                              ISNULL(a.g_shift, c.g_shift) AS shft,
-                                              a.operator_keluar,
-                                              a.k_resep,
-                                              a.status,
-                                              a.proses_point,
-                                              a.analisa,
-                                              b.nokk,
-                                              b.no_warna,
-                                              b.lebar,
-                                              b.gramasi,
-                                              c.carry_over,
-                                              b.no_hanger,
-                                              b.no_item,
-                                              b.po,
-                                              b.tgl_delivery,
-                                              b.kk_kestabilan,
-                                              b.kk_normal,
-                                              c.air_awal,
-                                              a.air_akhir,
-                                              c.nokk_legacy,
-                                              c.loterp,
-                                              c.nodemand,
-                                              a.tambah_obat,
-                                              a.tambah_obat1,
-                                              a.tambah_obat2,
-                                              a.tambah_obat3,
-                                              a.tambah_obat4,
-                                              a.tambah_obat5,
-                                              a.tambah_obat6,
-                                              c.leader,
-                                              b.suffix,
-                                              b.suffix2,
-                                              c.l_r_2,
-                                              c.lebar_fin,
-                                              c.grm_fin,
-                                              c.lebar_a,
-                                              c.gramasi_a,
-                                              c.operator,
-                                              a.status_resep,
-                                              a.analisa_resep,
-                                              b.no_mesin as mc
-                                          FROM db_dying.tbl_schedule b
-                                          LEFT JOIN db_dying.tbl_montemp c
-                                              ON c.id_schedule = b.id
-                                          LEFT JOIN db_dying.tbl_hasilcelup a
-                                              ON a.id_montemp = c.id
-                                          LEFT JOIN db_dying.tbl_hasilcelup2 a2
-                                              ON a2.id_hasilcelup = a.id
-                                          WHERE
-                                  $where ) x ";
-        $sql = sqlsrv_query($con,$qry);
-        if ($sql === false) {
+                    FROM (
+                        SELECT
+                            b.id AS id_schedule_1,
+                            c.id AS id_montemp_1,
+                            a.id AS id_hasil_celup_1,
+                            a2.colorist_lab,
+                            a2.colorist_dye,
+                            a2.setting_sebelum,
+                            a2.setting_sesudah,
+                            a2.tindakan_perbaikan,
+                            a2.analisa_penyebab,
+                            a2.dept_penyebab2,
+                            a2.akar_penyebab,
+                            a2.ket_hitung,
+                            a.penanggungjawabbuyer,
+                            a.kd_stop,
+                            a.mulai_stop,
+                            a.selesai_stop,
+                            a.ket,
+                            CASE
+                                WHEN c.tgl_mulai IS NULL
+                                  OR c.tgl_stop IS NULL
+                                  OR TRY_CONVERT(datetime, a.lama_proses) IS NULL
+                                THEN a.lama_proses
+                                ELSE CONVERT(
+                                    varchar(5),
+                                    DATEADD(
+                                        MINUTE,
+                                        DATEDIFF(MINUTE, 0, TRY_CONVERT(datetime, a.lama_proses))
+                                        - DATEDIFF(MINUTE, c.tgl_stop, c.tgl_mulai),
+                                        0
+                                    ),
+                                    108
+                                )
+                            END AS lama_proses,
+                            a.status AS sts,
+                            CONVERT(
+                                varchar(2),
+                                CASE
+                                    WHEN c.tgl_mulai IS NULL
+                                      OR c.tgl_stop IS NULL
+                                      OR TRY_CONVERT(datetime, a.lama_proses) IS NULL
+                                    THEN TRY_CONVERT(time, a.lama_proses)
+                                    ELSE DATEADD(
+                                        MINUTE,
+                                        DATEDIFF(MINUTE, 0, TRY_CONVERT(datetime, a.lama_proses))
+                                        - DATEDIFF(MINUTE, c.tgl_stop, c.tgl_mulai),
+                                        CAST('00:00:00' AS time)
+                                    )
+                                END,
+                                108
+                            ) AS jam,
+                            RIGHT(
+                                CONVERT(
+                                    varchar(5),
+                                    CASE
+                                        WHEN c.tgl_mulai IS NULL
+                                          OR c.tgl_stop IS NULL
+                                          OR TRY_CONVERT(datetime, a.lama_proses) IS NULL
+                                        THEN TRY_CONVERT(time, a.lama_proses)
+                                        ELSE DATEADD(
+                                            MINUTE,
+                                            DATEDIFF(MINUTE, 0, TRY_CONVERT(datetime, a.lama_proses))
+                                            - DATEDIFF(MINUTE, c.tgl_stop, c.tgl_mulai),
+                                            CAST('00:00:00' AS time)
+                                        )
+                                    END,
+                                    108
+                                ),
+                                2
+                            ) AS menit,
+                            a.point,
+                            TRY_CONVERT(date, a.mulai_stop)   AS t_mulai,
+                            TRY_CONVERT(date, a.selesai_stop) AS t_selesai,
+                            TRY_CONVERT(varchar(5), a.mulai_stop, 108)   AS j_mulai,
+                            TRY_CONVERT(varchar(5), a.selesai_stop, 108) AS j_selesai,
+                            CASE
+                                WHEN TRY_CONVERT(datetime, a.mulai_stop) IS NULL
+                                  OR TRY_CONVERT(datetime, a.selesai_stop) IS NULL
+                                THEN NULL
+                                ELSE DATEDIFF(
+                                    MINUTE,
+                                    TRY_CONVERT(datetime, a.mulai_stop),
+                                    TRY_CONVERT(datetime, a.selesai_stop)
+                                )
+                            END AS lama_stop_menit,
+                            a.acc_keluar,
+                            CASE
+                                WHEN a.proses = '' OR a.proses IS NULL THEN b.proses
+                                ELSE a.proses
+                            END AS proses,
+                            b.buyer,
+                            b.langganan,
+                            b.no_order,
+                            b.jenis_kain,
+                            b.no_mesin,
+                            b.warna,
+                            b.lot,
+                            b.energi,
+                            b.dyestuff,
+                            b.ket_status,
+                            b.kapasitas,
+                            b.loading,
+                            b.resep,
+                            b.kategori_warna,
+                            b.target,
+                            c.l_r,
+                            c.rol,
+                            c.bruto,
+                            c.pakai_air,
+                            c.no_program,
+                            c.pjng_kain,
+                            c.cycle_time,
+                            c.rpm,
+                            c.tekanan,
+                            c.nozzle,
+                            c.plaiter,
+                            c.blower,
+                            TRY_CONVERT(date, c.tgl_buat) AS tgl_in,
+                            TRY_CONVERT(date, a.tgl_buat) AS tgl_out,
+                            TRY_CONVERT(varchar(5), c.tgl_buat, 108) AS jam_in,
+                            TRY_CONVERT(varchar(5), a.tgl_buat, 108) AS jam_out,
+                            ISNULL(a.g_shift, c.g_shift) AS shft,
+                            a.operator_keluar,
+                            a.k_resep,
+                            a.status,
+                            a.proses_point,
+                            a.analisa,
+                            b.nokk,
+                            b.no_warna,
+                            b.lebar,
+                            b.gramasi,
+                            c.carry_over,
+                            b.no_hanger,
+                            b.no_item,
+                            b.po,
+                            b.tgl_delivery,
+                            b.kk_kestabilan,
+                            b.kk_normal,
+                            c.air_awal,
+                            a.air_akhir,
+                            c.nokk_legacy,
+                            c.loterp,
+                            c.nodemand,
+                            a.tambah_obat,
+                            a.tambah_obat1,
+                            a.tambah_obat2,
+                            a.tambah_obat3,
+                            a.tambah_obat4,
+                            a.tambah_obat5,
+                            a.tambah_obat6,
+                            c.leader,
+                            b.suffix,
+                            b.suffix2,
+                            c.l_r_2,
+                            c.lebar_fin,
+                            c.grm_fin,
+                            c.lebar_a,
+                            c.gramasi_a,
+                            c.operator,
+                            a.status_resep,
+                            a.analisa_resep,
+                            b.no_mesin as mc
+                        FROM db_dying.tbl_schedule b
+                        LEFT JOIN db_dying.tbl_montemp c
+                            ON c.id_schedule = b.id
+                        LEFT JOIN db_dying.tbl_hasilcelup a
+                            ON a.id_montemp = c.id
+                        LEFT JOIN db_dying.tbl_hasilcelup2 a2
+                            ON a2.id_hasilcelup = a.id
+                        WHERE
+                $where ) x ";
+                                  // echo $qry;
+        $sql = sqlsrv_query($con, $qry);
+        if ($sql == false) {
             die(print_r(sqlsrv_errors(), true));
         }
         $no = 1;
@@ -322,9 +350,15 @@
         $totrol = 0;
         $totberat = 0;
 
-        while ($rowd = sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC)) {
-          $mc = $rowd['mc'];
-          $sqlSM = "SELECT 
+        while ($rowd = sqlsrv_fetch_array($sql)) {
+          // print_r($rowd);
+          $mc = $rowd['mc']; 
+          // if ($_GET['shft'] == "ALL") {
+          //   $shftSM = " ";
+          // } else {
+          //   $shftSM = " g_shift='$_GET[shft]' AND ";
+          // }
+          $sql1 = "SELECT 
                       *,
                       CONVERT(varchar(5), DATEADD(MINUTE, DATEDIFF(MINUTE, mulai, selesai), 0), 108) AS menitSM,
                       CONVERT(date, mulai)   AS tgl_masuk,
@@ -339,7 +373,7 @@
 
             $params = [$Awal, $Akhir, $mc];
 
-            $stmtSM = sqlsrv_query($con, $sqlSM, $params);
+            $stmtSM = sqlsrv_query($con, $sql1, $params);
           if (strlen($rowd['rol']) > 5) {
             $jk = strlen($rowd['rol']) - 5;
             $rl = substr($rowd['rol'], 0, $jk);
@@ -418,9 +452,9 @@
             } ?></td>
         <td><?php echo $rowd['point']; ?></td>
         <td><?php if ($rowd['langganan'] == "" and substr($rowd['proses'], 0, 10) != "Cuci Mesin") {
-              echo $rowSM['tgl_masuk'];
+              echo !empty($rowSM['tgl_masuk']) ? $rowSM['tgl_masuk']->format('Y-m-d') : '';
             } else {
-              echo $rowd['t_mulai'];
+              echo !empty($rowd['t_mulai']) ? $rowd['t_mulai']->format('Y-m-d') : '';
             } ?></td>
         <td><?php if ($rowd['langganan'] == "" and substr($rowd['proses'], 0, 10) != "Cuci Mesin") {
               echo $rowSM['jam_masuk'];
@@ -428,9 +462,11 @@
               echo $rowd['j_mulai'];
             } ?></td>
         <td><?php if ($rowd['langganan'] == "" and substr($rowd['proses'], 0, 10) != "Cuci Mesin") {
-              echo $rowSM['tgl_selesai'];
+              echo !empty($rowSM['tgl_selesai']) ? $rowSM['tgl_selesai']->format('Y-m-d') : '';
+              // echo $rowSM['tgl_selesai'];
             } else {
-              echo $rowd['t_selesai'];
+              echo !empty($rowd['t_selesai']) ? $rowd['t_selesai']->format('Y-m-d') : '';
+              // echo $rowd['t_selesai'];
             } ?></td>
         <td><?php if ($rowd['langganan'] == "" and substr($rowd['proses'], 0, 10) != "Cuci Mesin") {
               echo $rowSM['jam_selesai'];
@@ -460,16 +496,7 @@
         <td><?php echo $rowd['no_hanger']; ?></td>
         <td><?php echo $rowd['no_item']; ?></td>
         <td><?php echo $rowd['po']; ?></td>
-        <td>
-          <?php
-            $tgl = $rowd['tgl_delivery'] ?? null;
-            if ($tgl instanceof DateTime) {
-              echo $tgl->format('Y-m-d');
-            } else {
-              echo $tgl;
-            }
-          ?>
-        </td>
+        <td><?php echo !empty($rowd['tgl_delivery']) ? $rowd['tgl_delivery']->format('Y-m-d') : ''; ?></td>
         <td><?php echo $rowd['proses_point']; ?></td>
         <td><?php echo $rowd['penanggung_jawab']; ?></td>
         <td><?php echo $rowd['analisa']; ?></td>
@@ -528,45 +555,44 @@
         <td><?= $rowd['analisa_penyebab'] ?></td>
         <td><?= $rowd['dept_penyebab2'] ?></td>
         <td><?= $rowd['akar_penyebab'] ?></td>
-        <td align="left">
-          <?php 
-            $nomor_array = explode(',', $row1['nodemand']);
-            $quoted_nomor_array = [];
-            foreach ($nomor_array as $nomor) {
-              $quoted_nomor_array[] = "'" . trim($nomor) . "'";
-            }
-            $in_clause_string = implode(',', $quoted_nomor_array);
-            $qry_dye = sqlsrv_query($cond, "
-                SELECT
-                  STRING_AGG(x.status_warna, ', ') AS status_warna
-                FROM (
-                    SELECT DISTINCT t.status_warna
-                    FROM db_qc.tbl_cocok_warna_dye t
-                    WHERE
-                      t.dept = 'QCF'
-                      AND t.nodemand IN ($in_clause_string)
-                ) x
-            ");
-            $sts_dye = sqlsrv_fetch_array($qry_dye, SQLSRV_FETCH_ASSOC);
-            echo $sts_dye['status_warna']; 
-          ?>
-        </td>
         <td align="left"><?php 
-            $qry_fin = sqlsrv_query($cond, "
-                SELECT TOP 1 status
-                FROM db_qc.tbl_lap_inspeksi
-                WHERE dept = 'QCF'
-                  AND nokk = '".$row1['nokk']."'
-                  AND proses IN ('Fin', 'Comp')
-                ORDER BY id ASC
-            ");
-            $sts_fin = sqlsrv_fetch_array($qry_fin, SQLSRV_FETCH_ASSOC);
-            echo $sts_fin['status'] ?? '';
-          ?>
-        </td>
-        <td>
-          <?= $rowd['ket_hitung'] == 1 ? 'TIDAK HITUNG' : 'HITUNG' ?>
-        </td>
+                                $nomor_array = explode(',', $rowd['nodemand']);
+                                $quoted_nomor_array = [];
+                                foreach ($nomor_array as $nomor) {
+                                    $quoted_nomor_array[] = "'" . trim($nomor) . "'";
+                                }
+                                $in_clause_string = implode(',', $quoted_nomor_array);
+                                $qry_dye = mysqli_query($cond, "SELECT
+                                                                  GROUP_CONCAT(DISTINCT status_warna ORDER BY id ASC SEPARATOR ', ') AS status_warna
+                                                                FROM
+                                                                  tbl_cocok_warna_dye t
+                                                                WHERE
+                                                                  `dept` = 'QCF'
+                                                                  AND nodemand IN ({$in_clause_string})
+                                                        ");
+                                $sts_dye = mysqli_fetch_assoc($qry_dye);
+                                // echo $in_clause_string;
+                                echo $sts_dye['status_warna']; 
+                                ?></td>
+            <td align="left"><?php 
+                              $qry_fin = mysqli_query($cond, "SELECT DISTINCT 
+                                                                status 
+                                                              from
+                                                                tbl_lap_inspeksi
+                                                              where
+                                                                `dept` = 'QCF'
+                                                                and nokk ='$rowd[nokk]'
+                                                                and proses in ('Fin', 'Comp')
+                                                              order by
+                                                                id asc
+                                                      ");
+                              $sts_fin = mysqli_fetch_assoc($qry_fin);
+                              echo $sts_fin['status']; 
+                              ?>
+            </td>
+            <td>
+              <?= $rowd['ket_hitung'] == 1 ? 'TIDAK HITUNG' : 'HITUNG' ?>
+            </td>
       </tr>
     <?php
       $totrol += $rol;
