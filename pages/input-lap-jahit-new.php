@@ -70,15 +70,17 @@
 
         if ($cek > 0) {
 
-            $langganan    = str_replace("'", "''", $_POST['langganan']);
-            $order        = str_replace("'", "''", $_POST['no_order']);
-            $po           = str_replace("'", "''", $_POST['no_po']);
-            $jns          = str_replace("'", "''", $_POST['jenis_kain']);
-            $jns_body     = str_replace("'", "''", $_POST['jenis_kain_body']);
-            $lot_body     = str_replace("'", "''", $_POST['lot_body']);
-            $warna        = str_replace("'", "''", $_POST['warna']);
-            $ket          = str_replace("'", "''", $_POST['ket']);
-            $colorist_qcf = str_replace("'", "''", $_POST['colorist_qcf']);
+            $langganan     = str_replace("'", "''", $_POST['langganan']);
+            $order         = str_replace("'", "''", $_POST['no_order']);
+            $po            = str_replace("'", "''", $_POST['no_po']);
+            $jns           = str_replace("'", "''", $_POST['jenis_kain']);
+            $jns_body      = str_replace("'", "''", $_POST['jenis_kain_body']);
+            $lot_body      = str_replace("'", "''", $_POST['lot_body']);
+            $warna         = str_replace("'", "''", $_POST['warna']);
+            $ket           = str_replace("'", "''", $_POST['ket']);
+            $colorist_qcf  = str_replace("'", "''", $_POST['colorist_qcf']);
+            $rollFix       = str_replace(',', '.', (string)($_POST['roll'] ?? '0'));
+            $_POST['roll'] = (string)(int)$rollFix;
 
             $sql1 = sqlsrv_query($cond, "
                 UPDATE db_qc.tbl_jahit SET
@@ -124,16 +126,18 @@
             }
         } else {
 
-            $langganan    = str_replace("'", "''", $_POST['langganan']);
-            $order        = str_replace("'", "''", $_POST['no_order']);
-            $po           = str_replace("'", "''", $_POST['no_po']);
-            $jns          = str_replace("'", "''", $_POST['jenis_kain']);
-            $jns_body     = str_replace("'", "''", $_POST['jenis_kain_body']);
-            $lot_body     = str_replace("'", "''", $_POST['lot_body']);
-            $warna        = str_replace("'", "''", $_POST['warna']);
-            $ket          = str_replace("'", "''", $_POST['ket']);
-            $colorist_qcf = str_replace("'", "''", $_POST['colorist_qcf']);
-
+            $langganan     = str_replace("'", "''", $_POST['langganan']);
+            $order         = str_replace("'", "''", $_POST['no_order']);
+            $po            = str_replace("'", "''", $_POST['no_po']);
+            $jns           = str_replace("'", "''", $_POST['jenis_kain']);
+            $jns_body      = str_replace("'", "''", $_POST['jenis_kain_body']);
+            $lot_body      = str_replace("'", "''", $_POST['lot_body']);
+            $warna         = str_replace("'", "''", $_POST['warna']);
+            $ket           = str_replace("'", "''", $_POST['ket']);
+            $colorist_qcf  = str_replace("'", "''", $_POST['colorist_qcf']);
+            $rollFix       = str_replace(',', '.', (string)($_POST['roll'] ?? '0'));
+            $_POST['roll'] = (string)(int)$rollFix;
+            
             $sql = sqlsrv_query($cond, "
                 INSERT INTO db_qc.tbl_jahit
                 (

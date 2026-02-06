@@ -6,8 +6,12 @@ include "../../koneksi.php";
   $Akhir	= $_GET['akhir'];
   $jamA		= $_GET['jam_awal'];
   $jamAr	= $_GET['jam_akhir'];
-  $qTgl		= mysqli_query($cond,"SELECT DATE_FORMAT(now(),'%Y-%m-%d') as tgl_skrg,DATE_FORMAT(now(),'%H:%i:%s') as jam_skrg");
-  $rTgl		= mysqli_fetch_array($qTgl);
+  $qTgl = sqlsrv_query($cond,"
+    SELECT
+      CONVERT(varchar(10), GETDATE(), 23) AS tgl_skrg,
+      CONVERT(varchar(8),  GETDATE(), 108) AS jam_skrg
+  ");
+  $rTgl		= sqlsrv_fetch_array($qTgl, SQLSRV_FETCH_ASSOC);
   if($Awal!=""){$tgl=substr($Awal,0,10); $jam=$Awal;}else{$tgl=$rTgl['tgl_skrg']; $jam=$rTgl['jam_skrg'];}
   $start_date = $Awal." ".$jamA;
   $stop_date  = $Akhir." ".$jamAr;
@@ -165,23 +169,26 @@ border:hidden;
 		    <tbody>  
           <?php
             $no=1;
-            if($Langganan!=""){ $lgn=" AND `pelanggan` LIKE '%$Langganan%' ";}else{$lgn=" ";}
-            if($Item!=""){ $noitem=" AND `no_item` LIKE '%$Item%' ";}else{$noitem=" ";}
-            if($Hanger!=""){ $nohanger=" AND `no_hanger` LIKE '%$Hanger%' ";}else{$nohanger=" ";}
-            if($Warna!=""){ $wn=" AND `warna` LIKE '%$Warna%' ";}else{$wn=" ";}
-            if($PO!=""){ $nopo=" AND `no_po` LIKE '%$PO%' ";}else{$nopo=" ";}
-            if($Order!=""){ $noorder=" AND `no_order` LIKE '%$Order%' ";}else{$noorder=" ";}
-			if($GShift1!="ALL"){ $shft=" AND `groupshift`='$GShift1' ";}else{$shft=" ";} 	
+            if($Langganan!=""){ $lgn=" AND pelanggan LIKE '%$Langganan%' ";}else{$lgn=" ";}
+            if($Item!=""){ $noitem=" AND no_item LIKE '%$Item%' ";}else{$noitem=" ";}
+            if($Hanger!=""){ $nohanger=" AND no_hanger LIKE '%$Hanger%' ";}else{$nohanger=" ";}
+            if($Warna!=""){ $wn=" AND warna LIKE '%$Warna%' ";}else{$wn=" ";}
+            if($PO!=""){ $nopo=" AND no_po LIKE '%$PO%' ";}else{$nopo=" ";}
+            if($Order!=""){ $noorder=" AND no_order LIKE '%$Order%' ";}else{$noorder=" ";}
+            if($GShift1!="ALL"){ $shft=" AND groupshift='$GShift1' ";}else{$shft=" ";}
+
             if($Awal!="" or $Langganan!="" or $Item!="" or $Hanger!="" or $Warna!="" or $PO!="" or $Order!=""){
-              $qry1=mysqli_query($cond,"SELECT * FROM tbl_lap_shading WHERE DATE_FORMAT( tgl_update, '%Y-%m-%d %H:%i' ) BETWEEN '$start_date' AND '$stop_date' $lgn $noitem $nohanger $wn $nopo $noorder $shft ORDER BY id ASC");
+              $qry1=sqlsrv_query($cond,"SELECT * FROM db_qc.tbl_lap_shading WHERE CONVERT(varchar(16), tgl_update, 120) BETWEEN '$start_date' AND '$stop_date' $lgn $noitem $nohanger $wn $nopo $noorder $shft ORDER BY id ASC");
             }else{
-              $qry1=mysqli_query($cond,"SELECT * FROM tbl_lap_shading WHERE DATE_FORMAT( tgl_update, '%Y-%m-%d %H:%i' ) BETWEEN '$start_date' AND '$stop_date' $lgn $noitem $nohanger $wn $nopo $noorder $shft ORDER BY id ASC");
+              $qry1=sqlsrv_query($cond,"SELECT * FROM db_qc.tbl_lap_shading WHERE CONVERT(varchar(16), tgl_update, 120) BETWEEN '$start_date' AND '$stop_date' $lgn $noitem $nohanger $wn $nopo $noorder $shft ORDER BY id ASC");
             }
-            while($row1=mysqli_fetch_array($qry1)){
+
+            while($row1=sqlsrv_fetch_array($qry1, SQLSRV_FETCH_ASSOC)){
           ?>
+
           <tr valign="top">
             <td align="center"><font size="-2"><?php echo $no; ?></font></td>
-			      <td align="center"><font size="-2"><?php echo $row1['tgl_update'];?></font></td>  
+			      <td align="center"><font size="-2"><?php echo ($row1['tgl_update'] instanceof DateTime) ? $row1['tgl_update']->format('Y-m-d H:i:s') : $row1['tgl_update']; ?></font></td>
             <td align="center"><font size="-2"><?php echo $row1['shift'];?></font></td>
             <td align="center"><font size="-2"><?php echo $row1['groupshift'];?></font></td>
             <td align="center"><font size="-2"><?php echo $row1['nokk'];?></font></td>
