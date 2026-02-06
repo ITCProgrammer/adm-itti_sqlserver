@@ -2,12 +2,14 @@
 ini_set("error_reporting", 1);
 session_start();
 $id = $_GET['id'];
-$AkarMasalah 	= isset($_POST['akar_masalah']) ? $_POST['akar_masalah'] : '';
-$SolusiPanjang 	= isset($_POST['solusi_panjang']) ? $_POST['solusi_panjang'] : '';
-$sqlCek = mysqli_query($cond, "SELECT * FROM tbl_ncp_qcf_now WHERE id='$id' ORDER BY id DESC LIMIT 1");
-$cek = mysqli_num_rows($sqlCek);
-$rcek = mysqli_fetch_array($sqlCek);
+$AkarMasalah   = isset($_POST['akar_masalah']) ? $_POST['akar_masalah'] : '';
+$SolusiPanjang = isset($_POST['solusi_panjang']) ? $_POST['solusi_panjang'] : '';
+$opt = array("Scrollable" => SQLSRV_CURSOR_KEYSET);
+$sqlCek = sqlsrv_query($cond,"SELECT TOP 1 * FROM db_qc.tbl_ncp_qcf_now WHERE id = ? ORDER BY id DESC", array($id),$opt);
+$cek  = sqlsrv_num_rows($sqlCek);
+$rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
 ?>
+
 <form class="form-horizontal" action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
 	<div class="box box-info">
 		<div class="box-header with-border">
@@ -27,27 +29,51 @@ $rcek = mysqli_fetch_array($sqlCek);
 						</div>
 					</div>
 					<?php
-						//Ambil data dari db_dying
-						//$nokk=$_GET[nokk];
-						$con1 = mysqli_connect("10.0.0.10", "dit", "4dm1n", "db_dying");
-						$qry1 = mysqli_query($con1, "SELECT 
-														a.no_mesin, 
-														b.g_shift, 
-														b.colorist 
-													FROM 
-														tbl_schedule a 
-													LEFT JOIN tbl_montemp b ON a.id=b.id_schedule 
-													WHERE a.nokk='$_POST[nokk]' and a.proses='Celup Greige'
-													ORDER BY a.id DESC LIMIT 1");
-						if ($qry1 === FALSE) {
-							die(mysqli_error()); // TODO: better error handling
+						$nokk = $_POST['nokk'] ?? '';
+						$serverName = "10.0.0.221";
+						$connectionOptions = array(
+							"Database" => "db_dying",
+							"UID"      => "sa",
+							"PWD"      => "Ind@taichen2024",
+							"CharacterSet" => "UTF-8"
+						);
+						$con1 = sqlsrv_connect($serverName, $connectionOptions);
+						if ($con1 === false) {
+							die(print_r(sqlsrv_errors(), true));
 						}
-						$dtDye = mysqli_fetch_array($qry1);
-						$cDye = mysqli_num_rows($qry1);
-
-						$qryHC = mysqli_query($con1, "SELECT * FROM tbl_hasilcelup WHERE nokk='" . $_POST['nokk'] . "' and proses='Celup Greige' ORDER BY id DESC LIMIT 1");
-						$dtHC = mysqli_fetch_array($qryHC);
-						$cHC = mysqli_num_rows($qryHC);
+						$opt = array("Scrollable" => SQLSRV_CURSOR_KEYSET);
+						$qry1 = sqlsrv_query(
+							$con1,
+							"SELECT TOP 1
+								a.no_mesin,
+								b.g_shift,
+								b.colorist
+							FROM db_dying.dbo.tbl_schedule a
+							LEFT JOIN db_dying.dbo.tbl_montemp b ON a.id = b.id_schedule
+							WHERE a.nokk = ? AND a.proses = ?
+							ORDER BY a.id DESC",
+							array($nokk, 'Celup Greige'),
+							$opt
+						);
+						if ($qry1 === false) {
+							die(print_r(sqlsrv_errors(), true));
+						}
+						$dtDye = sqlsrv_fetch_array($qry1, SQLSRV_FETCH_ASSOC);
+						$cDye  = sqlsrv_num_rows($qry1);
+						$qryHC = sqlsrv_query(
+							$con1,
+							"SELECT TOP 1 *
+							FROM db_dying.dbo.tbl_hasilcelup
+							WHERE nokk = ? AND proses = ?
+							ORDER BY id DESC",
+							array($nokk, 'Celup Greige'),
+							$opt
+						);
+						if ($qryHC === false) {
+							die(print_r(sqlsrv_errors(), true));
+						}
+						$dtHC = sqlsrv_fetch_array($qryHC, SQLSRV_FETCH_ASSOC);
+						$cHC  = sqlsrv_num_rows($qryHC);
 					?>
 					<div class="form-group">
 						<label for="nokk" class="col-sm-2 control-label">No KK</label>
@@ -64,7 +90,7 @@ $rcek = mysqli_fetch_array($sqlCek);
 					<div class="col-sm-2">
 						<div class="input-group date">
 							<div class="input-group-addon"> <i class="fa fa-calendar"></i> </div>
-							<input name="tgl_rencana" type="text" class="form-control pull-right" id="datepicker" placeholder="0000-00-00" value="<?php echo $rcek['tgl_rencana']; ?>" autocomplete="off" />
+							<input name="tgl_rencana" type="text" class="form-control pull-right" id="datepicker" placeholder="0000-00-00" value="<?php echo ($rcek['tgl_rencana'] instanceof DateTime) ? $rcek['tgl_rencana']->format('Y-m-d') : $rcek['tgl_rencana']; ?>" autocomplete="off" />
 						</div>
 					</div>
 				</div>
@@ -73,7 +99,7 @@ $rcek = mysqli_fetch_array($sqlCek);
 					<div class="col-sm-2">
 						<div class="input-group date">
 							<div class="input-group-addon"> <i class="fa fa-calendar"></i> </div>
-							<input name="tgl_kembali_qcf" type="text" class="form-control pull-right" id="datepicker2" placeholder="0000-00-00" value="<?php echo $rcek['tgl_kembali_qcf']; ?>" autocomplete="off" />
+							<input name="tgl_kembali_qcf" type="text" class="form-control pull-right" id="datepicker2" placeholder="0000-00-00" value="<?php echo ($rcek['tgl_kembali_qcf'] instanceof DateTime) ? $rcek['tgl_kembali_qcf']->format('Y-m-d') : $rcek['tgl_kembali_qcf']; ?>" autocomplete="off" />
 						</div>
 					</div>
 				</div>
@@ -84,9 +110,9 @@ $rcek = mysqli_fetch_array($sqlCek);
 						<select class="form-control select2" name="pemberi_instruksi" id="pemberi_instruksi" required>
 							<option value="">Pilih</option>
 							<?php 
-							$list_nama = "SELECT id, nama FROM tbl_user_tindaklanjut t WHERE t.status_active = '1'";
-							$q_nama = mysqli_query($cona, $list_nama);
-							while ($r_nama = mysqli_fetch_array($q_nama)) { 
+							$list_nama = "SELECT id, nama FROM db_adm.tbl_user_tindaklanjut t WHERE t.status_active = '1'";
+							$q_nama = sqlsrv_query($cona, $list_nama);
+							while ($r_nama = sqlsrv_fetch_array($q_nama, SQLSRV_FETCH_ASSOC)) { 
 								$selected = ($rcek['pemberi_instruksi'] == $r_nama['id']) ? 'selected' : '';
 							?>
 								<option value="<?php echo $r_nama['id']; ?>" <?php echo $selected; ?>>
@@ -186,19 +212,35 @@ $rcek = mysqli_fetch_array($sqlCek);
 						<div class="input-group">
 							<select class="form-control select2" multiple="multiple" data-placeholder="Jenis Masalah" name="rmp_benang[]" id="kerusakan">
 								<?php
-								//$conn=mysqli_connect("10.0.0.10","dit","4dm1n");
-								//$db2=mysqli_select_db("db_qc",$conn)or die("Gagal Koneksi ke db qc");
-								$conn = mysqli_connect("10.0.0.10", "dit", "4dm1n", "db_qc");
-								$dtArr = trim($rcek['penyelesaian']);
-								$data = explode(",", $dtArr);
-								$qCek1 = mysqli_query($conn, "SELECT nama FROM tbl_masalah_ncp WHERE jenis='Penyelesaian' ORDER BY nama ASC");
-								$i = 0;
-								while ($dCek1 = mysqli_fetch_array($qCek1)) { ?>
-									<option value="<?php echo $dCek1['nama']; ?>" <?php if ($dCek1['nama'] == $data[0] or $dCek1['nama'] == $data[1] or $dCek1['nama'] == $data[2] or $dCek1['nama'] == $data[3] or $dCek1['nama'] == $data[4] or $dCek1['nama'] == $data[5]) {
-																						echo "SELECTED";
-																					} ?>><?php echo $dCek1['nama']; ?></option>
-								<?php $i++;
-								} ?>
+									$serverName = "10.0.0.221";
+									$connectionOptions = array(
+										"Database" => "db_qc",
+										"UID" => "sa",
+										"PWD" => "Ind@taichen2024",
+										"CharacterSet" => "UTF-8"
+									);
+									$conn = sqlsrv_connect($serverName, $connectionOptions);
+									if ($conn === false) {
+										die(print_r(sqlsrv_errors(), true));
+									}
+									$dtArr = trim((string)$rcek['penyelesaian']);
+									$data  = array_map('trim', explode(",", $dtArr));
+									$qCek1 = sqlsrv_query(
+										$conn,
+										"SELECT nama FROM db_qc.tbl_masalah_ncp WHERE jenis = ? ORDER BY nama ASC",
+										array('Penyelesaian')
+									);
+									$i = 0;
+									while ($dCek1 = sqlsrv_fetch_array($qCek1, SQLSRV_FETCH_ASSOC)) {
+										$nama = $dCek1['nama'];
+										?>
+										<option value="<?php echo $nama; ?>" <?php echo in_array($nama, $data, true) ? "selected" : ""; ?>>
+											<?php echo $nama; ?>
+										</option>
+										<?php
+										$i++;
+									}
+								?>
 							</select>
 							<span class="input-group-btn"><button type="button" class="btn btn-default" data-toggle="modal" data-target="#DataPenyelesaian"> ...</button></span>
 						</div>
@@ -208,8 +250,8 @@ $rcek = mysqli_fetch_array($sqlCek);
 						<div class="col-sm-2">
 							<div class="input-group">
 								<select class="form-control" name="ke" id="ke">
-									<?php $q_data_ke			= mysqli_query($con, "SELECT * FROM tbl_ke ORDER BY id ASC"); ?>
-									<?php while ($row_data_ke	= mysqli_fetch_array($q_data_ke)) { ?>
+									<?php $q_data_ke			= sqlsrv_query($con, "SELECT * FROM tbl_ke ORDER BY id ASC"); ?>
+									<?php while ($row_data_ke	= sqlsrv_fetch_array($q_data_ke, SQLSRV_FETCH_ASSOC)) { ?>
 										<option value="<?= $row_data_ke['ke']; ?>" <?php if($rcek['data_ke'] == $row_data_ke['ke']){ echo "SELECTED"; } ?>><?= $row_data_ke['ke']; ?></option>
 									<?php } ?>
 								</select>
@@ -220,8 +262,8 @@ $rcek = mysqli_fetch_array($sqlCek);
 						<div class="col-sm-2">
 							<div class="input-group">
 								<select class="form-control" name="acc_perbaikan" id="acc_perbaikan">
-								<?php $q_namacolorist			= mysqli_query($con, "SELECT * FROM tbl_nama_colorist ORDER BY id ASC"); ?>
-									<?php while ($row_namacolorist	= mysqli_fetch_array($q_namacolorist)) { ?>
+								<?php $q_namacolorist			= sqlsrv_query($con, "SELECT * FROM tbl_nama_colorist ORDER BY id ASC"); ?>
+									<?php while ($row_namacolorist	= sqlsrv_fetch_array($q_namacolorist, SQLSRV_FETCH_ASSOC)) { ?>
 										<option value="<?= $row_namacolorist['nama_colorist']; ?>" <?php if($rcek['nama_colorist'] == $row_namacolorist['nama_colorist']){ echo 'SELECTED'; } ?>><?= $row_namacolorist['nama_colorist']; ?></option>
 									<?php } ?>
 								</select>
@@ -379,8 +421,8 @@ $rcek = mysqli_fetch_array($sqlCek);
 								<select class="form-control select2" name="acc" id="acc">
 									<option value="">Pilih</option>
 									<?php
-									$qrytj = mysqli_query($conn, "SELECT nama FROM tbl_tjawab_ncp ORDER BY nama ASC");
-									while ($rtj = mysqli_fetch_array($qrytj)) {
+									$qrytj = sqlsrv_query($conn, "SELECT nama FROM db_qc.tbl_tjawab_ncp ORDER BY nama ASC");
+									while ($rtj = sqlsrv_fetch_array($qrytj, SQLSRV_FETCH_ASSOC)) {
 									?>
 										<option value="<?php echo $rtj['nama']; ?>" <?php if ($rcek['penanggung_jawab'] == $rtj['nama']) {
 																						echo "SELECTED";
@@ -398,8 +440,8 @@ $rcek = mysqli_fetch_array($sqlCek);
 								<select class="form-control select2" name="penanggung_jawab" id="penanggung_jawab">
 									<option value="">Pilih</option>
 									<?php
-									$qrytj = mysqli_query($conn, "SELECT nama FROM tbl_tjawab_ncp ORDER BY nama ASC");
-									while ($rtj = mysqli_fetch_array($qrytj)) {
+									$qrytj = sqlsrv_query($conn, "SELECT nama FROM tbl_tjawab_ncp ORDER BY nama ASC");
+									while ($rtj = sqlsrv_fetch_array($qrytj, SQLSRV_FETCH_ASSOC)) {
 									?>
 										<option value="<?php echo $rtj['nama']; ?>" <?php if ($rcek['penanggung_jawab'] == $rtj['nama']) {
 																						echo "SELECTED";
@@ -522,73 +564,84 @@ $rcek = mysqli_fetch_array($sqlCek);
 </div>
 <?php
 if ($_POST['save'] == "Simpan") {
-	$ket = str_replace("'", "''", $_POST['ket']);
-	if (isset($_POST["rmp_benang"])) {
-		// Retrieving each selected option 
-		foreach ($_POST['rmp_benang'] as $index => $subject1) {
-			if ($index > 0) {
-				$kt1 = $kt1 . "," . $subject1;
-			} else {
-				$kt1 = $subject1;
-			}
-		}
-	}
-	if ($_POST['tgl_rencana'] != "") {
-		$tglRC = " tgl_rencana='" . $_POST['tgl_rencana'] . "', ";
-	} else {
-		$tglRC = " tgl_rencana=null, ";
-	}
-	if ($_POST['tgl_kembali_qcf'] != "") {
-		$tglKQC = " tgl_kembali_qcf='" . $_POST['tgl_kembali_qcf'] . "', ";
-	} else {
-		$tglKQC = " tgl_kembali_qcf=null, ";
-	}
-	if ($rcek['tgl_terima'] != "") {
-		$tglTrima = " ";
-	} else {
-		$tglTrima = " tgl_terima=now(), ";
-	}
-	$sqlData = mysqli_query($conn, "UPDATE tbl_ncp_qcf_now SET 
-									$tglRC
-									$tglKQC
-									$tglTrima
-									pemberi_instruksi='" . $_POST['pemberi_instruksi'] . "',
-									akar_penyebab='" . $_POST['akar_penyebab'] . "',
-									penyelesaian='$kt1',
-									acc='" . $_POST['acc'] . "',
-									rekomendasi='" . $_POST['rekomendasi'] . "',
-									mesin='" . $_POST['mesin'] . "',
-									shift='" . $_POST['shift'] . "',
-									penyebab='" . $_POST['penyebab'] . "',
-									perbaikan='" . $_POST['perbaikan'] . "',
-									penanggung_jawab='" . $_POST['penanggung_jawab'] . "',
-									rincian='" . $_POST['rincian'] . "',
-									ket_analisa='" . $_POST['ket_analisa'] . "',
-									akar_masalah='" . $_POST['akar_masalah'] . "',
-									solusi_pendek='" . $_POST['solusi_pendek'] . "',
-									solusi_panjang='" . $_POST['solusi_panjang'] . "',
-									mesin_perbaikan='" . $_POST['mesin_perbaikan'] . "',
-									jml_perbaikan='" . $_POST['jmlperbaikan'] . "',
-									kategori='" . $_POST['kategori'] . "',
-									ket_penyelesaian='$ket',
-									data_ke='$_POST[ke]',
-									nama_colorist='$_POST[acc_perbaikan]'
-									WHERE id='$id'");
 
-	if ($sqlData) {
-		echo "<script>swal({
-				title: 'Data Telah Tersimpan',   
-				text: 'Klik Ok untuk input data kembali',
-				type: 'success',
-				}).then((result) => {
-				if (result.value) {
-						window.location.href='?p=Penyelesaian-New&id=$id';
-					
-				}
-				});</script>";
-	}
+    $ket = $_POST['ket'] ?? '';
+    $ket = str_replace("'", "''", $ket);
+
+    $kt1 = '';
+    if (isset($_POST["rmp_benang"]) && is_array($_POST["rmp_benang"])) {
+        $tmp = [];
+        foreach ($_POST['rmp_benang'] as $subject1) {
+            $subject1 = trim((string)$subject1);
+            if ($subject1 !== '') $tmp[] = $subject1;
+        }
+        $kt1 = implode(",", $tmp);
+    }
+    $setParts = [];
+    $params   = [];
+
+    if (!empty($_POST['tgl_rencana'])) {
+        $setParts[] = "tgl_rencana = ?";
+        $params[]   = $_POST['tgl_rencana'];
+    } else {
+        $setParts[] = "tgl_rencana = NULL";
+    }
+    if (!empty($_POST['tgl_kembali_qcf'])) {
+        $setParts[] = "tgl_kembali_qcf = ?";
+        $params[]   = $_POST['tgl_kembali_qcf'];
+    } else {
+        $setParts[] = "tgl_kembali_qcf = NULL";
+    }
+    if (empty($rcek['tgl_terima'])) {
+        $setParts[] = "tgl_terima = GETDATE()";
+    }
+
+    $setParts[] = "pemberi_instruksi = ?";  $params[] = $_POST['pemberi_instruksi'] ?? '';
+    $setParts[] = "akar_penyebab = ?";      $params[] = $_POST['akar_penyebab'] ?? '';
+    $setParts[] = "penyelesaian = ?";       $params[] = $kt1;
+    $setParts[] = "acc = ?";                $params[] = $_POST['acc'] ?? '';
+    $setParts[] = "rekomendasi = ?";        $params[] = $_POST['rekomendasi'] ?? '';
+    $setParts[] = "mesin = ?";              $params[] = $_POST['mesin'] ?? '';
+    $setParts[] = "shift = ?";              $params[] = $_POST['shift'] ?? '';
+    $setParts[] = "penyebab = ?";           $params[] = $_POST['penyebab'] ?? '';
+	$setParts[] = "perbaikan = ?";          $params[] = $_POST['perbaikan'] ?? '';
+    $setParts[] = "penanggung_jawab = ?";   $params[] = $_POST['penanggung_jawab'] ?? '';
+    $setParts[] = "rincian = ?";            $params[] = $_POST['rincian'] ?? '';
+    $setParts[] = "ket_analisa = ?";        $params[] = $_POST['ket_analisa'] ?? '';
+    $setParts[] = "akar_masalah = ?";       $params[] = $_POST['akar_masalah'] ?? '';
+    $setParts[] = "solusi_pendek = ?";      $params[] = $_POST['solusi_pendek'] ?? '';
+    $setParts[] = "solusi_panjang = ?";     $params[] = $_POST['solusi_panjang'] ?? '';
+    $setParts[] = "mesin_perbaikan = ?";    $params[] = $_POST['mesin_perbaikan'] ?? '';
+    $setParts[] = "jml_perbaikan = ?";      $params[] = $_POST['jmlperbaikan'] ?? '';
+    $setParts[] = "kategori = ?";           $params[] = $_POST['kategori'] ?? '';
+    $setParts[] = "ket_penyelesaian = ?";   $params[] = $ket;
+    $setParts[] = "data_ke = ?";            $params[] = $_POST['ke'] ?? '';
+    $setParts[] = "nama_colorist = ?";      $params[] = $_POST['acc_perbaikan'] ?? '';
+
+    $params[] = $id;
+
+    $sql = "
+        UPDATE db_qc.tbl_ncp_qcf_now
+        SET " . implode(",\n            ", $setParts) . "
+        WHERE id = ?
+    ";
+
+    $sqlData = sqlsrv_query($conn, $sql, $params);
+
+    if ($sqlData) {
+        echo "<script>swal({
+                title: 'Data Telah Tersimpan',
+                text: 'Klik Ok untuk input data kembali',
+                type: 'success',
+                }).then((result) => {
+                if (result.value) {
+                        window.location.href='?p=Penyelesaian-New&id=$id';
+                }
+                });</script>";
+    }
 }
 ?>
+
 <div class="modal fade" id="DataPenyelesaian">
 	<div class="modal-dialog ">
 		<div class="modal-content">
@@ -678,48 +731,56 @@ if ($_POST['save'] == "Simpan") {
 </div>
 <?php
 if ($_POST['simpan_penyelesaian'] == "Simpan") {
-	$sqlData1 = mysqli_query($cond, "INSERT INTO tbl_masalah_ncp SET 
-		  nama='" . $_POST['penyelesaian'] . "',jenis='Penyelesaian'");
-	if ($sqlData1) {
-		echo "<script>swal({
-				title: 'Data Telah Tersimpan',   
-				text: 'Klik Ok untuk input data kembali',
-				type: 'success',
-				}).then((result) => {
-				if (result.value) {
-						window.location.href='?p=Penyelesaian-New&id=$id';
-					
-				}
-				});</script>";
-	}
-}elseif($_POST['simpan_data_ke'] == 'Simpan'){
-	$sqlData1 = mysqli_query($con, "INSERT INTO tbl_ke SET ke='$_POST[data_ke]'");
-	if ($sqlData1) {
-	echo "<script>swal({
-			title: 'Data Telah Tersimpan',   
-			text: 'Klik Ok untuk input data kembali',
-			type: 'success',
-			}).then((result) => {
-			if (result.value) {
-					window.location.href='?p=Penyelesaian-New&id=$id';
-				
-			}
-			});</script>";
-	}
-}elseif($_POST['simpan_nama_colorist'] == 'Simpan'){
-	$sqlData1 = mysqli_query($con, "INSERT INTO tbl_nama_colorist SET nama_colorist='$_POST[nama_colorist]'");
-	if ($sqlData1) {
-	echo "<script>swal({
-			title: 'Data Telah Tersimpan',   
-			text: 'Klik Ok untuk input data kembali',
-			type: 'success',
-			}).then((result) => {
-			if (result.value) {
-					window.location.href='?p=Penyelesaian-New&id=$id';
-				
-			}
-			});</script>";
-	}
+    $sqlData1 = sqlsrv_query(
+        $cond,
+        "INSERT INTO db_qc.tbl_masalah_ncp (nama, jenis) VALUES (?, ?)",
+        array($_POST['penyelesaian'], 'Penyelesaian')
+    );
+    if ($sqlData1) {
+        echo "<script>swal({
+                title: 'Data Telah Tersimpan',
+                text: 'Klik Ok untuk input data kembali',
+                type: 'success',
+                }).then((result) => {
+                if (result.value) {
+                        window.location.href='?p=Penyelesaian-New&id=$id';
+                }
+                });</script>";
+    }
+} elseif ($_POST['simpan_data_ke'] == 'Simpan') {
+    $sqlData1 = sqlsrv_query(
+        $con,
+        "INSERT INTO db_dying.tbl_ke (ke) VALUES (?)",
+        array($_POST['data_ke'])
+    );
+    if ($sqlData1) {
+        echo "<script>swal({
+                title: 'Data Telah Tersimpan',
+                text: 'Klik Ok untuk input data kembali',
+                type: 'success',
+                }).then((result) => {
+                if (result.value) {
+                        window.location.href='?p=Penyelesaian-New&id=$id';
+                }
+                });</script>";
+    }
+} elseif ($_POST['simpan_nama_colorist'] == 'Simpan') {
+    $sqlData1 = sqlsrv_query(
+        $con,
+        "INSERT INTO db_dying.tbl_nama_colorist (nama_colorist) VALUES (?)",
+        array($_POST['nama_colorist'])
+    );
+    if ($sqlData1) {
+        echo "<script>swal({
+                title: 'Data Telah Tersimpan',
+                text: 'Klik Ok untuk input data kembali',
+                type: 'success',
+                }).then((result) => {
+                if (result.value) {
+                        window.location.href='?p=Penyelesaian-New&id=$id';
+                }
+                });</script>";
+    }
 }
 ?>
 <div class="modal fade" id="DataPenanggungJawab">
@@ -753,7 +814,7 @@ if ($_POST['simpan_penyelesaian'] == "Simpan") {
 </div>
 <?php
 if ($_POST['simpan_penanggung_jawab'] == "Simpan") {
-	$sqlData2 = mysqli_query($cond, "INSERT INTO tbl_tjawab_ncp SET 
+	$sqlData2 = sqlsrv_query($cond, "INSERT INTO tbl_tjawab_ncp SET 
 		  nama='" . $_POST['penanggung_jawab'] . "',dept='DYE'");
 	if ($sqlData2) {
 		echo "<script>swal({

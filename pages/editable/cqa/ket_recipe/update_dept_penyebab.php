@@ -8,39 +8,49 @@ if (!isset($_SESSION['user_id10']) || !isset($_POST['pk']) || !isset($_POST['val
     exit();
 }
 
-$pk = $_POST['pk'];
-$newValue = $_POST['value'];
+$pk   = $_POST['pk'];
 $user = $_SESSION['user_id10'];
 $today = date('Y-m-d H:i:s');
-$columnToUpdate = 'dept_penyebab2'; 
 
-$stmt_cek = $con->prepare("SELECT id_hasilcelup FROM tbl_hasilcelup2 WHERE id_hasilcelup = ?");
-$stmt_cek->bind_param("s", $pk);
-$stmt_cek->execute();
-$stmt_cek->store_result();
-if ($stmt_cek->num_rows > 0) {
-    $stmt_update = $con->prepare("UPDATE tbl_hasilcelup2 SET {$columnToUpdate} = ?, update_user = ?, update_time = ? WHERE id_hasilcelup = ?");
-    $stmt_update->bind_param("ssss", $newValue, $user, $today, $pk);
-    if ($stmt_update->execute()) {
-        http_response_code(200);
-        echo "Update berhasil.";
-    } else {
-        http_response_code(400);
-        echo "Error saat update: " . $stmt_update->error;
-    }
-    $stmt_update->close();
-} else {
-    $stmt_insert = $con->prepare("INSERT INTO tbl_hasilcelup2 (id_hasilcelup, {$columnToUpdate}, insert_user, insert_time) VALUES (?, ?, ?, ?)");
-    $stmt_insert->bind_param("ssss", $pk, $newValue, $user, $today);
-    if ($stmt_insert->execute()) {
-        http_response_code(200);
-        echo "Insert berhasil.";
-    } else {
-        http_response_code(400);
-        echo "Error saat insert: " . $stmt_insert->error;
-    }
-    $stmt_insert->close();
+$newValue = $_POST['value'];
+$columnToUpdate = 'dept_penyebab2';
+
+$sqlCek  = "SELECT TOP 1 id_hasilcelup FROM db_dying.tbl_hasilcelup2 WHERE id_hasilcelup = ?";
+$stmtCek = sqlsrv_query($con, $sqlCek, [$pk]);
+
+if ($stmtCek === false) {
+    http_response_code(400);
+    die("SQL ERROR (cek): " . print_r(sqlsrv_errors(), true));
 }
-$stmt_cek->close();
-$con->close();
+
+$rowCek = sqlsrv_fetch_array($stmtCek, SQLSRV_FETCH_ASSOC);
+
+if ($rowCek) {
+    $sqlUpdate = "UPDATE db_dying.tbl_hasilcelup2
+                  SET {$columnToUpdate} = ?, update_user = ?, update_time = ?
+                  WHERE id_hasilcelup = ?";
+
+    $stmtUpdate = sqlsrv_query($con, $sqlUpdate, [$newValue, $user, $today, $pk]);
+
+    if ($stmtUpdate === false) {
+        http_response_code(400);
+        die("SQL ERROR (update): " . print_r(sqlsrv_errors(), true));
+    }
+
+    http_response_code(200);
+    echo "Update berhasil.";
+} else {
+    $sqlInsert = "INSERT INTO db_dying.tbl_hasilcelup2 (id_hasilcelup, {$columnToUpdate}, insert_user, insert_time)
+                  VALUES (?, ?, ?, ?)";
+
+    $stmtInsert = sqlsrv_query($con, $sqlInsert, [$pk, $newValue, $user, $today]);
+
+    if ($stmtInsert === false) {
+        http_response_code(400);
+        die("SQL ERROR (insert): " . print_r(sqlsrv_errors(), true));
+    }
+
+    http_response_code(200);
+    echo "Insert berhasil.";
+}
 ?>

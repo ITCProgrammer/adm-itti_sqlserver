@@ -5,8 +5,8 @@ require_once('dompdf/autoload.inc.php');
 
 ini_set("error_reporting", 1);	
 include "../../tgl_indo.php";
-$qry=mysqli_query($cond,"SELECT * FROM tbl_ncp_qcf_now WHERE id='".$_GET['id']."'");
-$d=mysqli_fetch_array($qry);
+$qry=sqlsrv_query($cond,"SELECT * FROM db_qc.tbl_ncp_qcf_now WHERE id='".$_GET['id']."'");
+$d=sqlsrv_fetch_array($qry, SQLSRV_FETCH_ASSOC);
 $nokk1 = $d['nodemand'];
 ?>
 <?php

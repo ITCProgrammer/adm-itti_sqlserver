@@ -50,30 +50,30 @@ Shift : <?php echo $shift; ?>
   <tbody>
     <?php
 
-    $shiftCondition = ($shift != "ALL") ? " AND `shift`='$shift' " : "";
+    $shiftCondition = ($shift != "ALL") ? " AND [shift]='$shift' " : "";
 
     $query = "select
-                SUBSTRING_INDEX(pelanggan, '/',-1) as buyer,
-                trim(no_item) as no_item,
-                group_concat(distinct trim(no_warna)) as no_warna_group
+                RIGHT(pelanggan, CHARINDEX('/', REVERSE(pelanggan) + '/') - 1) as buyer,
+                LTRIM(RTRIM(no_item)) as no_item,
+                STRING_AGG(LTRIM(RTRIM(no_warna)), ',') as no_warna_group
               from
-                tbl_lap_inspeksi
+                db_qc.tbl_lap_inspeksi
               where
-                `dept` = 'QCF'
-                and DATE_FORMAT( CONCAT(tgl_update, ' ', jam_update), '%Y-%m-%d') between '$awal' AND '$akhir' $shiftCondition
-                and `grouping` != ''
+                dept = 'QCF'
+                and CAST(tgl_update AS date) between '$awal' AND '$akhir' $shiftCondition
+                and [grouping] != ''
               group by
-                buyer,
-                no_item
+                RIGHT(pelanggan, CHARINDEX('/', REVERSE(pelanggan) + '/') - 1),
+                LTRIM(RTRIM(no_item))
               order by
                 buyer asc";
 
-    $result = mysqli_query($cond, $query);
+    $result = sqlsrv_query($cond, $query, [], ["Scrollable" => SQLSRV_CURSOR_KEYSET]);
 
     $no = 1;
     $satu = 1;
     $satuTemp = 1;
-    while ($row = mysqli_fetch_array($result)) {
+    while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
       $no_warna_group = explode(',', $row['no_warna_group']);
       $no_warna_group_string = "'" . implode("', '", explode(',', $row['no_warna_group'])) . "'";
 
@@ -83,44 +83,46 @@ Shift : <?php echo $shift; ?>
                   select
                     no_warna,
                     warna,
-                    group_concat(`grouping`) as groupings
+                    STRING_AGG([grouping], ',') as groupings
                   from
-                    tbl_lap_inspeksi
+                    db_qc.tbl_lap_inspeksi
                   where
-                    `dept` = 'QCF'
-                    and DATE_FORMAT( CONCAT(tgl_update, ' ', jam_update), '%Y-%m-%d') between '$awal' AND '$akhir' $shiftCondition
-                    and SUBSTRING_INDEX(pelanggan, '/',-1) = '$row[buyer]'
-                    and `grouping` != ''
+                    dept = 'QCF'
+                    and CAST(tgl_update AS date) between '$awal' AND '$akhir' $shiftCondition
+                    and RIGHT(pelanggan, CHARINDEX('/', REVERSE(pelanggan) + '/') - 1) = '$row[buyer]'
+                    and [grouping] != ''
                   group by
-                    SUBSTRING_INDEX(pelanggan, '/',-1),
+                    RIGHT(pelanggan, CHARINDEX('/', REVERSE(pelanggan) + '/') - 1),
                     no_item,
-                    no_warna) temp";
+                    no_warna,
+                    warna) temp";
 
-      $result2 = mysqli_query($cond, $query2);
-      $row2 = mysqli_fetch_array($result2);
+      $result2 = sqlsrv_query($cond, $query2);
+      $row2 = sqlsrv_fetch_array($result2, SQLSRV_FETCH_ASSOC);
       $total_warna = $row2['total_warna'];
 
       $query3 = "select
                   no_warna,
                   warna,
-                  group_concat(`grouping`) as groupings
+                  STRING_AGG([grouping], ',') as groupings
                 from
-                  tbl_lap_inspeksi
+                  db_qc.tbl_lap_inspeksi
                 where
-                  `dept` = 'QCF'
-                  and DATE_FORMAT( CONCAT(tgl_update, ' ', jam_update), '%Y-%m-%d') between '$awal' AND '$akhir' $shiftCondition
-                  and SUBSTRING_INDEX(pelanggan, '/',-1) = '$row[buyer]'
+                  dept = 'QCF'
+                  and CAST(tgl_update AS date) between '$awal' AND '$akhir' $shiftCondition
+                  and RIGHT(pelanggan, CHARINDEX('/', REVERSE(pelanggan) + '/') - 1) = '$row[buyer]'
                   and no_item = '$row[no_item]'
                   and no_warna in ($no_warna_group_string)
-                  and grouping != ''
+                  and [grouping] != ''
                 group by
-                  no_warna";
+                  no_warna,
+                  warna";
 
-      $result3 = mysqli_query($cond, $query3);
-      $totalRowResult3 = mysqli_num_rows($result3);
+      $result3 = sqlsrv_query($cond, $query3, [], ["Scrollable" => SQLSRV_CURSOR_KEYSET]);
+      $totalRowResult3 = sqlsrv_num_rows($result3);
 
       $dua = 1;
-      while ($row3 = mysqli_fetch_array($result3)) {
+      while ($row3 = sqlsrv_fetch_array($result3, SQLSRV_FETCH_ASSOC)) {
 
         $A = 0;
         $B = 0;

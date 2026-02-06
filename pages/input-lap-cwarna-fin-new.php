@@ -48,9 +48,23 @@
 include "koneksi.php";
 ini_set("error_reporting", 1);
 if ($_POST['simpan'] == "simpan") {
-    $ceksql = mysqli_query($cond, "SELECT * FROM `tbl_lap_inspeksi` WHERE `nodemand`='$_GET[nodemand]' and `shift`='$_POST[shift]' AND `pisah_kain`='$_POST[no_revisi]' AND `proses`='$_POST[proses]' AND DATE_FORMAT(tgl_update, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d') AND `dept`='QCF' LIMIT 1");
-    $cek = mysqli_num_rows($ceksql);
+
+    $ceksql = sqlsrv_query($cond, "
+        SELECT TOP 1 *
+        FROM db_qc.tbl_lap_inspeksi
+        WHERE nodemand='$_GET[nodemand]'
+          and shift='$_POST[shift]'
+          AND pisah_kain='$_POST[no_revisi]'
+          AND proses='$_POST[proses]'
+          AND CAST(tgl_update AS date) = CAST(GETDATE() AS date)
+          AND dept='QCF'
+    ");
+
+    $cekrow = sqlsrv_fetch_array($ceksql, SQLSRV_FETCH_ASSOC);
+    $cek = ($cekrow ? 1 : 0);
+
     if ($cek > 0) {
+
         $pelanggan = str_replace("'", "''", $_POST['pelanggan']);
         $order = str_replace("'", "''", $_POST['no_order']);
         $po = str_replace("'", "''", $_POST['no_po']);
@@ -61,43 +75,47 @@ if ($_POST['simpan'] == "simpan") {
         $kk_lgcy = str_replace("'", "''", $_POST['kk_lgcy']);
         $catatan = str_replace("'", "''", $_POST['catatan']);
         $colorist_qcf = str_replace("'", "''", $_POST['colorist_qcf']);
-        $sql1 = mysqli_query($cond, "UPDATE`tbl_lap_inspeksi` SET
-	`no_order`='$order',
-	`no_po`='$po',
-	`pelanggan`='$pelanggan',
-	`jenis_kain`='$jns',
-	`no_item`='$_POST[no_item]',
-	`warna`='$warna',
-	`no_warna`='$_POST[no_warna]',
-	`tgl_pengiriman`='$_POST[awal]',
-	`lot`='$_POST[lot]',
-	`pisah_kain`='$_POST[no_revisi]',
-	`jml_roll`='$_POST[rol]',
-	`bruto`='$_POST[bruto]',
-	`proses`='$_POST[proses]',
-	`status`='$_POST[status]',
-    `spectro`='$spectro',
-	`tgl_update`='$_POST[tgl]',
-    `disposisi`='$_POST[disposisi]',
-    `colorist_qcf`='$colorist_qcf',
-    `lot_lgcy`='$lot_lgcy',
-    `kk_lgcy`='$kk_lgcy',
-	`catatan`='$catatan'
-	WHERE `nodemand`='$_POST[nodemand]'");
+
+        $sql1 = sqlsrv_query($cond, "
+            UPDATE db_qc.tbl_lap_inspeksi SET
+              no_order='$order',
+              no_po='$po',
+              pelanggan='$pelanggan',
+              jenis_kain='$jns',
+              no_item='$_POST[no_item]',
+              warna='$warna',
+              no_warna='$_POST[no_warna]',
+              tgl_pengiriman='$_POST[awal]',
+              lot='$_POST[lot]',
+              pisah_kain='$_POST[no_revisi]',
+              jml_roll='$_POST[rol]',
+              bruto='$_POST[bruto]',
+              proses='$_POST[proses]',
+              status='$_POST[status]',
+              spectro='$spectro',
+              tgl_update='$_POST[tgl]',
+              disposisi='$_POST[disposisi]',
+              colorist_qcf='$colorist_qcf',
+              lot_lgcy='$lot_lgcy',
+              kk_lgcy='$kk_lgcy',
+              catatan='$catatan'
+            WHERE nodemand='$_POST[nodemand]'
+        ");
+
         if ($sql1) {
-            //echo " <script>alert('Data has been updated!');</script>";
             echo "<script>swal({
-            title: 'Data has been updated!',   
-            text: 'Klik Ok untuk input data kembali',
-            type: 'success',
+                title: 'Data has been updated!',
+                text: 'Klik Ok untuk input data kembali',
+                type: 'success',
             }).then((result) => {
-            if (result.value) {
-                window.location.href='?p=Input-Lap-Cwarna-Fin-New&nodemand=$_POST[nodemand]';
-               
-            }
-          });</script>";
+                if (result.value) {
+                    window.location.href='?p=Input-Lap-Cwarna-Fin-New&nodemand=$_POST[nodemand]';
+                }
+            });</script>";
         }
+
     } else {
+
         $pelanggan = str_replace("'", "''", $_POST['pelanggan']);
         $order = str_replace("'", "''", $_POST['no_order']);
         $po = str_replace("'", "''", $_POST['no_po']);
@@ -108,46 +126,29 @@ if ($_POST['simpan'] == "simpan") {
         $spectro = str_replace("'", "''", $_POST['spectro']);
         $catatan = str_replace("'", "''", $_POST['catatan']);
         $colorist_qcf = str_replace("'", "''", $_POST['colorist_qcf']);
-        $sql = mysqli_query($cond, "INSERT INTO `tbl_lap_inspeksi` SET
-	`nokk`='$_POST[nokk]',
-    `nodemand`='$_POST[nodemand]',
-	`no_order`='$order',
-	`no_po`='$po',
-	`pelanggan`='$pelanggan',
-	`jenis_kain`='$jns',
-	`no_item`='$_POST[no_item]',
-	`warna`='$warna',
-	`no_warna`='$_POST[no_warna]',
-	`tgl_pengiriman`='$_POST[awal]',
-	`lot`='$_POST[lot]',
-	`shift`='$_POST[shift]',
-	`jml_roll`='$_POST[rol]',
-	`pisah_kain`='$_POST[no_revisi]',
-	`bruto`='$_POST[bruto]',
-	`proses`='$_POST[proses]',
-	`status`='$_POST[status]',
-	`catatan`='$catatan',
-    `lot_lgcy`='$lot_lgcy',
-    `kk_lgcy`='$kk_lgcy',
-    `tgl_cwarna`=now(),
-    `spectro`='$spectro',
-	`dept`='QCF',
-    `disposisi`='$_POST[disposisi]',
-    `colorist_qcf`='$colorist_qcf',
-	`jam_update`=now(),
-	`tgl_update`='$_POST[tgl]'");
+
+        $sql = sqlsrv_query($cond, "
+            INSERT INTO db_qc.tbl_lap_inspeksi
+            (nokk, nodemand, no_order, no_po, pelanggan, jenis_kain, no_item, warna, no_warna, tgl_pengiriman, lot, shift,
+             jml_roll, pisah_kain, bruto, proses, status, catatan, lot_lgcy, kk_lgcy, tgl_cwarna, spectro, dept,
+             disposisi, colorist_qcf, jam_update, tgl_update)
+            VALUES
+            ('$_POST[nokk]', '$_POST[nodemand]', '$order', '$po', '$pelanggan', '$jns', '$_POST[no_item]', '$warna', '$_POST[no_warna]',
+             '$_POST[awal]', '$_POST[lot]', '$_POST[shift]', '$_POST[rol]', '$_POST[no_revisi]', '$_POST[bruto]', '$_POST[proses]',
+             '$_POST[status]', '$catatan', '$lot_lgcy', '$kk_lgcy', GETDATE(), '$spectro', 'QCF',
+             '$_POST[disposisi]', '$colorist_qcf', GETDATE(), '$_POST[tgl]')
+        ");
+
         if ($sql) {
-            //echo " <script>alert('Data has been saved!');</script>";
             echo "<script>swal({
-            title: 'Data has been saved!',   
-            text: 'Klik Ok untuk input data kembali',
-            type: 'success',
+                title: 'Data has been saved!',
+                text: 'Klik Ok untuk input data kembali',
+                type: 'success',
             }).then((result) => {
-            if (result.value) {
-                window.location.href='?p=Input-Lap-Cwarna-Fin-New&nodemand=$_POST[nodemand]';
-               
-            }
-          });</script>";
+                if (result.value) {
+                    window.location.href='?p=Input-Lap-Cwarna-Fin-New&nodemand=$_POST[nodemand]';
+                }
+            });</script>";
         }
     }
 }
@@ -165,20 +166,28 @@ if ($_GET['shift'] != "") {
     $shift = " ";
 }
 
-//Data sudah disimpan di database mysqli
-$msql = mysqli_query($cond, "SELECT * FROM `tbl_lap_inspeksi` WHERE `nodemand`='$nodemand' and `shift`='$_GET[shift]' AND DATE_FORMAT(tgl_update, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d') AND `dept`='QCF' LIMIT 1");
-$row = mysqli_fetch_array($msql);
-$crow = mysqli_num_rows($msql);
+//Data sudah disimpan di database (SQL Server)
+$msql = sqlsrv_query($cond, "SELECT TOP 1 * FROM db_qc.tbl_lap_inspeksi WHERE nodemand='$nodemand' and shift='$_GET[shift]' AND CAST(tgl_update AS date) = CAST(GETDATE() AS date) AND dept='QCF'");
+$row  = sqlsrv_fetch_array($msql, SQLSRV_FETCH_ASSOC);
+$msqlc = sqlsrv_query($cond, "SELECT COUNT(*) AS jml FROM db_qc.tbl_lap_inspeksi WHERE nodemand='$nodemand' and shift='$_GET[shift]' AND CAST(tgl_update AS date) = CAST(GETDATE() AS date) AND dept='QCF'");
+$rc   = sqlsrv_fetch_array($msqlc, SQLSRV_FETCH_ASSOC);
+$crow = (int)$rc['jml'];
 
-//Data sudah disimpan di database mysqli
-$msql1 = mysqli_query($cond, "SELECT * FROM `tbl_lap_inspeksi` WHERE `nodemand`='$nodemand' and `shift`='$_GET[shift]' AND `dept`='QCF' LIMIT 1");
-$row1 = mysqli_fetch_array($msql1);
-$crow1 = mysqli_num_rows($msql1);
 
-//Data sudah disimpan di database mysqli
-$qryfin = mysqli_query($cond, "SELECT * FROM `tbl_lap_inspeksi` WHERE `nodemand`='$nodemand' AND `dept`='QCF' ORDER BY id DESC LIMIT 1");
-$rfin = mysqli_fetch_array($qryfin);
-$cekfin = mysqli_num_rows($qryfin);
+//Data sudah disimpan di database (SQL Server)
+$msql1 = sqlsrv_query($cond, "SELECT TOP 1 * FROM db_qc.tbl_lap_inspeksi WHERE nodemand='$nodemand' and shift='$_GET[shift]' AND dept='QCF'");
+$row1  = sqlsrv_fetch_array($msql1, SQLSRV_FETCH_ASSOC);
+$msql1c = sqlsrv_query($cond, "SELECT COUNT(*) AS jml FROM db_qc.tbl_lap_inspeksi WHERE nodemand='$nodemand' and shift='$_GET[shift]' AND dept='QCF'");
+$rc1   = sqlsrv_fetch_array($msql1c, SQLSRV_FETCH_ASSOC);
+$crow1 = (int)$rc1['jml'];
+
+
+//Data sudah disimpan di database (SQL Server)
+$qryfin = sqlsrv_query($cond, "SELECT TOP 1 * FROM db_qc.tbl_lap_inspeksi WHERE nodemand='$nodemand' AND dept='QCF' ORDER BY id DESC");
+$rfin   = sqlsrv_fetch_array($qryfin, SQLSRV_FETCH_ASSOC);
+$qryfinc = sqlsrv_query($cond, "SELECT COUNT(*) AS jml FROM db_qc.tbl_lap_inspeksi WHERE nodemand='$nodemand' AND dept='QCF'");
+$rc2    = sqlsrv_fetch_array($qryfinc, SQLSRV_FETCH_ASSOC);
+$cekfin = (int)$rc2['jml'];
 
 // NOW
 $sql_ITXVIEWKK  = db2_exec($conn2, "SELECT

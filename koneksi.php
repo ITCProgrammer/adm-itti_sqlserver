@@ -5,10 +5,10 @@ date_default_timezone_set('Asia/Jakarta');
 // $conb           = mysqli_connect("10.0.0.10","dit","4dm1n","db_brushing");
 // $con_nowprd     = mysqli_connect("10.0.0.10","dit","4dm1n","nowprd");
 // $cona           = mysqli_connect("10.0.0.10","dit","4dm1n","db_adm");
-if (mysqli_connect_errno()) {
-    printf("Connect failed: %s\n", mysqli_connect_error());
-    exit();
-    }
+// if (mysqli_connect_errno()) {
+//     printf("Connect failed: %s\n", mysqli_connect_error());
+//     exit();
+//     }
 
 $hostSVR19 = "10.0.0.221";
 $usernameSVR19 = "sa";

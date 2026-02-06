@@ -63,33 +63,54 @@ Shift 	: <?php echo $shift;?>
     <td><h4>Keterangan</h4></td>
   </tr>
   <?php
-  $no=1;
-  $lotOK=0;$lotBWA=0;$lotBWB=0;$lotBWC=0;$lotTBD=0;$lot=0;
-$lotFin=0;$lotFin1x=0;$lotPdr=0;$lotOven=0;$lotComp=0;
-$lotSt=0;$lotAP=0;$lotPB=0;$lotLSR=0;$rollFin=0;$brutoFin=0;$rollFin1x=0;
-$brutoFin1x=0;$rollPdr=0;$brutoPdr=0;$rollOven=0;$brutoOven=0;
-$rollComp=0;$brutoComp=0;$rollSt=0;$brutoSt=0;$rollAP=0;$brutoAP=0;
-$rollPB=0;$rollLSR=0;$brutoPB=0;$brutoLSR=0;$rollOK=0;$brutoOK=0;$rollBWA=0;$brutoBWA=0;
-$rollBWB=0;$brutoBWB=0;$rollBWC=0;$brutoBWC=0;$rollTBD=0;$brutoTBD=0;
-$roll=0;$bruto=0;
+    $no=1;
+    $lotOK=0;$lotBWA=0;$lotBWB=0;$lotBWC=0;$lotTBD=0;$lot=0;
+    $lotFin=0;$lotFin1x=0;$lotPdr=0;$lotOven=0;$lotComp=0;
+    $lotSt=0;$lotAP=0;$lotPB=0;$lotLSR=0;$rollFin=0;$brutoFin=0;$rollFin1x=0;
+    $brutoFin1x=0;$rollPdr=0;$brutoPdr=0;$rollOven=0;$brutoOven=0;
+    $rollComp=0;$brutoComp=0;$rollSt=0;$brutoSt=0;$rollAP=0;$brutoAP=0;
+    $rollPB=0;$rollLSR=0;$brutoPB=0;$brutoLSR=0;$rollOK=0;$brutoOK=0;$rollBWA=0;$brutoBWA=0;
+    $rollBWB=0;$brutoBWB=0;$rollBWC=0;$brutoBWC=0;$rollTBD=0;$brutoTBD=0;
+    $roll=0;$bruto=0;
 
- if($_GET['shift']!="ALL"){
- $shft=" AND `shift`='$_GET[shift]' "; }else{$shft=" ";}
- 
-  $sql=mysqli_query($cond,"SELECT * FROM tbl_lap_inspeksi WHERE DATE_FORMAT( CONCAT(tgl_update,' ',jam_update), '%Y-%m-%d %H:%i') between '$start_date' AND '$stop_date' ".$shft." AND `dept`='QCF' ORDER BY id ASC");
-  while($row=mysqli_fetch_array($sql)){
-	$pos = strpos($row['pelanggan'], "/");
-                if ($pos > 0) {
-                  $lgg1 = substr($row['pelanggan'], 0, $pos);
-                  $byr1 = substr($row['pelanggan'], $pos + 1, 100);
-                } else {
-                  $lgg1 = $row['pelanggan'];
-                  $byr1 = substr($row['pelanggan'], $pos, 100);
-                }  
+    if($_GET['shift']!="ALL"){
+      $shft=" AND [shift] = '$_GET[shift]' ";
+    }else{
+      $shft=" ";
+    }
+
+    $sql = sqlsrv_query($cond, "
+      SELECT *
+      FROM db_qc.tbl_lap_inspeksi
+      WHERE DATEADD(SECOND, DATEDIFF(SECOND, 0, jam_update), CAST(tgl_update AS datetime))
+            BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120)
+        $shft
+        AND dept = 'QCF'
+      ORDER BY id ASC
+    ", [$start_date, $stop_date]);
+
+    while($row=sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC)){
+      $pos = strpos($row['pelanggan'], "/");
+      if ($pos > 0) {
+        $lgg1 = substr($row['pelanggan'], 0, $pos);
+        $byr1 = substr($row['pelanggan'], $pos + 1, 100);
+      } else {
+        $lgg1 = $row['pelanggan'];
+        $byr1 = substr($row['pelanggan'], $pos, 100);
+      }
   ?>
   <tr>
     <td><?php echo $no;?></td>
-    <td><?php echo $row['tgl_update'];?></td>
+    <td>
+      <?php
+        $v = $row['tgl_update'];
+        if ($v instanceof DateTime) {
+          echo $v->format('Y-m-d');
+        } else {
+          echo $v;
+        }
+      ?>
+    </td>
     <td>'<?php echo $row['nodemand'];?></td>
     <td><?php echo $lgg1;?></td>
     <td><?php echo $byr1;?></td>

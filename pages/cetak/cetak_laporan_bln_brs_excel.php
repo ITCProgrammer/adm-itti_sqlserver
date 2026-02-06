@@ -72,7 +72,7 @@ border:hidden;
 		$hari_kerja_query01 = "SELECT COUNT(DISTINCT CAST(tgl_buat AS DATE)) as jml FROM db_brushing.tbl_produksi 
                                                 WHERE YEAR(tgl_buat) = '$tahun_sebelumnya'";
                             $hari_kerja_result01 = sqlsrv_query($conb, $hari_kerja_query01);
-                            $hari_kerja01 = sqlsrv_fetch_array($hari_kerja_result01); 
+                            $hari_kerja01 = sqlsrv_fetch_array($hari_kerja_result01, SQLSRV_FETCH_ASSOC); 
 		  
 		$query_table01="SELECT
                                             SUM(CASE WHEN proses = 'GARUK ANTI PILLING (Normal)' THEN qty ELSE 0 END) AS garuk_ap,
@@ -154,30 +154,30 @@ border:hidden;
                                         WHERE 
                                         YEAR(tp.tgl_buat)='$tahun_sebelumnya' ";
                         $stmt_qry01 = sqlsrv_query($conb, $query_table01);
-                        $data_table01 = sqlsrv_fetch_array($stmt_qry01);  
+                        $data_table01 = sqlsrv_fetch_array($stmt_qry01, SQLSRV_FETCH_ASSOC);  
 		//GANTI KAIN
 						//Internal	
-						$sqlgk_in01=mysqli_query($cona," SELECT
+						$sqlgk_in01=sqlsrv_query($cona," SELECT
 							SUM(qty_order) as kg
 						FROM
-							tbl_gantikain tb
+							db_adm.tbl_gantikain tb
 						WHERE
 						YEAR(tgl_update) = '$tahun_sebelumnya'
 						and (t_jawab='BRS' or t_jawab1='BRS' or t_jawab2='BRS' or t_jawab3='BRS' or t_jawab4='BRS' )
 						and kategori = '0'
 						");
-						$rgIn01=mysqli_fetch_array($sqlgk_in01);
+						$rgIn01=sqlsrv_fetch_array($sqlgk_in01, SQLSRV_FETCH_ASSOC);
 						//Eksternal	
-						$sqlgk_ex01=mysqli_query($cona," SELECT
+						$sqlgk_ex01=sqlsrv_query($cona," SELECT
 							SUM(qty_order) as kg
 						FROM 
-                        tbl_gantikain tb
+                        db_adm.tbl_gantikain tb
 						WHERE
 						YEAR(tgl_update) = '$tahun_sebelumnya'
 						and (t_jawab='BRS' or t_jawab1='BRS' or t_jawab2='BRS' or t_jawab3='BRS' or t_jawab4='BRS' )
 						and kategori = '1'
 						");
-						$rgEx01=mysqli_fetch_array($sqlgk_ex01);  
+						$rgEx01=sqlsrv_fetch_array($sqlgk_ex01, SQLSRV_FETCH_ASSOC);  
 		//Desember tahun sebelumnya
 		$hari_kerja_query0 = "SELECT COUNT(DISTINCT CAST(tgl_buat AS DATE)) as jml FROM db_brushing.tbl_produksi 
                                                 WHERE YEAR(tgl_buat) = '$tahun_sebelumnya' AND MONTH(tgl_buat) = '12'";
@@ -264,30 +264,30 @@ border:hidden;
                                         WHERE 
                                         YEAR(tp.tgl_buat)='$tahun_sebelumnya' AND MONTH(tp.tgl_buat)='12'  ";
                         $stmt_qry0 = sqlsrv_query($conb, $query_table0);
-                        $data_table0 = sqlsrv_fetch_array($stmt_qry0); 
+                        $data_table0 = sqlsrv_fetch_array($stmt_qry0, SQLSRV_FETCH_ASSOC); 
 		  //GANTI KAIN
 						//Internal	
-						$sqlgk_in0=mysqli_query($cona," SELECT
+						$sqlgk_in0=sqlsrv_query($cona," SELECT
 							SUM(qty_order) as kg
 						FROM
-							tbl_gantikain tb
+							db_adm.tbl_gantikain tb
 						WHERE
 						MONTH(tgl_update) = '12' AND YEAR(tgl_update) = '$tahun_sebelumnya'
 						and (t_jawab='BRS' or t_jawab1='BRS' or t_jawab2='BRS' or t_jawab3='BRS' or t_jawab4='BRS' )
 						and kategori = '0'
 						");
-						$rgIn0=mysqli_fetch_array($sqlgk_in0);
+						$rgIn0=sqlsrv_fetch_array($sqlgk_in0, SQLSRV_FETCH_ASSOC);
 						//Eksternal	
-						$sqlgk_ex0=mysqli_query($cona," SELECT
+						$sqlgk_ex0=sqlsrv_query($cona," SELECT
 							SUM(qty_order) as kg
 						FROM
-							tbl_gantikain tb
+							db_adm.tbl_gantikain tb
 						WHERE
 						MONTH(tgl_update) = '12' AND YEAR(tgl_update) = '$tahun_sebelumnya'
 						and (t_jawab='BRS' or t_jawab1='BRS' or t_jawab2='BRS' or t_jawab3='BRS' or t_jawab4='BRS' )
 						and kategori = '1'
 						");
-						$rgEx0=mysqli_fetch_array($sqlgk_ex0);
+						$rgEx0=sqlsrv_fetch_array($sqlgk_ex0, SQLSRV_FETCH_ASSOC);
         // Ambil bulan dari tanggal input
         $startDate = new DateTime(date('Y-m-01', strtotime($input))); // Awal bulan input
         $endDate = new DateTime(date('Y-m-t', strtotime($input)));     // Akhir bulan input
@@ -334,7 +334,7 @@ border:hidden;
                             -- year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
 							tgl_buat between '$start_timeUlang1' and '$end_timeUlang1'";
         $stmt_tbl2 = sqlsrv_query($conb, $query_tbl2);
-        $row_tbl2 = sqlsrv_fetch_array($stmt_tbl2);
+        $row_tbl2 = sqlsrv_fetch_array($stmt_tbl2, SQLSRV_FETCH_ASSOC);
         $cek_tbl2 = sqlsrv_num_rows($stmt_tbl2);  
         
         // print_r($row_tbl2['brs_fleece_ulang']);
@@ -353,14 +353,14 @@ border:hidden;
         $qry_ncp = "SELECT
                         SUM(berat) as qty_ncp
                     FROM
-                        tbl_ncp_qcf_now
+                        db_qc.tbl_ncp_qcf_now
                     WHERE
                         STATUS IN ('Belum OK', 'OK', 'BS')
                         AND dept = 'BRS'
                         AND ncp_hitung = 'ya'
 						AND tgl_buat BETWEEN '$start_timeNCP' AND '$end_timeNCP' ";
-        $qry1 = mysqli_query($cond, $qry_ncp);
-        $row_ncp = mysqli_fetch_assoc($qry1);
+        $qry1 = sqlsrv_query($cond, $qry_ncp);
+        $row_ncp = sqlsrv_fetch_array($qry1, SQLSRV_FETCH_ASSOC);
 
         // print_r( $startDate);
     ?>
@@ -496,7 +496,7 @@ border:hidden;
 				$result = sqlsrv_query($conb, $query);
 
 				// Tandai bulan yang punya data
-				while ($row = sqlsrv_fetch_array($result)) {
+				while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
 					$tanggal_ada_data[(int)$row['bulan']] = true;
 				}
 
@@ -643,7 +643,7 @@ border:hidden;
                                         WHERE 
                                         tp.tgl_buat between'$start_time' and '$end_time' ";
                         $stmt_qry = sqlsrv_query($conb, $query_table1);
-                        $data_table1 = sqlsrv_fetch_array($stmt_qry);
+                        $data_table1 = sqlsrv_fetch_array($stmt_qry, SQLSRV_FETCH_ASSOC);
 							
 							$hari_kerja_query = "SELECT 
                                     CONVERT(VARCHAR(10), tgl_buat, 23) AS tanggal
@@ -662,33 +662,33 @@ border:hidden;
 							// Inisialisasi total jumlah produksi per hari
 							$hari_kerja = 0;
 
-							while ($rh_kerja = sqlsrv_fetch_array($hari_kerja_result)) {
+							while ($rh_kerja = sqlsrv_fetch_array($hari_kerja_result, SQLSRV_FETCH_ASSOC)) {
 								$hari_kerja += 1; // menjumlahkan semua jml dari tiap hari
 							}
 						
 						//GANTI KAIN
 						//Internal	
-						$sqlgk_in=mysqli_query($cona," SELECT
+						$sqlgk_in=sqlsrv_query($cona," SELECT
 							SUM(qty_order) as kg
 						FROM
-							tbl_gantikain tb
+							db_adm.tbl_gantikain tb
 						WHERE
 						MONTH(tgl_update) = '$bulan' AND YEAR(tgl_update) = '$tahun'
 						and (t_jawab='BRS' or t_jawab1='BRS' or t_jawab2='BRS' or t_jawab3='BRS' or t_jawab4='BRS' )
 						and kategori = '0'
 						");
-						$rgIn=mysqli_fetch_array($sqlgk_in);
+						$rgIn=sqlsrv_fetch_array($sqlgk_in, SQLSRV_FETCH_ASSOC);
 						//Eksternal	
-						$sqlgk_ex=mysqli_query($cona," SELECT
+						$sqlgk_ex=sqlsrv_query($cona," SELECT
 							SUM(qty_order) as kg
 						FROM
-							tbl_gantikain tb
+							db_adm.tbl_gantikain tb
 						WHERE
 						MONTH(tgl_update) = '$bulan' AND YEAR(tgl_update) = '$tahun'
 						and (t_jawab='BRS' or t_jawab1='BRS' or t_jawab2='BRS' or t_jawab3='BRS' or t_jawab4='BRS' )
 						and kategori = '1'
 						");
-						$rgEx=mysqli_fetch_array($sqlgk_ex);	
+						$rgEx=sqlsrv_fetch_array($sqlgk_ex, SQLSRV_FETCH_ASSOC);	
 						
                             echo "<td align='center' >{$hari_kerja}</td>";
                             $totalHariKerja += $hari_kerja; // Tambahkan ke total hari kerja
@@ -1055,7 +1055,7 @@ border:hidden;
                             -- year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
 							tgl_buat between '$start_timeUlang' and '$end_timeUlang' ";
 						$stmt_tbl2bln = sqlsrv_query($conb, $query_tbl2bln);
-						$row_tbl2bln = sqlsrv_fetch_array($stmt_tbl2bln);
+						$row_tbl2bln = sqlsrv_fetch_array($stmt_tbl2bln, SQLSRV_FETCH_ASSOC);
 						$cek_tbl2bln = sqlsrv_num_rows($stmt_tbl2bln);	  
 ?>			
 <table width="100%" border="0">	
@@ -1277,1155 +1277,1158 @@ border:hidden;
             <!-- Untuk Kolom Garuk -->
                 <?php
                 $query_garuk9 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'TG' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_A_TG,                                    
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'TG' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_A_TG,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'TG' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_B_TG,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'TG' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_B_TG,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'TG' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_C_TG,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'TG' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_C_TG,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'TG' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_D_TG,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'TG' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_D_TG,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'TG' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_E_TG,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'TG' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_E_TG,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'TG' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_F_TG,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'TG' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_F_TG
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk9    = mysqli_query($cona,$query_garuk9);
-                            $tg_g             = mysqli_fetch_assoc($stmt_garuk9);
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'TG' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%A%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_A_TG,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'TG' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%A%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_A_TG,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'TG' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%B%' 
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_B_TG,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'TG' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%B%' 
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_B_TG,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'TG' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%C%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_C_TG,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'TG' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%C%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_C_TG,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'TG' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%D%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_D_TG,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'TG' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%D%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_D_TG,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'TG' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%E%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_E_TG,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'TG' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%E%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_E_TG,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'TG' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%F%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_F_TG,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'TG' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%F%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_F_TG
+                    FROM db_adm.tbl_stoppage
+                    WHERE dept ='BRS'
+                    AND YEAR(tgl_buat)='$_GET[tahun]'
+                    AND MONTH(tgl_buat)='$_GET[bulan]'
+                    AND tbl_stoppage.kode_stop <> ''";
+                    $stmt_garuk9    = sqlsrv_query($cona,$query_garuk9);
+                    $tg_g             = sqlsrv_fetch_array($stmt_garuk9, SQLSRV_FETCH_ASSOC);
                 $query_garuk8 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'GT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_A_GT,                                    
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'GT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_A_GT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'GT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_B_GT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'GT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_B_GT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'GT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_C_GT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'GT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_C_GT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'GT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_D_GT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'GT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_D_GT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'GT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_E_GT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'GT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_E_GT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'GT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_F_GT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'GT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_F_GT
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk8    = mysqli_query($cona,$query_garuk8);
-                            $gt_g             = mysqli_fetch_assoc($stmt_garuk8);
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'GT' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%A%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_A_GT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'GT' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%A%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_A_GT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'GT' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%B%' 
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_B_GT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'GT' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%B%' 
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_B_GT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'GT' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%C%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_C_GT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'GT' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%C%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_C_GT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'GT' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%D%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_D_GT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'GT' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%D%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_D_GT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'GT' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%E%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_E_GT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'GT' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%E%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_E_GT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'GT' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%F%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_F_GT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'GT' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%F%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_F_GT
+                    FROM db_adm.tbl_stoppage
+                    WHERE dept ='BRS'
+                        AND YEAR(tgl_buat)='$_GET[tahun]'
+                        AND MONTH(tgl_buat)='$_GET[bulan]'
+                        AND tbl_stoppage.kode_stop <> ''";
+                    $stmt_garuk8    = sqlsrv_query($cona,$query_garuk8);
+                    $gt_g             = sqlsrv_fetch_array($stmt_garuk8, SQLSRV_FETCH_ASSOC);
                 $query_garuk7 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_A_PM,                                    
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_A_PM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_B_PM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_B_PM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_C_PM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_C_PM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_D_PM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_D_PM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_E_PM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_E_PM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_F_PM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_F_PM
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk7    = mysqli_query($cona,$query_garuk7);
-                            $pm_g             = mysqli_fetch_assoc($stmt_garuk7);
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PM' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%A%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_A_PM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PM' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%A%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_A_PM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PM' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%B%' 
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_B_PM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PM' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%B%' 
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_B_PM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PM' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%C%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_C_PM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PM' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%C%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_C_PM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PM' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%D%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_D_PM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PM' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%D%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_D_PM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PM' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%E%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_E_PM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PM' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%E%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_E_PM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PM' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%F%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_F_PM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PM' 
+                                AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
+                                AND mesin like '%F%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_F_PM
+                    FROM db_adm.tbl_stoppage
+                    WHERE dept ='BRS'
+                        AND YEAR(tgl_buat)='$_GET[tahun]'
+                        AND MONTH(tgl_buat)='$_GET[bulan]'
+                        AND tbl_stoppage.kode_stop <> ''";
+
+                    $stmt_garuk7    = sqlsrv_query($cona,$query_garuk7);
+                    $pm_g             = sqlsrv_fetch_array($stmt_garuk7, SQLSRV_FETCH_ASSOC);
                 $query_garuk6 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PA' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_A_PA,                                    
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PA' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_A_PA,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PA' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_B_PA,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PA' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_B_PA,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PA' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_C_PA,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PA' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_C_PA,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PA' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_D_PA,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PA' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_D_PA,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PA' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_E_PA,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PA' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_E_PA,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PA' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_F_PA,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PA' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_F_PA
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk6    = mysqli_query($cona,$query_garuk6);
-                            $pa_g             = mysqli_fetch_assoc($stmt_garuk6);
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PA' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%A%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_A_PA,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PA' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%A%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_A_PA,
+
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PA' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%B%' 
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_B_PA,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PA' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%B%' 
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_B_PA,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PA' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%C%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_C_PA,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PA' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%C%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_C_PA,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PA' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%D%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_D_PA,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PA' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%D%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_D_PA,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PA' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%E%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_E_PA,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PA' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%E%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_E_PA,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PA' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%F%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_F_PA,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PA' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%F%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_F_PA
+                    FROM db_adm.tbl_stoppage
+                    WHERE dept = 'BRS'
+                        AND YEAR(tgl_buat) = '$_GET[tahun]'
+                        AND MONTH(tgl_buat) = '$_GET[bulan]'
+                        AND tbl_stoppage.kode_stop <> ''";
+                    $stmt_garuk6    = sqlsrv_query($cona,$query_garuk6);
+                    $pa_g             = sqlsrv_fetch_array($stmt_garuk6, SQLSRV_FETCH_ASSOC);
                 $query_garuk5 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'AP' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_A_AP,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'AP' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_A_AP,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'AP' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_B_AP,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'AP' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_B_AP,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'AP' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_C_AP,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'AP' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_C_AP,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'AP' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_D_AP,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'AP' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_D_AP,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'AP' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_E_AP,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'AP' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_E_AP,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'AP' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_F_AP,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'AP' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_F_AP
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk5    = mysqli_query($cona,$query_garuk5);
-                            $ap_g             = mysqli_fetch_assoc($stmt_garuk5);
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'AP' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%A%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_A_AP,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'AP' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%A%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_A_AP,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'AP' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%B%' 
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_B_AP,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'AP' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%B%' 
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_B_AP,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'AP' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%C%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_C_AP,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'AP' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%C%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_C_AP,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'AP' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%D%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_D_AP,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'AP' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%D%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_D_AP,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'AP' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%E%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_E_AP,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'AP' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%E%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_E_AP,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'AP' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%F%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_F_AP,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'AP' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%F%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_F_AP
+                    FROM db_adm.tbl_stoppage
+                    WHERE dept ='BRS'
+                        AND YEAR(tgl_buat)='$_GET[tahun]'
+                        AND MONTH(tgl_buat)='$_GET[bulan]'
+                        AND tbl_stoppage.kode_stop <> ''";
+                    $stmt_garuk5    = sqlsrv_query($cona,$query_garuk5);
+                    $ap_g             = sqlsrv_fetch_array($stmt_garuk5, SQLSRV_FETCH_ASSOC);
                 $query_garuk4 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KO' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_A_KO,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KO' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_A_KO,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KO' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_B_KO,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KO' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_B_KO,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KO' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_C_KO,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KO' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_C_KO,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KO' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_D_KO,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KO' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_D_KO,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KO' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_E_KO,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KO' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_E_KO,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KO' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_F_KO,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KO' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_F_KO
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk4    = mysqli_query($cona,$query_garuk4);
-                            $ko_g             = mysqli_fetch_assoc($stmt_garuk4);
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KO' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%A%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_A_KO,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KO' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%A%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_A_KO,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KO' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%B%' 
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_B_KO,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KO' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%B%' 
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_B_KO,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KO' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%C%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_C_KO,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KO' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%C%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_C_KO,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KO' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%D%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_D_KO,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KO' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%D%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_D_KO,
+
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KO' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%E%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_E_KO,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KO' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%E%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_E_KO,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KO' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%F%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_F_KO,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KO' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%F%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_F_KO
+                    FROM db_adm.tbl_stoppage
+                    WHERE dept ='BRS'
+                        AND YEAR(tgl_buat)='$_GET[tahun]'
+                        AND MONTH(tgl_buat)='$_GET[bulan]'
+                        AND tbl_stoppage.kode_stop <> ''";
+                    $stmt_garuk4    = sqlsrv_query($cona,$query_garuk4);
+                    $ko_g             = sqlsrv_fetch_array($stmt_garuk4, SQLSRV_FETCH_ASSOC);
                 $query_garuk3 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_A_PT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_A_PT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_B_PT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_B_PT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_C_PT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_C_PT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_D_PT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_D_PT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_E_PT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_E_PT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_F_PT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PT' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_F_PT
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk3    = mysqli_query($cona,$query_garuk3);
-                            $pt_g             = mysqli_fetch_assoc($stmt_garuk3);
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PT' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%A%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_A_PT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PT' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%A%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_A_PT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PT' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%B%' 
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_B_PT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PT' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%B%' 
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_B_PT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PT' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%C%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_C_PT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PT' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%C%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_C_PT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PT' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%D%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_D_PT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PT' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%D%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_D_PT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PT' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%E%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_E_PT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PT' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%E%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_E_PT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PT' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%F%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_F_PT,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'PT' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%F%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_F_PT
+                    FROM db_adm.tbl_stoppage
+                    WHERE dept ='BRS'
+                        AND YEAR(tgl_buat)='$_GET[tahun]'
+                        AND MONTH(tgl_buat)='$_GET[bulan]'
+                        AND tbl_stoppage.kode_stop <> ''";
+                    $stmt_garuk3    = sqlsrv_query($cona,$query_garuk3);
+                    $pt_g             = sqlsrv_fetch_array($stmt_garuk3, SQLSRV_FETCH_ASSOC);
                 $query_garuk2 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_A_KM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%A%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_A_KM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_B_KM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%B%' 
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_B_KM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_C_KM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%C%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_C_KM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_D_KM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%D%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_D_KM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_E_KM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%E%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_E_KM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_garuk_F_KM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KM' 
-                                            AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                            AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_garuk_F_KM
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_garuk2    = mysqli_query($cona,$query_garuk2);
-                            $km_g             = mysqli_fetch_assoc($stmt_garuk2);
-                    $query_garuk1 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%A%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_garuk_A_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%A%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_garuk_A_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%B%' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_garuk_B_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%B%' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_garuk_B_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%C%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_garuk_C_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%C%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_garuk_C_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%D%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_garuk_D_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%D%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_garuk_D_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%E%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_garuk_E_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%E%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_garuk_E_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%F%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_garuk_F_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%F%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_garuk_F_LM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_garuk1    = mysqli_query($cona,$query_garuk1);
-                                    $lm_g             = mysqli_fetch_assoc($stmt_garuk1);
-                            // Total Garuk
-                    $query_mesin_garuk = "SELECT
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%A%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_garuk_A,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%A%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_garuk_A,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%B%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_garuk_B,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%B%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_garuk_B,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%C%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_garuk_C,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%C%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_garuk_C,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%D%' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_garuk_D,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%D%' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_garuk_D,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%E%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_garuk_E,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%E%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_garuk_E,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%F%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_garuk_F,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('RSE1', 'RSE2', 'RSE3', 'RSE4', 'RSE5')
-                                                    AND mesin like '%F%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_garuk_F
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_garuk= mysqli_query($cona,$query_mesin_garuk);
-                        $sum_mesin_garuk= mysqli_fetch_assoc($stmt_mesin_garuk);
-                    ?>
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%A%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_A_KM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%A%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_A_KM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%B%' 
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_B_KM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%B%' 
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_B_KM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%C%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_C_KM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%C%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_C_KM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%D%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_D_KM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%D%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_D_KM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%E%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_E_KM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%E%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_E_KM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%F%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_F_KM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'KM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%F%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_F_KM
+                    FROM db_adm.tbl_stoppage
+                    WHERE dept ='BRS'
+                        AND YEAR(tgl_buat)='$_GET[tahun]'
+                        AND MONTH(tgl_buat)='$_GET[bulan]'
+                        AND tbl_stoppage.kode_stop <> ''";
+                    $stmt_garuk2    = sqlsrv_query($cona,$query_garuk2);
+                    $km_g             = sqlsrv_fetch_array($stmt_garuk2, SQLSRV_FETCH_ASSOC);
+                $query_garuk1 = "SELECT
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'LM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%A%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_A_LM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'LM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%A%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_A_LM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'LM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%B%' 
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_B_LM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'LM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%B%' 
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_B_LM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'LM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%C%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_C_LM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'LM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%C%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_C_LM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'LM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%D%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_D_LM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'LM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%D%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_D_LM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'LM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%E%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_E_LM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'LM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%E%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_E_LM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'LM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%F%'
+                                THEN FLOOR(durasi_jam_stop) 
+                                ELSE 0 
+                            END
+                        ) AS jam_garuk_F_LM,
+                        SUM(
+                            CASE 
+                                WHEN kode_stop = 'LM' 
+                                AND kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%F%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0 
+                            END
+                        ) AS menit_garuk_F_LM
+                    FROM db_adm.tbl_stoppage
+                    WHERE dept ='BRS'
+                        AND YEAR(tgl_buat)='$_GET[tahun]'
+                        AND MONTH(tgl_buat)='$_GET[bulan]'
+                        AND tbl_stoppage.kode_stop <> ''";
+                    $stmt_garuk1    = sqlsrv_query($cona,$query_garuk1);
+                    $lm_g             = sqlsrv_fetch_array($stmt_garuk1, SQLSRV_FETCH_ASSOC);
+                // Total Garuk
+                $query_mesin_garuk = "SELECT
+                        SUM(
+                            CASE
+                                WHEN kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%A%'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END
+                        ) AS jam_garuk_A,
+                        SUM(
+                            CASE
+                                WHEN kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%A%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END
+                        ) AS menit_garuk_A,
+                        SUM(
+                            CASE
+                                WHEN kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%B%'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END
+                        ) AS jam_garuk_B,
+                        SUM(
+                            CASE
+                                WHEN kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%B%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END
+                        ) AS menit_garuk_B,
+                        SUM(
+                            CASE
+                                WHEN kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%C%'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END
+                        ) AS jam_garuk_C,
+                        SUM(
+                            CASE
+                                WHEN kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%C%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END
+                        ) AS menit_garuk_C,
+                        SUM(
+                            CASE
+                                WHEN kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%D%'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END
+                        ) AS jam_garuk_D,
+                        SUM(
+                            CASE
+                                WHEN kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%D%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END
+                        ) AS menit_garuk_D,
+                        SUM(
+                            CASE
+                                WHEN kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%E%'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END
+                        ) AS jam_garuk_E,
+                        SUM(
+                            CASE
+                                WHEN kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%E%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END
+                        ) AS menit_garuk_E,
+                        SUM(
+                            CASE
+                                WHEN kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%F%'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END
+                        ) AS jam_garuk_F,
+                        SUM(
+                            CASE
+                                WHEN kode_operation IN ('RSE1','RSE2','RSE3','RSE4','RSE5')
+                                AND mesin like '%F%'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END
+                        ) AS menit_garuk_F
+                    FROM db_adm.tbl_stoppage
+                    WHERE dept = 'BRS'
+                        AND YEAR(tgl_buat) = '$_GET[tahun]'
+                        AND MONTH(tgl_buat) = '$_GET[bulan]'
+                        AND tbl_stoppage.kode_stop <> ''";
+                    $stmt_mesin_garuk= sqlsrv_query($cona,$query_mesin_garuk);
+                    $sum_mesin_garuk= sqlsrv_fetch_array($stmt_mesin_garuk, SQLSRV_FETCH_ASSOC);
+                ?>
                 <!-- Mesin A -->
                 <tr>
                     <td rowspan="6" align="left"><strong>GARUK</strong></td>
@@ -2435,40 +2438,31 @@ border:hidden;
 						echo round(((($lm_g['jam_garuk_A_LM']*60)+$lm_g['menit_garuk_A_LM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?> %</td>
                     <td align="center"><?php if ($km_g['jam_garuk_A_KM'] != 0 || $km_g['menit_garuk_A_KM'] != 0) {echo str_pad($km_g['jam_garuk_A_KM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($km_g['menit_garuk_A_KM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($km_g['jam_garuk_A_KM'] != 0 || $km_g['menit_garuk_A_KM'] != 0) { 
-						echo round(((($km_g['jam_garuk_A_KM']*60)+$km_g['menit_garuk_A_KM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($km_g['jam_garuk_A_KM']*60)+$km_g['menit_garuk_A_KM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pt_g['jam_garuk_A_PT'] != 0 || $pt_g['menit_garuk_A_PT'] != 0) {echo str_pad($pt_g['jam_garuk_A_PT'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pt_g['menit_garuk_A_PT'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pt_g['jam_garuk_A_PT'] != 0 || $pt_g['menit_garuk_A_PT'] != 0) { 
-						echo round(((($pt_g['jam_garuk_A_PT']*60)+$pt_g['menit_garuk_A_PT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pt_g['jam_garuk_A_PT']*60)+$pt_g['menit_garuk_A_PT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($ko_g['jam_garuk_A_KO'] != 0 || $ko_g['menit_garuk_A_KO'] != 0) {echo str_pad($ko_g['jam_garuk_A_KO'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($ko_g['menit_garuk_A_KO'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($ko_g['jam_garuk_A_KO'] != 0 || $ko_g['menit_garuk_A_KO'] != 0) { 
-						echo round(((($ko_g['jam_garuk_A_KO']*60)+$ko_g['menit_garuk_A_KO'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($ko_g['jam_garuk_A_KO']*60)+$ko_g['menit_garuk_A_KO'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($ap_g['jam_garuk_A_AP'] != 0 || $ap_g['menit_garuk_A_AP'] != 0) {echo str_pad($ap_g['jam_garuk_A_AP'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($ap_g['menit_garuk_A_AP'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($ap_g['jam_garuk_A_AP'] != 0 || $ap_g['menit_garuk_A_AP'] != 0) { 
-						echo round(((($ap_g['jam_garuk_A_AP']*60)+$ap_g['menit_garuk_A_AP'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($ap_g['jam_garuk_A_AP']*60)+$ap_g['menit_garuk_A_AP'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pa_g['jam_garuk_A_PA'] != 0 || $pa_g['menit_garuk_A_PA'] != 0) {echo str_pad($pa_g['jam_garuk_A_PA'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pa_g['menit_garuk_A_PA'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pa_g['jam_garuk_A_PA'] != 0 || $pa_g['menit_garuk_A_PA'] != 0) { 
-						echo round(((($pa_g['jam_garuk_A_PA']*60)+$pa_g['menit_garuk_A_PA'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pa_g['jam_garuk_A_PA']*60)+$pa_g['menit_garuk_A_PA'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pm_g['jam_garuk_A_PM'] != 0 || $pm_g['menit_garuk_A_PM'] != 0) {echo str_pad($pm_g['jam_garuk_A_PM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pm_g['menit_garuk_A_PM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pm_g['jam_garuk_A_PM'] != 0 || $pm_g['menit_garuk_A_PM'] != 0) { 
-						echo round(((($pm_g['jam_garuk_A_PM']*60)+$pm_g['menit_garuk_A_PM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pm_g['jam_garuk_A_PM']*60)+$pm_g['menit_garuk_A_PM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($gt_g['jam_garuk_A_GT'] != 0 || $gt_g['menit_garuk_A_GT'] != 0) {echo str_pad($gt_g['jam_garuk_A_GT'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($gt_g['menit_garuk_A_GT'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($gt_g['jam_garuk_A_GT'] != 0 || $gt_g['menit_garuk_A_GT'] != 0) { 
-						echo round(((($gt_g['jam_garuk_A_GT']*60)+$gt_g['menit_garuk_A_GT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($gt_g['jam_garuk_A_GT']*60)+$gt_g['menit_garuk_A_GT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($tg_g['jam_garuk_A_TG'] != 0 || $tg_g['menit_garuk_A_TG'] != 0) {echo str_pad($tg_g['jam_garuk_A_TG'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($tg_g['menit_garuk_A_TG'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($tg_g['jam_garuk_A_TG'] != 0 || $tg_g['menit_garuk_A_TG'] != 0) { 
-						echo round(((($tg_g['jam_garuk_A_TG']*60)+$tg_g['menit_garuk_A_TG'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($tg_g['jam_garuk_A_TG']*60)+$tg_g['menit_garuk_A_TG'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($sum_mesin_garuk['jam_garuk_A'] != 0 || $sum_mesin_garuk['menit_garuk_A'] != 0) {echo str_pad($sum_mesin_garuk['jam_garuk_A'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($sum_mesin_garuk['menit_garuk_A'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($sum_mesin_garuk['jam_garuk_A'] != 0 || $sum_mesin_garuk['menit_garuk_A'] != 0) { 
-						echo round(((($sum_mesin_garuk['jam_garuk_A']*60)+$sum_mesin_garuk['menit_garuk_A'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($sum_mesin_garuk['jam_garuk_A']*60)+$sum_mesin_garuk['menit_garuk_A'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                 </tr>
                 <!-- Mesin B -->
                 <tr>
@@ -2695,1792 +2689,1443 @@ border:hidden;
                 <tr>
                     <?php 
                     $query_sisir9 = "SELECT
-                                            FLOOR(SUM(CASE 
-												WHEN kode_stop = 'TG' AND kode_operation IN ('COM1', 'COM2')
-												THEN durasi_jam_stop 
-												ELSE 0 
-											END))  AS jam_sisir_TG,
-
-											MOD(ROUND(SUM(CASE 
-												WHEN kode_stop = 'TG' AND kode_operation IN ('COM1', 'COM2')
-												THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
-												ELSE 0 
-											END)), 60) AS menit_sisir_TG
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir9    = mysqli_query($cona,$query_sisir9);
-                                    $tg_sisir             = mysqli_fetch_assoc($stmt_sisir9);
+                            FLOOR(SUM(CASE
+                                WHEN kode_stop = 'TG' AND kode_operation IN ('COM1','COM2')
+                                THEN durasi_jam_stop
+                                ELSE 0
+                            END)) AS jam_sisir_TG,
+                            (ROUND(SUM(CASE
+                                WHEN kode_stop = 'TG' AND kode_operation IN ('COM1','COM2')
+                                THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60
+                                ELSE 0
+                            END), 0) % 60) AS menit_sisir_TG
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_sisir9 = sqlsrv_query($cona,$query_sisir9);
+                        $tg_sisir    = sqlsrv_fetch_array($stmt_sisir9, SQLSRV_FETCH_ASSOC);
                     $query_sisir8 = "SELECT
-                                            FLOOR(SUM(CASE 
-												WHEN kode_stop = 'GT' AND kode_operation IN ('COM1', 'COM2')
-												THEN durasi_jam_stop 
-												ELSE 0 
-											END))  AS jam_sisir_GT,
-
-											MOD(ROUND(SUM(CASE 
-												WHEN kode_stop = 'GT' AND kode_operation IN ('COM1', 'COM2')
-												THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
-												ELSE 0 
-											END)), 60) AS menit_sisir_GT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir8    = mysqli_query($cona,$query_sisir8);
-                                    $gt_sisir             = mysqli_fetch_assoc($stmt_sisir8);
+                            FLOOR(SUM(CASE 
+                                WHEN kode_stop = 'GT' AND kode_operation IN ('COM1','COM2')
+                                THEN durasi_jam_stop 
+                                ELSE 0 
+                            END)) AS jam_sisir_GT,
+                            (ROUND(SUM(CASE 
+                                WHEN kode_stop = 'GT' AND kode_operation IN ('COM1','COM2')
+                                THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
+                                ELSE 0 
+                            END), 0) % 60) AS menit_sisir_GT
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_sisir8 = sqlsrv_query($cona,$query_sisir8);
+                        $gt_sisir    = sqlsrv_fetch_array($stmt_sisir8, SQLSRV_FETCH_ASSOC);
                     $query_sisir7 = "SELECT
-                                            FLOOR(SUM(CASE 
-												WHEN kode_stop = 'PM' AND kode_operation IN ('COM1', 'COM2')
-												THEN durasi_jam_stop 
-												ELSE 0 
-											END))  AS jam_sisir_PM,
-
-											MOD(ROUND(SUM(CASE 
-												WHEN kode_stop = 'PM' AND kode_operation IN ('COM1', 'COM2')
-												THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
-												ELSE 0 
-											END)), 60) AS menit_sisir_PM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir7    = mysqli_query($cona,$query_sisir7);
-                                    $pm_sisir             = mysqli_fetch_assoc($stmt_sisir7);
+                            FLOOR(SUM(CASE 
+                                WHEN kode_stop = 'PM' AND kode_operation IN ('COM1','COM2')
+                                THEN durasi_jam_stop 
+                                ELSE 0 
+                            END)) AS jam_sisir_PM,
+                            (ROUND(SUM(CASE 
+                                WHEN kode_stop = 'PM' AND kode_operation IN ('COM1','COM2')
+                                THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
+                                ELSE 0 
+                            END), 0) % 60) AS menit_sisir_PM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_sisir7 = sqlsrv_query($cona,$query_sisir7);
+                        $pm_sisir    = sqlsrv_fetch_array($stmt_sisir7, SQLSRV_FETCH_ASSOC);
                     $query_sisir6 = "SELECT
-                                            FLOOR(SUM(CASE 
-												WHEN kode_stop = 'PA' AND kode_operation IN ('COM1', 'COM2')
-												THEN durasi_jam_stop 
-												ELSE 0 
-											END))  AS jam_sisir_PA,
-
-											MOD(ROUND(SUM(CASE 
-												WHEN kode_stop = 'PA' AND kode_operation IN ('COM1', 'COM2')
-												THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
-												ELSE 0 
-											END)), 60) AS menit_sisir_PA
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir6    = mysqli_query($cona,$query_sisir6);
-                                    $pa_sisir             = mysqli_fetch_assoc($stmt_sisir6);
+                            FLOOR(SUM(CASE 
+                                WHEN kode_stop = 'PA' AND kode_operation IN ('COM1','COM2')
+                                THEN durasi_jam_stop 
+                                ELSE 0 
+                            END)) AS jam_sisir_PA,
+                            (ROUND(SUM(CASE 
+                                WHEN kode_stop = 'PA' AND kode_operation IN ('COM1','COM2')
+                                THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
+                                ELSE 0 
+                            END), 0) % 60) AS menit_sisir_PA
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_sisir6 = sqlsrv_query($cona,$query_sisir6);
+                        $pa_sisir    = sqlsrv_fetch_array($stmt_sisir6, SQLSRV_FETCH_ASSOC);
                     $query_sisir5 = "SELECT
-                                            FLOOR(SUM(CASE 
-												WHEN kode_stop = 'AP' AND kode_operation IN ('COM1', 'COM2')
-												THEN durasi_jam_stop 
-												ELSE 0 
-											END))  AS jam_sisir_AP,
-
-											MOD(ROUND(SUM(CASE 
-												WHEN kode_stop = 'AP' AND kode_operation IN ('COM1', 'COM2')
-												THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
-												ELSE 0 
-											END)), 60) AS menit_sisir_AP
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir5    = mysqli_query($cona,$query_sisir5);
-                                    $ap_sisir             = mysqli_fetch_assoc($stmt_sisir5);
+                            FLOOR(SUM(CASE 
+                                WHEN kode_stop = 'AP' AND kode_operation IN ('COM1','COM2')
+                                THEN durasi_jam_stop 
+                                ELSE 0 
+                            END)) AS jam_sisir_AP,
+                            (ROUND(SUM(CASE 
+                                WHEN kode_stop = 'AP' AND kode_operation IN ('COM1','COM2')
+                                THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
+                                ELSE 0 
+                            END), 0) % 60) AS menit_sisir_AP
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_sisir5 = sqlsrv_query($cona,$query_sisir5);
+                        $ap_sisir    = sqlsrv_fetch_array($stmt_sisir5, SQLSRV_FETCH_ASSOC);
                     $query_sisir4 = "SELECT
-                                            FLOOR(SUM(CASE 
-												WHEN kode_stop = 'KO' AND kode_operation IN ('COM1', 'COM2')
-												THEN durasi_jam_stop 
-												ELSE 0 
-											END))  AS jam_sisir_KO,
-
-											MOD(ROUND(SUM(CASE 
-												WHEN kode_stop = 'KO' AND kode_operation IN ('COM1', 'COM2')
-												THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
-												ELSE 0 
-											END)), 60) AS menit_sisir_KO
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir4    = mysqli_query($cona,$query_sisir4);
-                                    $ko_sisir             = mysqli_fetch_assoc($stmt_sisir4);
+                            FLOOR(SUM(CASE 
+                                WHEN kode_stop = 'KO' AND kode_operation IN ('COM1','COM2')
+                                THEN durasi_jam_stop 
+                                ELSE 0 
+                            END)) AS jam_sisir_KO,
+                            (ROUND(SUM(CASE 
+                                WHEN kode_stop = 'KO' AND kode_operation IN ('COM1','COM2')
+                                THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
+                                ELSE 0 
+                            END), 0) % 60) AS menit_sisir_KO
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_sisir4 = sqlsrv_query($cona,$query_sisir4);
+                        $ko_sisir    = sqlsrv_fetch_array($stmt_sisir4, SQLSRV_FETCH_ASSOC);
                     $query_sisir3 = "SELECT
-                                            FLOOR(SUM(CASE 
-												WHEN kode_stop = 'PT' AND kode_operation IN ('COM1', 'COM2')
-												THEN durasi_jam_stop 
-												ELSE 0 
-											END))  AS jam_sisir_PT,
-
-											MOD(ROUND(SUM(CASE 
-												WHEN kode_stop = 'PT' AND kode_operation IN ('COM1', 'COM2')
-												THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
-												ELSE 0 
-											END)), 60) AS menit_sisir_PT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir3    = mysqli_query($cona,$query_sisir3);
-                                    $pt_sisir             = mysqli_fetch_assoc($stmt_sisir3);
+                            FLOOR(SUM(CASE 
+                                WHEN kode_stop = 'PT' AND kode_operation IN ('COM1','COM2')
+                                THEN durasi_jam_stop 
+                                ELSE 0 
+                            END)) AS jam_sisir_PT,
+                            (ROUND(SUM(CASE 
+                                WHEN kode_stop = 'PT' AND kode_operation IN ('COM1','COM2')
+                                THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
+                                ELSE 0 
+                            END), 0) % 60) AS menit_sisir_PT
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_sisir3 = sqlsrv_query($cona,$query_sisir3);
+                        $pt_sisir    = sqlsrv_fetch_array($stmt_sisir3, SQLSRV_FETCH_ASSOC);
                     $query_sisir2 = "SELECT
-                                            FLOOR(SUM(CASE 
-												WHEN kode_stop = 'KM' AND kode_operation IN ('COM1', 'COM2')
-												THEN durasi_jam_stop 
-												ELSE 0 
-											END))  AS jam_sisir_KM,
-
-											MOD(ROUND(SUM(CASE 
-												WHEN kode_stop = 'KM' AND kode_operation IN ('COM1', 'COM2')
-												THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
-												ELSE 0 
-											END)), 60) AS menit_sisir_KM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir2    = mysqli_query($cona,$query_sisir2);
-                                    $km_sisir             = mysqli_fetch_assoc($stmt_sisir2);
+                            FLOOR(SUM(CASE 
+                                WHEN kode_stop = 'KM' AND kode_operation IN ('COM1','COM2')
+                                THEN durasi_jam_stop 
+                                ELSE 0 
+                            END)) AS jam_sisir_KM,
+                            (ROUND(SUM(CASE 
+                                WHEN kode_stop = 'KM' AND kode_operation IN ('COM1','COM2')
+                                THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
+                                ELSE 0 
+                            END), 0) % 60) AS menit_sisir_KM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_sisir2 = sqlsrv_query($cona,$query_sisir2);
+                        $km_sisir    = sqlsrv_fetch_array($stmt_sisir2, SQLSRV_FETCH_ASSOC);
                     $query_sisir1 = "SELECT
-                                            FLOOR(SUM(CASE 
-												WHEN kode_stop = 'LM' AND kode_operation IN ('COM1', 'COM2')
-												THEN durasi_jam_stop 
-												ELSE 0 
-											END))  AS jam_sisir_LM,
-
-											MOD(ROUND(SUM(CASE 
-												WHEN kode_stop = 'LM' AND kode_operation IN ('COM1', 'COM2')
-												THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
-												ELSE 0 
-											END)), 60) AS menit_sisir_LM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_sisir1    = mysqli_query($cona,$query_sisir1);
-                                    $lm_sisir             = mysqli_fetch_assoc($stmt_sisir1);
-                            // Total Sisir
+                            FLOOR(SUM(CASE 
+                                WHEN kode_stop = 'LM' AND kode_operation IN ('COM1','COM2')
+                                THEN durasi_jam_stop 
+                                ELSE 0 
+                            END)) AS jam_sisir_LM,
+                            (ROUND(SUM(CASE 
+                                WHEN kode_stop = 'LM' AND kode_operation IN ('COM1','COM2')
+                                THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
+                                ELSE 0 
+                            END), 0) % 60) AS menit_sisir_LM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_sisir1 = sqlsrv_query($cona,$query_sisir1);
+                        $lm_sisir    = sqlsrv_fetch_array($stmt_sisir1, SQLSRV_FETCH_ASSOC);
+                    // Total Sisir
                     $query_mesin_sisir = "SELECT
-                                            FLOOR(SUM(CASE 
-												WHEN kode_operation IN ('COM1', 'COM2')
-												THEN durasi_jam_stop 
-												ELSE 0 
-											END))  AS jam_sisir,
-
-											MOD(ROUND(SUM(CASE 
-												WHEN kode_operation IN ('COM1', 'COM2')
-												THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
-												ELSE 0 
-											END)), 60) AS menit_sisir
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_sisir= mysqli_query($cona,$query_mesin_sisir);
-                        $sum_mesin_sisir= mysqli_fetch_assoc($stmt_mesin_sisir);
-                        ?>
+                            FLOOR(SUM(CASE 
+                                WHEN kode_operation IN ('COM1','COM2')
+                                THEN durasi_jam_stop 
+                                ELSE 0 
+                            END)) AS jam_sisir,
+                            (ROUND(SUM(CASE 
+                                WHEN kode_operation IN ('COM1','COM2')
+                                THEN (durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60 
+                                ELSE 0 
+                            END), 0) % 60) AS menit_sisir
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_mesin_sisir= sqlsrv_query($cona,$query_mesin_sisir);
+                        $sum_mesin_sisir= sqlsrv_fetch_array($stmt_mesin_sisir, SQLSRV_FETCH_ASSOC);
+                    ?>
                     <td align="left"><strong>SISIR</strong></td>
                     <td align="center">'01</td>
                     <td align="center"><?php if ($lm_sisir['jam_sisir_LM'] != 0 || $lm_sisir['menit_sisir_LM'] != 0) {echo str_pad($lm_sisir['jam_sisir_LM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($lm_sisir['menit_sisir_LM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($lm_sisir['jam_sisir_LM'] != 0 || $lm_sisir['menit_sisir_LM'] != 0) { 
-						echo round(((($lm_sisir['jam_sisir_LM']*60)+$lm_sisir['menit_sisir_LM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($lm_sisir['jam_sisir_LM']*60)+$lm_sisir['menit_sisir_LM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($km_sisir['jam_sisir_KM'] != 0 || $km_sisir['menit_sisir_KM'] != 0) {echo str_pad($km_sisir['jam_sisir_KM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($km_sisir['menit_sisir_KM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($km_sisir['jam_sisir_KM'] != 0 || $km_sisir['menit_sisir_KM'] != 0) { 
-						echo round(((($km_sisir['jam_sisir_KM']*60)+$km_sisir['menit_sisir_KM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($km_sisir['jam_sisir_KM']*60)+$km_sisir['menit_sisir_KM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pt_sisir['jam_sisir_PT'] != 0 || $pt_sisir['menit_sisir_PT'] != 0) {echo str_pad($pt_sisir['jam_sisir_PT'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pt_sisir['menit_sisir_PT'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pt_sisir['jam_sisir_PT'] != 0 || $pt_sisir['menit_sisir_PT'] != 0) { 
-						echo round(((($pt_sisir['jam_sisir_PT']*60)+$pt_sisir['menit_sisir_PT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pt_sisir['jam_sisir_PT']*60)+$pt_sisir['menit_sisir_PT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($ko_sisir['jam_sisir_KO'] != 0 || $ko_sisir['menit_sisir_KO'] != 0) {echo str_pad($ko_sisir['jam_sisir_KO'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($ko_sisir['menit_sisir_KO'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($ko_sisir['jam_sisir_KO'] != 0 || $ko_sisir['menit_sisir_KO'] != 0) { 
-						echo round(((($ko_sisir['jam_sisir_KO']*60)+$ko_sisir['menit_sisir_KO'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($ko_sisir['jam_sisir_KO']*60)+$ko_sisir['menit_sisir_KO'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($ap_sisir['jam_sisir_AP'] != 0 || $ap_sisir['menit_sisir_AP'] != 0) {echo str_pad($ap_sisir['jam_sisir_AP'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($ap_sisir['menit_sisir_AP'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($ap_sisir['jam_sisir_AP'] != 0 || $ap_sisir['menit_sisir_AP'] != 0) { 
-						echo round(((($ap_sisir['jam_sisir_AP']*60)+$ap_sisir['menit_sisir_AP'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($ap_sisir['jam_sisir_AP']*60)+$ap_sisir['menit_sisir_AP'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pa_sisir['jam_sisir_PA'] != 0 || $pa_sisir['menit_sisir_PA'] != 0) {echo str_pad($pa_sisir['jam_sisir_PA'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pa_sisir['menit_sisir_PA'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pa_sisir['jam_sisir_PA'] != 0 || $pa_sisir['menit_sisir_PA'] != 0) { 
-						echo round(((($pa_sisir['jam_sisir_PA']*60)+$pa_sisir['menit_sisir_PA'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pa_sisir['jam_sisir_PA']*60)+$pa_sisir['menit_sisir_PA'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pm_sisir['jam_sisir_PM'] != 0 || $pm_sisir['menit_sisir_PM'] != 0) {echo str_pad($pm_sisir['jam_sisir_PM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pm_sisir['menit_sisir_PM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pm_sisir['jam_sisir_PM'] != 0 || $pm_sisir['menit_sisir_PM'] != 0) { 
-						echo round(((($pm_sisir['jam_sisir_PM']*60)+$pm_sisir['menit_sisir_PM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pm_sisir['jam_sisir_PM']*60)+$pm_sisir['menit_sisir_PM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($gt_sisir['jam_sisir_GT'] != 0 || $gt_sisir['menit_sisir_GT'] != 0) {echo str_pad($gt_sisir['jam_sisir_GT'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($gt_sisir['menit_sisir_GT'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($gt_sisir['jam_sisir_GT'] != 0 || $gt_sisir['menit_sisir_GT'] != 0) { 
-						echo round(((($gt_sisir['jam_sisir_GT']*60)+$gt_sisir['menit_sisir_GT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($gt_sisir['jam_sisir_GT']*60)+$gt_sisir['menit_sisir_GT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($tg_sisir['jam_sisir_TG'] != 0 || $tg_sisir['menit_sisir_TG'] != 0) {echo str_pad($tg_sisir['jam_sisir_TG'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($tg_sisir['menit_sisir_TG'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($tg_sisir['jam_sisir_TG'] != 0 || $tg_sisir['menit_sisir_TG'] != 0) { 
 						echo round(((($tg_sisir['jam_sisir_TG']*60)+$tg_sisir['menit_sisir_TG'])/$hariKrjBln)*100,2);} else {echo '0.0';}?> %</td>
                     <td align="center"><?php if ($sum_mesin_sisir['jam_sisir'] != 0 || $sum_mesin_sisir['menit_sisir'] != 0) {echo str_pad($sum_mesin_sisir['jam_sisir'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($sum_mesin_sisir['menit_sisir'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($sum_mesin_sisir['jam_sisir'] != 0 || $sum_mesin_sisir['menit_sisir'] != 0) { 
-						echo round(((($sum_mesin_sisir['jam_sisir']*60)+$sum_mesin_sisir['menit_sisir'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($sum_mesin_sisir['jam_sisir']*60)+$sum_mesin_sisir['menit_sisir'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                 </tr>
             <!-- End Sisir -->          
             <!-- Untuk Kolom Potong Bulu -->
                 <tr>
                     <?php
                     $query_pb2 = "SELECT
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_01_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_01_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_02_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_02_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_03_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_03_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_04_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_04_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_05_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_05_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_06_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_06_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_07_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_07_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_08_KM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_08_KM
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb2    = mysqli_query($cona,$query_pb2);
-                                $km_pb             = mysqli_fetch_assoc($stmt_pb2);
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_01_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_01_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_02_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_02_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_03_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_03_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_04_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_04_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_05_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_05_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_06_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_06_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_07_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_07_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_08_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_08_KM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_pb2    = sqlsrv_query($cona,$query_pb2);
+                        $km_pb             = sqlsrv_fetch_array($stmt_pb2, SQLSRV_FETCH_ASSOC);
                     $query_pb3 = "SELECT
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_01_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_01_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_02_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_02_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_03_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_03_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_04_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_04_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_05_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_05_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_06_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_06_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_07_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_07_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_08_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_08_PT
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb3    = mysqli_query($cona,$query_pb3);
-                                $pt_pb             = mysqli_fetch_assoc($stmt_pb3);
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_01_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_01_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_02_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_02_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_03_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_03_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_04_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_04_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_05_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_05_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_06_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_06_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_07_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_07_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_08_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_08_PT
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_pb3    = sqlsrv_query($cona,$query_pb3);
+                        $pt_pb             = sqlsrv_fetch_array($stmt_pb3, SQLSRV_FETCH_ASSOC);
                     $query_pb4 = "SELECT
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_01_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_01_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_02_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_02_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_03_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_03_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_04_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_04_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_05_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_05_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_06_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_06_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_07_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_07_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_08_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_08_KO
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb4    = mysqli_query($cona,$query_pb4);
-                                $ko_pb             = mysqli_fetch_assoc($stmt_pb4);
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_01_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_01_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_02_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_02_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_03_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_03_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_04_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_04_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_05_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_05_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_06_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_06_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_07_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_07_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_08_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_08_KO
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_pb4    = sqlsrv_query($cona,$query_pb4);
+                        $ko_pb             = sqlsrv_fetch_array($stmt_pb4, SQLSRV_FETCH_ASSOC);
                     $query_pb5 = "SELECT
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_01_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_01_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_02_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_02_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_03_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_03_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_04_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_04_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_05_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_05_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_06_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_06_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_07_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_07_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_08_AP,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'AP' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_08_AP
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb5    = mysqli_query($cona,$query_pb5);
-                                $ap_pb             = mysqli_fetch_assoc($stmt_pb5);
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_01_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_01_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_02_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_02_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_03_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_03_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_04_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_04_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_05_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_05_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_06_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_06_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_07_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_07_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_08_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_08_AP
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_pb5    = sqlsrv_query($cona,$query_pb5);
+                        $ap_pb             = sqlsrv_fetch_array($stmt_pb5, SQLSRV_FETCH_ASSOC);
                     $query_pb6 = "SELECT
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_01_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_01_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_02_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_02_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_03_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_03_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_04_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_04_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_05_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_05_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_06_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_06_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_07_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_07_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_08_PA,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PA' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_08_PA
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb6    = mysqli_query($cona,$query_pb6);
-                                $pa_pb             = mysqli_fetch_assoc($stmt_pb6);
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_01_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_01_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_02_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_02_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_03_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_03_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_04_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_04_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_05_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_05_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_06_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_06_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_07_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_07_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_08_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_08_PA
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_pb6    = sqlsrv_query($cona,$query_pb6);
+                        $pa_pb             = sqlsrv_fetch_array($stmt_pb6, SQLSRV_FETCH_ASSOC);
                     $query_pb7 = "SELECT
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_01_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_01_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_02_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_02_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_03_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_03_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_04_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_04_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_05_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_05_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_06_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_06_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_07_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_07_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_08_PM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_08_PM
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb7    = mysqli_query($cona,$query_pb7);
-                                $pm_pb             = mysqli_fetch_assoc($stmt_pb7);
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_01_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_01_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_02_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_02_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_03_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_03_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_04_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_04_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_05_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_05_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_06_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_06_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_07_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_07_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_08_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_08_PM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_pb7    = sqlsrv_query($cona,$query_pb7);
+                        $pm_pb             = sqlsrv_fetch_array($stmt_pb7, SQLSRV_FETCH_ASSOC);
                     $query_pb8 = "SELECT
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_01_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_01_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_02_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_02_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_03_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_03_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_04_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_04_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_05_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_05_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_06_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_06_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_07_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_07_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_08_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_08_GT
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb8    = mysqli_query($cona,$query_pb8);
-                                $gt_pb             = mysqli_fetch_assoc($stmt_pb8);
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_01_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_01_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_02_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_02_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_03_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_03_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_04_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_04_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_05_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_05_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_06_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_06_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_07_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_07_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_08_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_08_GT
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_pb8    = sqlsrv_query($cona,$query_pb8);
+                        $gt_pb             = sqlsrv_fetch_array($stmt_pb8, SQLSRV_FETCH_ASSOC);
                     $query_pb9 = "SELECT
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_01_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_01_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_02_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_02_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_03_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_03_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_04_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_04_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_05_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_05_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_06_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_06_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_07_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_07_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_08_TG,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'TG' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_08_TG
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb9    = mysqli_query($cona,$query_pb9);
-                                $tg_pb             = mysqli_fetch_assoc($stmt_pb9);
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_01_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_01_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_02_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_02_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_03_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_03_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_04_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_04_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_05_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_05_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_06_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_06_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_07_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_07_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_08_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_08_TG
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_pb9    = sqlsrv_query($cona,$query_pb9);
+                        $tg_pb             = sqlsrv_fetch_array($stmt_pb9, SQLSRV_FETCH_ASSOC);
                     $query_pb1 = "SELECT
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_01_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH101'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_01_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_02_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH102'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_02_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_03_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH103'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_03_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_04_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH104'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_04_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_05_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH105'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_05_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_06_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH106'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_06_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_07_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH107'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_07_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_pb_08_LM,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'LM' 
-                                                AND kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                AND mesin = 'P3SH108'
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_pb_08_LM
-                                        FROM
-                                            tbl_stoppage
-                                        WHERE dept ='BRS'
-                                            AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                            AND tbl_stoppage.kode_stop <> ''";
-                                $stmt_pb1    = mysqli_query($cona,$query_pb1);
-                                $lm_pb             = mysqli_fetch_assoc($stmt_pb1);
-                            // Total Pb
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_01_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_01_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_02_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_02_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_03_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_03_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_04_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_04_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_05_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_05_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_06_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_06_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_07_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_07_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_08_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_08_LM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_pb1    = sqlsrv_query($cona,$query_pb1);
+                        $lm_pb             = sqlsrv_fetch_array($stmt_pb1, SQLSRV_FETCH_ASSOC);
+                    // Total Pb
                     $query_mesin_pb = "SELECT
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH101'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_pb_01,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH101'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_pb_01,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH102'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_pb_02,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH102'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_pb_02,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH103'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_pb_03,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH103'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_pb_03,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH104'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_pb_04,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH104'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_pb_04,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH105'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_pb_05,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH105'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_pb_05,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH106'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_pb_06,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH106'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_pb_06,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH107'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_pb_07,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH107'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_pb_07,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH108'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_pb_08,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SHR1', 'SHR2', 'SHR3', 'SHR4', 'SHR5')
-                                                    AND mesin = 'P3SH108'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_pb_08
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_pb= mysqli_query($cona,$query_mesin_pb);
-                        $sum_mesin_pb= mysqli_fetch_assoc($stmt_mesin_pb);
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_01,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_01,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_02,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_02,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_03,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_03,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_04,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_04,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_05,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_05,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_06,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH106'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_06,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_07,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH107'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_07,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_pb_08,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SHR1','SHR2','SHR3','SHR4','SHR5')
+                                AND mesin = 'P3SH108'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_pb_08
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_mesin_pb= sqlsrv_query($cona,$query_mesin_pb);
+                        $sum_mesin_pb= sqlsrv_fetch_array($stmt_mesin_pb, SQLSRV_FETCH_ASSOC);
                     ?>
                 <!-- Mesin 01 -->
                     <td rowspan="8" align="left"><strong>POTONG BULU</strong></td>
                     <td align="center">'01</td>
                     <td align="center"><?php if ($lm_pb['jam_pb_01_LM'] != 0 || $lm_pb['menit_pb_01_LM'] != 0) {echo str_pad($lm_pb['jam_pb_01_LM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($lm_pb['menit_pb_01_LM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($lm_pb['jam_pb_01_LM'] != 0 || $lm_pb['menit_pb_01_LM'] != 0) { 
-						echo round(((($lm_pb['jam_pb_01_LM']*60)+$lm_pb['menit_pb_01_LM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($lm_pb['jam_pb_01_LM']*60)+$lm_pb['menit_pb_01_LM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($km_pb['jam_pb_01_KM'] != 0 || $km_pb['menit_pb_01_KM'] != 0) {echo str_pad($km_pb['jam_pb_01_KM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($km_pb['menit_pb_01_KM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($km_pb['jam_pb_01_KM'] != 0 || $km_pb['menit_pb_01_KM'] != 0) { 
-						echo round(((($km_pb['jam_pb_01_KM']*60)+$km_pb['menit_pb_01_KM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($km_pb['jam_pb_01_KM']*60)+$km_pb['menit_pb_01_KM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pt_pb['jam_pb_01_PT'] != 0 || $pt_pb['menit_pb_01_PT'] != 0) {echo str_pad($pt_pb['jam_pb_01_PT'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pt_pb['menit_pb_01_PT'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pt_pb['jam_pb_01_PT'] != 0 || $pt_pb['menit_pb_01_PT'] != 0) { 
-						echo round(((($pt_pb['jam_pb_01_PT']*60)+$pt_pb['menit_pb_01_PT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pt_pb['jam_pb_01_PT']*60)+$pt_pb['menit_pb_01_PT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($ko_pb['jam_pb_01_KO'] != 0 || $ko_pb['menit_pb_01_KO'] != 0) {echo str_pad($ko_pb['jam_pb_01_KO'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($ko_pb['menit_pb_01_KO'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($ko_pb['jam_pb_01_KO'] != 0 || $ko_pb['menit_pb_01_KO'] != 0) { 
-						echo round(((($ko_pb['jam_pb_01_KO']*60)+$ko_pb['menit_pb_01_KO'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($ko_pb['jam_pb_01_KO']*60)+$ko_pb['menit_pb_01_KO'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($ap_pb['jam_pb_01_AP'] != 0 || $ap_pb['menit_pb_01_AP'] != 0) {echo str_pad($ap_pb['jam_pb_01_AP'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($ap_pb['menit_pb_01_AP'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($ap_pb['jam_pb_01_AP'] != 0 || $ap_pb['menit_pb_01_AP'] != 0) { 
-						echo round(((($ap_pb['jam_pb_01_AP']*60)+$ap_pb['menit_pb_01_AP'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($ap_pb['jam_pb_01_AP']*60)+$ap_pb['menit_pb_01_AP'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pa_pb['jam_pb_01_PA'] != 0 || $pa_pb['menit_pb_01_PA'] != 0) {echo str_pad($pa_pb['jam_pb_01_PA'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pa_pb['menit_pb_01_PA'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pa_pb['jam_pb_01_PA'] != 0 || $pa_pb['menit_pb_01_PA'] != 0) { 
-						echo round(((($pa_pb['jam_pb_01_PA']*60)+$pa_pb['menit_pb_01_PA'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pa_pb['jam_pb_01_PA']*60)+$pa_pb['menit_pb_01_PA'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pm_pb['jam_pb_01_PM'] != 0 || $pm_pb['menit_pb_01_PM'] != 0) {echo str_pad($pm_pb['jam_pb_01_PM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pm_pb['menit_pb_01_PM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pm_pb['jam_pb_01_PM'] != 0 || $pm_pb['menit_pb_01_PM'] != 0) { 
-						echo round(((($pm_pb['jam_pb_01_PM']*60)+$pm_pb['menit_pb_01_PM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pm_pb['jam_pb_01_PM']*60)+$pm_pb['menit_pb_01_PM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($gt_pb['jam_pb_01_GT'] != 0 || $gt_pb['menit_pb_01_GT'] != 0) {echo str_pad($gt_pb['jam_pb_01_GT'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($gt_pb['menit_pb_01_GT'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($gt_pb['jam_pb_01_GT'] != 0 || $gt_pb['menit_pb_01_GT'] != 0) { 
-						echo round(((($gt_pb['jam_pb_01_GT']*60)+$gt_pb['menit_pb_01_GT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($gt_pb['jam_pb_01_GT']*60)+$gt_pb['menit_pb_01_GT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($tg_pb['jam_pb_01_TG'] != 0 || $tg_pb['menit_pb_01_TG'] != 0) {echo str_pad($tg_pb['jam_pb_01_TG'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($tg_pb['menit_pb_01_TG'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($tg_pb['jam_pb_01_TG'] != 0 || $tg_pb['menit_pb_01_TG'] != 0) { 
-						echo round(((($tg_pb['jam_pb_01_TG']*60)+$tg_pb['menit_pb_01_TG'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($tg_pb['jam_pb_01_TG']*60)+$tg_pb['menit_pb_01_TG'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($sum_mesin_pb['jam_pb_01'] != 0 || $sum_mesin_pb['menit_pb_01'] != 0) {echo str_pad($sum_mesin_pb['jam_pb_01'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($sum_mesin_pb['menit_pb_01'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($sum_mesin_pb['jam_pb_01'] != 0 || $sum_mesin_pb['menit_pb_01'] != 0) { 
-						echo round(((($sum_mesin_pb['jam_pb_01']*60)+$sum_mesin_pb['menit_pb_01'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($sum_mesin_pb['jam_pb_01']*60)+$sum_mesin_pb['menit_pb_01'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                 </tr>
                 <!-- Mesin 02 -->
                 <tr>
@@ -4792,1024 +4437,813 @@ border:hidden;
                 </tr>
             <!-- End Potong Bulu -->
             <!-- Untuk Kolom Peach Skin -->
-             <?php 
+                <?php 
                     $query_peach9 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_05_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_05_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_04_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_04_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_03_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_03_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_02_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_02_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_01_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_01_LM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach9    = mysqli_query($cona,$query_peach9);
-                                    $lm             = mysqli_fetch_assoc($stmt_peach9);
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_05_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_05_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_04_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_04_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_03_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_03_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_02_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_02_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_01_LM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_01_LM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_peach9    = sqlsrv_query($cona,$query_peach9);
+                        $lm             = sqlsrv_fetch_array($stmt_peach9, SQLSRV_FETCH_ASSOC);
                     $query_peach8 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_05_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_05_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_04_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_04_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_03_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_03_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_02_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_02_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_01_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_01_KM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach8    = mysqli_query($cona,$query_peach8);
-                                    $km             = mysqli_fetch_assoc($stmt_peach8);
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_05_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_05_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_04_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_04_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_03_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_03_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_02_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_02_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_01_KM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_01_KM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_peach8    = sqlsrv_query($cona,$query_peach8);
+                        $km             = sqlsrv_fetch_array($stmt_peach8, SQLSRV_FETCH_ASSOC);
                     $query_peach7 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_05_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_05_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_04_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_04_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_03_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_03_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_02_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_02_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_01_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_01_PT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach7    = mysqli_query($cona,$query_peach7);
-                                    $pt             = mysqli_fetch_assoc($stmt_peach7);
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_05_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_05_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_04_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_04_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_03_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_03_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_02_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_02_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_01_PT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_01_PT
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_peach7    = sqlsrv_query($cona,$query_peach7);
+                        $pt             = sqlsrv_fetch_array($stmt_peach7, SQLSRV_FETCH_ASSOC);
                     $query_peach6 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_05_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_05_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_04_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_04_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_03_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_03_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_02_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_02_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_01_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_01_KO
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach6    = mysqli_query($cona,$query_peach6);
-                                    $ko             = mysqli_fetch_assoc($stmt_peach6);
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_05_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_05_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_04_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_04_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_03_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_03_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_02_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_02_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_01_KO,
+                            SUM(CASE 
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_01_KO
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_peach6    = sqlsrv_query($cona,$query_peach6);
+                        $ko             = sqlsrv_fetch_array($stmt_peach6, SQLSRV_FETCH_ASSOC);
                     $query_peach5 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_05_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_05_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_04_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_04_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_03_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_03_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_02_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_02_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_01_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_01_AP
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach5    = mysqli_query($cona,$query_peach5);
-                                    $ap             = mysqli_fetch_assoc($stmt_peach5);
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_05_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_05_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_04_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_04_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_03_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_03_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_02_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_02_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_01_AP,
+                            SUM(CASE 
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_01_AP
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_peach5    = sqlsrv_query($cona,$query_peach5);
+                        $ap             = sqlsrv_fetch_array($stmt_peach5, SQLSRV_FETCH_ASSOC);
                     $query_peach4 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_05_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_05_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_04_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_04_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_03_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_03_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_02_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_02_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_01_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_01_PA
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach4    = mysqli_query($cona,$query_peach4);
-                                    $pa             = mysqli_fetch_assoc($stmt_peach4);
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_05_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_05_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_04_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_04_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_03_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_03_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_02_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_02_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_01_PA,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_01_PA
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_peach4    = sqlsrv_query($cona,$query_peach4);
+                        $pa             = sqlsrv_fetch_array($stmt_peach4, SQLSRV_FETCH_ASSOC);
                     $query_peach3 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_05_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_05_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_04_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_04_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_03_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_03_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_02_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_02_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_01_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_01_PM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach3    = mysqli_query($cona,$query_peach3);
-                                    $pm             = mysqli_fetch_assoc($stmt_peach3);
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_05_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_05_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_04_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_04_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_03_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_03_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_02_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_02_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_01_PM,
+                            SUM(CASE 
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_01_PM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_peach3    = sqlsrv_query($cona,$query_peach3);
+                        $pm             = sqlsrv_fetch_array($stmt_peach3, SQLSRV_FETCH_ASSOC);
                     $query_peach2 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_05_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_05_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_04_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_04_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_03_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_03_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_02_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_02_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_01_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_01_GT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_peach2    = mysqli_query($cona,$query_peach2);
-                                    $gt             = mysqli_fetch_assoc($stmt_peach2);
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_05_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_05_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_04_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_04_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_03_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_03_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_02_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_02_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_01_GT,
+                            SUM(CASE 
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_01_GT
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_peach2    = sqlsrv_query($cona,$query_peach2);
+                        $gt             = sqlsrv_fetch_array($stmt_peach2, SQLSRV_FETCH_ASSOC);
                     $query_peach1 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_05_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_05_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_04_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_04_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_03_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_03_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_02_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_02_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_01_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_01_TG
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_peach1= mysqli_query($cona,$query_peach1);
-                        $tg= mysqli_fetch_assoc($stmt_peach1);
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_05_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_05_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_04_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_04_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_03_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_03_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_02_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_02_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_01_TG,
+                            SUM(CASE 
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_01_TG
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_peach1= sqlsrv_query($cona,$query_peach1);
+                        $tg= sqlsrv_fetch_array($stmt_peach1, SQLSRV_FETCH_ASSOC);
                     // Total Peach
                     $query_mesin_peach1 = "SELECT
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_05,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU105' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_05,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_04,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU104' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_04,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_03,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU103' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_03,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_02,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_02,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_peach_01,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('SUE1', 'SUE2', 'SUE3', 'SUE4') 
-                                                    AND mesin = 'P3SU101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_peach_01
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_peach1= mysqli_query($cona,$query_mesin_peach1);
-                        $sum_mesin_peach= mysqli_fetch_assoc($stmt_mesin_peach1);
-                                        ?>
+                            SUM(CASE
+                                WHEN kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_05,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU105'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_05,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_04,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU104'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_04,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_03,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU103'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_03,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_02,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_02,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_peach_01,
+                            SUM(CASE
+                                WHEN kode_operation IN ('SUE1','SUE2','SUE3','SUE4')
+                                AND mesin = 'P3SU101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_peach_01
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_mesin_peach1= sqlsrv_query($cona,$query_mesin_peach1);
+                        $sum_mesin_peach= sqlsrv_fetch_array($stmt_mesin_peach1, SQLSRV_FETCH_ASSOC);
+                ?>
                 <!-- Untuk Mesin 01 -->
                     <tr>
                     <td rowspan="5" align="left"><strong>PEACH SKIN</strong></td>
                     <td align="center">'01</td>
                     <td align="center"><?php if ($lm['jam_peach_01_LM'] != 0 || $lm['menit_peach_01_LM'] != 0) {echo str_pad($lm['jam_peach_01_LM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($lm['menit_peach_01_LM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($lm['jam_peach_01_LM'] != 0 || $lm['menit_peach_01_LM'] != 0) { 
-						echo round(((($lm['jam_peach_01_LM']*60)+$lm['menit_peach_01_LM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($lm['jam_peach_01_LM']*60)+$lm['menit_peach_01_LM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($km['jam_peach_01_KM'] != 0 || $km['menit_peach_01_KM'] != 0) {echo str_pad($km['jam_peach_01_KM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($km['menit_peach_01_KM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($km['jam_peach_01_KM'] != 0 || $km['menit_peach_01_KM'] != 0) { 
-						echo round(((($km['jam_peach_01_KM']*60)+$km['menit_peach_01_KM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($km['jam_peach_01_KM']*60)+$km['menit_peach_01_KM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pt['jam_peach_01_PT'] != 0 || $pt['menit_peach_01_PT'] != 0) {echo str_pad($pt['jam_peach_01_PT'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pt['menit_peach_01_PT'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pt['jam_peach_01_PT'] != 0 || $pt['menit_peach_01_PT'] != 0) { 
-						echo round(((($pt['jam_peach_01_PT']*60)+$pt['menit_peach_01_PT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pt['jam_peach_01_PT']*60)+$pt['menit_peach_01_PT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($ko['jam_peach_01_KO'] != 0 || $ko['menit_peach_01_KO'] != 0) {echo str_pad($ko['jam_peach_01_KO'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($ko['menit_peach_01_KO'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($ko['jam_peach_01_KO'] != 0 || $ko['menit_peach_01_KO'] != 0) { 
-						echo round(((($ko['jam_peach_01_KO']*60)+$ko['menit_peach_01_KO'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($ko['jam_peach_01_KO']*60)+$ko['menit_peach_01_KO'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($ap['jam_peach_01_AP'] != 0 || $ap['menit_peach_01_AP'] != 0) {echo str_pad($ap['jam_peach_01_AP'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($ap['menit_peach_01_AP'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($ap['jam_peach_01_AP'] != 0 || $ap['menit_peach_01_AP'] != 0) { 
-						echo round(((($ap['jam_peach_01_AP']*60)+$ap['menit_peach_01_AP'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($ap['jam_peach_01_AP']*60)+$ap['menit_peach_01_AP'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pa['jam_peach_01_PA'] != 0 || $pa['menit_peach_01_PA'] != 0) {echo str_pad($pa['jam_peach_01_PA'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pa['menit_peach_01_PA'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pa['jam_peach_01_PA'] != 0 || $pa['menit_peach_01_PA'] != 0) { 
-						echo round(((($pa['jam_peach_01_PA']*60)+$pa['menit_peach_01_PA'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pa['jam_peach_01_PA']*60)+$pa['menit_peach_01_PA'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pm['jam_peach_01_PM'] != 0 || $pm['menit_peach_01_PM'] != 0) {echo str_pad($pm['jam_peach_01_PM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pm['menit_peach_01_PM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pm['jam_peach_01_PM'] != 0 || $pm['menit_peach_01_PM'] != 0) { 
-						echo round(((($pm['jam_peach_01_PM']*60)+$pm['menit_peach_01_PM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pm['jam_peach_01_PM']*60)+$pm['menit_peach_01_PM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($gt['jam_peach_01_GT'] != 0 || $gt['menit_peach_01_GT'] != 0) {echo str_pad($gt['jam_peach_01_GT'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($gt['menit_peach_01_GT'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($gt['jam_peach_01_GT'] != 0 || $gt['menit_peach_01_GT'] != 0) { 
-						echo round(((($gt['jam_peach_01_GT']*60)+$gt['menit_peach_01_GT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($gt['jam_peach_01_GT']*60)+$gt['menit_peach_01_GT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($tg['jam_peach_01_TG'] != 0 || $tg['menit_peach_01_TG'] != 0) {echo str_pad($tg['jam_peach_01_TG'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($tg['menit_peach_01_TG'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($tg['jam_peach_01_TG'] != 0 || $tg['menit_peach_01_TG'] != 0) { 
-						echo round(((($tg['jam_peach_01_TG']*60)+$tg['menit_peach_01_TG'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($tg['jam_peach_01_TG']*60)+$tg['menit_peach_01_TG'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($sum_mesin_peach['jam_peach_01'] != 0 || $sum_mesin_peach['menit_peach_01'] != 0) {echo str_pad($sum_mesin_peach['jam_peach_01'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($sum_mesin_peach['menit_peach_01'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($sum_mesin_peach['jam_peach_01'] != 0 || $sum_mesin_peach['menit_peach_01'] != 0) { 
-						echo round(((($sum_mesin_peach['jam_peach_01']*60)+$sum_mesin_peach['menit_peach_01'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($sum_mesin_peach['jam_peach_01']*60)+$sum_mesin_peach['menit_peach_01'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                 </tr>
                 <!-- Untuk Mesin 02 -->
                     <tr>
@@ -5988,492 +5422,408 @@ border:hidden;
                       %</td>
                     <!-- <td align="center">Ini untuk total</td> -->
                 </tr>
-
             <!-- End Peach -->
             <!-- Untuk Kolom Airo -->
                 <tr>
                     <?php 
                     $query_airo9 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_01_airo_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_01_airo_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_02_airo_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_02_airo_TG
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo9    = mysqli_query($cona,$query_airo9);
-                                    $tg_airo             = mysqli_fetch_assoc($stmt_airo9);
+                            SUM(CASE
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_01_airo_TG,
+                            SUM(CASE
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_01_airo_TG,
+                            SUM(CASE
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_02_airo_TG,
+                            SUM(CASE
+                                WHEN kode_stop = 'TG'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_02_airo_TG
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_airo9    = sqlsrv_query($cona,$query_airo9);
+                        $tg_airo             = sqlsrv_fetch_array($stmt_airo9, SQLSRV_FETCH_ASSOC);
                     $query_airo8 = "SELECT
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('AIR1')
-                                                AND mesin = 'P3AR101' 
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_01_airo_GT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'GT' 
-                                                AND kode_operation IN ('AIR1')
-                                                AND mesin = 'P3AR101' 
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_01_airo_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_02_airo_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_02_airo_GT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo8    = mysqli_query($cona,$query_airo8);
-                                    $gt_airo             = mysqli_fetch_assoc($stmt_airo8);
+                            SUM(CASE
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_01_airo_GT,
+                            SUM(CASE
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_01_airo_GT,
+                            SUM(CASE
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_02_airo_GT,
+                            SUM(CASE
+                                WHEN kode_stop = 'GT'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_02_airo_GT
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_airo8    = sqlsrv_query($cona,$query_airo8);
+                        $gt_airo             = sqlsrv_fetch_array($stmt_airo8, SQLSRV_FETCH_ASSOC);
                     $query_airo7 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_01_airo_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_01_airo_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_02_airo_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_02_airo_PM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo7    = mysqli_query($cona,$query_airo7);
-                                    $pm_airo             = mysqli_fetch_assoc($stmt_airo7);
+                            SUM(CASE
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_01_airo_PM,
+                            SUM(CASE
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_01_airo_PM,
+                            SUM(CASE
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_02_airo_PM,
+                            SUM(CASE
+                                WHEN kode_stop = 'PM'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_02_airo_PM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_airo7    = sqlsrv_query($cona,$query_airo7);
+                        $pm_airo             = sqlsrv_fetch_array($stmt_airo7, SQLSRV_FETCH_ASSOC);
                     $query_airo6 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_01_airo_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_01_airo_PA,
-                                            SUM(
-
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_02_airo_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_02_airo_PA
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo6    = mysqli_query($cona,$query_airo6);
-                                    $pa_airo             = mysqli_fetch_assoc($stmt_airo6);
+                            SUM(CASE
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_01_airo_PA,
+                            SUM(CASE
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_01_airo_PA,
+                            SUM(CASE
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_02_airo_PA,
+                            SUM(CASE
+                                WHEN kode_stop = 'PA'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_02_airo_PA
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_airo6    = sqlsrv_query($cona,$query_airo6);
+                        $pa_airo             = sqlsrv_fetch_array($stmt_airo6, SQLSRV_FETCH_ASSOC);
                     $query_airo5 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_01_airo_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_01_airo_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_02_airo_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_02_airo_AP
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo5    = mysqli_query($cona,$query_airo5);
-                                    $ap_airo             = mysqli_fetch_assoc($stmt_airo5);
+                            SUM(CASE
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_01_airo_AP,
+                            SUM(CASE
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_01_airo_AP,
+                            SUM(CASE
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_02_airo_AP,
+                            SUM(CASE
+                                WHEN kode_stop = 'AP'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_02_airo_AP
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_airo5    = sqlsrv_query($cona,$query_airo5);
+                        $ap_airo             = sqlsrv_fetch_array($stmt_airo5, SQLSRV_FETCH_ASSOC);
                     $query_airo4 = "SELECT
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('AIR1')
-                                                AND mesin = 'P3AR101' 
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_01_airo_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('AIR1')
-                                                AND mesin = 'P3AR101' 
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_01_airo_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('AIR1')
-                                                AND mesin = 'P3AR102' 
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_02_airo_KO,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'KO' 
-                                                AND kode_operation IN ('AIR1')
-                                                AND mesin = 'P3AR102' 
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_02_airo_KO
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo4    = mysqli_query($cona,$query_airo4);
-                                    $ko_airo             = mysqli_fetch_assoc($stmt_airo4);
+                            SUM(CASE
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_01_airo_KO,
+                            SUM(CASE
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_01_airo_KO,
+                            SUM(CASE
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_02_airo_KO,
+                            SUM(CASE
+                                WHEN kode_stop = 'KO'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_02_airo_KO
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_airo4    = sqlsrv_query($cona,$query_airo4);
+                        $ko_airo             = sqlsrv_fetch_array($stmt_airo4, SQLSRV_FETCH_ASSOC);
                     $query_airo3 = "SELECT
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('AIR1')
-                                                AND mesin = 'P3AR101' 
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_01_airo_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('AIR1')
-                                                AND mesin = 'P3AR101' 
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_01_airo_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('AIR1')
-                                                AND mesin = 'P3AR102' 
-                                                THEN FLOOR(durasi_jam_stop) 
-                                                ELSE 0 
-                                            END
-                                            ) AS jam_02_airo_PT,
-                                        SUM(
-                                            CASE 
-                                                WHEN kode_stop = 'PT' 
-                                                AND kode_operation IN ('AIR1')
-                                                AND mesin = 'P3AR102' 
-                                                THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ELSE 0 
-                                            END
-                                            ) AS menit_02_airo_PT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo3    = mysqli_query($cona,$query_airo3);
-                                    $pt_airo             = mysqli_fetch_assoc($stmt_airo3);
+                            SUM(CASE
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_01_airo_PT,
+                            SUM(CASE
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_01_airo_PT,
+                            SUM(CASE
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_02_airo_PT,
+                            SUM(CASE
+                                WHEN kode_stop = 'PT'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_02_airo_PT
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_airo3    = sqlsrv_query($cona,$query_airo3);
+                        $pt_airo             = sqlsrv_fetch_array($stmt_airo3, SQLSRV_FETCH_ASSOC);
                     $query_airo2 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_01_airo_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_01_airo_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_02_airo_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_02_airo_KM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo2    = mysqli_query($cona,$query_airo2);
-                                    $km_airo             = mysqli_fetch_assoc($stmt_airo2);
+                            SUM(CASE
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_01_airo_KM,
+                            SUM(CASE
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_01_airo_KM,
+                            SUM(CASE
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_02_airo_KM,
+                            SUM(CASE
+                                WHEN kode_stop = 'KM'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_02_airo_KM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_airo2    = sqlsrv_query($cona,$query_airo2);
+                        $km_airo             = sqlsrv_fetch_array($stmt_airo2, SQLSRV_FETCH_ASSOC);
                     $query_airo1 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_01_airo_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_01_airo_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_02_airo_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_02_airo_LM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_airo1    = mysqli_query($cona,$query_airo1);
-                                    $lm_airo             = mysqli_fetch_assoc($stmt_airo1);
-                            // Total airo
+                            SUM(CASE
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_01_airo_LM,
+                            SUM(CASE
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR101'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_01_airo_LM,
+                            SUM(CASE
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN FLOOR(durasi_jam_stop)
+                                ELSE 0
+                            END) AS jam_02_airo_LM,
+                            SUM(CASE
+                                WHEN kode_stop = 'LM'
+                                AND kode_operation IN ('AIR1')
+                                AND mesin = 'P3AR102'
+                                THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                ELSE 0
+                            END) AS menit_02_airo_LM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_airo1    = sqlsrv_query($cona,$query_airo1);
+                        $lm_airo             = sqlsrv_fetch_array($stmt_airo1, SQLSRV_FETCH_ASSOC);
+                    // Total airo
                     $query_mesin_airo = "SELECT
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR101' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_01_airo,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR101' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_01_airo,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_02_airo,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('AIR1')
-                                                    AND mesin = 'P3AR102' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_02_airo
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_airo= mysqli_query($cona,$query_mesin_airo);
-                        $sum_mesin_airo= mysqli_fetch_assoc($stmt_mesin_airo);
-                        ?>
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('AIR1')
+                                    AND mesin = 'P3AR101'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_01_airo,
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('AIR1')
+                                    AND mesin = 'P3AR101'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_01_airo,
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('AIR1')
+                                    AND mesin = 'P3AR102'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_02_airo,
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('AIR1')
+                                    AND mesin = 'P3AR102'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_02_airo
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_mesin_airo= sqlsrv_query($cona,$query_mesin_airo);
+                        $sum_mesin_airo= sqlsrv_fetch_array($stmt_mesin_airo, SQLSRV_FETCH_ASSOC);
+                    ?>
                     <td rowspan="2" align="left"><strong>AIRO</strong></td>
                     <td align="center">'01</td>
                     <td align="center"><?php if ($lm_airo['jam_01_airo_LM'] != 0 || $lm_airo['menit_01_airo_LM'] != 0) {echo str_pad($lm_airo['jam_01_airo_LM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($lm_airo['menit_01_airo_LM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($lm_airo['jam_01_airo_LM'] != 0 || $lm_airo['menit_01_airo_LM'] != 0) { 
-						echo round(((($lm_airo['jam_01_airo_LM']*60)+$lm_airo['menit_01_airo_LM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($lm_airo['jam_01_airo_LM']*60)+$lm_airo['menit_01_airo_LM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($km_airo['jam_01_airo_KM'] != 0 || $km_airo['menit_01_airo_KM'] != 0) {echo str_pad($km_airo['jam_01_airo_KM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($km_airo['menit_01_airo_KM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($$km_airo['jam_01_airo_KM'] != 0 || $km_airo['menit_01_airo_KM'] != 0) { 
-						echo round(((($km_airo['jam_01_airo_KM']*60)+$km_airo['menit_01_airo_KM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($km_airo['jam_01_airo_KM']*60)+$km_airo['menit_01_airo_KM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pt_airo['jam_01_airo_PT'] != 0 || $pt_airo['menit_01_airo_PT'] != 0) {echo str_pad($pt_airo['jam_01_airo_PT'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pt_airo['menit_01_airo_PT'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pt_airo['jam_01_airo_PT'] != 0 || $pt_airo['menit_01_airo_PT'] != 0) { 
-						echo round(((($pt_airo['jam_01_airo_PT']*60)+$pt_airo['menit_01_airo_PT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pt_airo['jam_01_airo_PT']*60)+$pt_airo['menit_01_airo_PT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($ko_airo['jam_01_airo_KO'] != 0 || $ko_airo['menit_01_airo_KO'] != 0) {echo str_pad($ko_airo['jam_01_airo_KO'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($ko_airo['menit_01_airo_KO'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($ko_airo['jam_01_airo_KO'] != 0 || $ko_airo['menit_01_airo_KO'] != 0) { 
-						echo round(((($ko_airo['jam_01_airo_KO']*60)+$ko_airo['menit_01_airo_KO'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($ko_airo['jam_01_airo_KO']*60)+$ko_airo['menit_01_airo_KO'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($ap_airo['jam_01_airo_AP'] != 0 || $ap_airo['menit_01_airo_AP'] != 0) {echo str_pad($ap_airo['jam_01_airo_AP'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($ap_airo['menit_01_airo_AP'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($ap_airo['jam_01_airo_AP'] != 0 || $ap_airo['menit_01_airo_AP'] != 0) { 
-						echo round(((($ap_airo['jam_01_airo_AP']*60)+$ap_airo['menit_01_airo_AP'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($ap_airo['jam_01_airo_AP']*60)+$ap_airo['menit_01_airo_AP'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pa_airo['jam_01_airo_PA'] != 0 || $pa_airo['menit_01_airo_PA'] != 0) {echo str_pad($pa_airo['jam_01_airo_PA'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pa_airo['menit_01_airo_PA'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pa_airo['jam_01_airo_PA'] != 0 || $pa_airo['menit_01_airo_PA'] != 0) { 
-						echo round(((($pa_airo['jam_01_airo_PA']*60)+$pa_airo['menit_01_airo_PA'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pa_airo['jam_01_airo_PA']*60)+$pa_airo['menit_01_airo_PA'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pm_airo['jam_01_airo_PM'] != 0 || $pm_airo['menit_01_airo_PM'] != 0) {echo str_pad($pm_airo['jam_01_airo_PM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pm_airo['menit_01_airo_PM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pm_airo['jam_01_airo_PM'] != 0 || $pm_airo['menit_01_airo_PM'] != 0) { 
-						echo round(((($pm_airo['jam_01_airo_PM']*60)+$pm_airo['menit_01_airo_PM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pm_airo['jam_01_airo_PM']*60)+$pm_airo['menit_01_airo_PM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($gt_airo['jam_01_airo_GT'] != 0 || $gt_airo['menit_01_airo_GT'] != 0) {echo str_pad($gt_airo['jam_01_airo_GT'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($gt_airo['menit_01_airo_GT'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($gt_airo['jam_01_airo_GT'] != 0 || $gt_airo['menit_01_airo_GT'] != 0) { 
-						echo round(((($gt_airo['jam_01_airo_GT']*60)+$gt_airo['menit_01_airo_GT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($gt_airo['jam_01_airo_GT']*60)+$gt_airo['menit_01_airo_GT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($tg_airo['jam_01_airo_TG'] != 0 || $tg_airo['menit_01_airo_TG'] != 0) {echo str_pad($tg_airo['jam_01_airo_TG'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($tg_airo['menit_01_airo_TG'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($tg_airo['jam_01_airo_TG'] != 0 || $tg_airo['menit_01_airo_TG'] != 0) { 
-						echo round(((($tg_airo['jam_01_airo_TG']*60)+$tg_airo['menit_01_airo_TG'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($tg_airo['jam_01_airo_TG']*60)+$tg_airo['menit_01_airo_TG'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($sum_mesin_airo['jam_01_airo'] != 0 || $sum_mesin_airo['menit_01_airo'] != 0) {echo str_pad($sum_mesin_airo['jam_01_airo'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($sum_mesin_airo['menit_01_airo'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($sum_mesin_airo['jam_01_airo'] != 0 || $sum_mesin_airo['menit_01_airo'] != 0) { 
-						echo round(((($sum_mesin_airo['jam_01_airo']*60)+$sum_mesin_airo['menit_01_airo'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($sum_mesin_airo['jam_01_airo']*60)+$sum_mesin_airo['menit_01_airo'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                 </tr>
                 <tr>
                     <td align="center">'02</td>
@@ -6521,1023 +5871,1012 @@ border:hidden;
             <!-- End Airo -->
             <!-- Untuk Kolom Anti Piling1 -->
                 <tr>
-                    <?php $query_ap9 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_05_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_05_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-
-                                                END
-                                                ) AS jam_ap_04_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_04_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_03_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_03_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_02_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_02_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_01_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_01_LM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap9    = mysqli_query($cona,$query_ap9);
-                                    $lm_ap             = mysqli_fetch_assoc($stmt_ap9);
+                    <?php
+                    $query_ap9 = "SELECT
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'LM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_05_LM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'LM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_05_LM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'LM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_04_LM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'LM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_04_LM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'LM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_03_LM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'LM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_03_LM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'LM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_02_LM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'LM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_02_LM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'LM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_01_LM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'LM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_01_LM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_ap9    = sqlsrv_query($cona,$query_ap9);
+                        $lm_ap             = sqlsrv_fetch_array($stmt_ap9, SQLSRV_FETCH_ASSOC);
                     $query_ap8 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_05_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_05_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_04_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_04_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_03_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_03_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_02_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_02_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_01_KM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_01_KM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap8    = mysqli_query($cona,$query_ap8);
-                                    $km_ap             = mysqli_fetch_assoc($stmt_ap8);
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_05_KM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_05_KM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_04_KM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_04_KM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_03_KM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_03_KM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_02_KM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_02_KM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_01_KM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_01_KM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_ap8    = sqlsrv_query($cona,$query_ap8);
+                        $km_ap             = sqlsrv_fetch_array($stmt_ap8, SQLSRV_FETCH_ASSOC);
                     $query_ap7 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_05_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_05_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_04_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_04_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_03_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_03_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_02_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_02_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_01_PT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_01_PT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap7    = mysqli_query($cona,$query_ap7);
-                                    $pt_ap             = mysqli_fetch_assoc($stmt_ap7);
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_05_PT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_05_PT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_04_PT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_04_PT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_03_PT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_03_PT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_02_PT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_02_PT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_01_PT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_01_PT
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_ap7    = sqlsrv_query($cona,$query_ap7);
+                        $pt_ap             = sqlsrv_fetch_array($stmt_ap7, SQLSRV_FETCH_ASSOC);
                     $query_ap6 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_05_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_05_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_04_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_04_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_03_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_03_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_02_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_02_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_01_KO,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'KO' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_01_KO
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap6    = mysqli_query($cona,$query_ap6);
-                                    $ko_ap             = mysqli_fetch_assoc($stmt_ap6);
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KO'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_05_KO,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KO'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_05_KO,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KO'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_04_KO,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KO'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_04_KO,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KO'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_03_KO,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KO'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_03_KO,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KO'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_02_KO,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KO'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_02_KO,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KO'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_01_KO,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'KO'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_01_KO
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_ap6    = sqlsrv_query($cona,$query_ap6);
+                        $ko_ap             = sqlsrv_fetch_array($stmt_ap6, SQLSRV_FETCH_ASSOC);
                     $query_ap5 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_05_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_05_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_04_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_04_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_03_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_03_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_02_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_02_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_01_AP,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'AP' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_01_AP
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap5    = mysqli_query($cona,$query_ap5);
-                                    $ap_ap             = mysqli_fetch_assoc($stmt_ap5);
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'AP'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_05_AP,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'AP'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_05_AP,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'AP'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_04_AP,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'AP'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_04_AP,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'AP'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_03_AP,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'AP'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_03_AP,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'AP'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_02_AP,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'AP'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_02_AP,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'AP'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_01_AP,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'AP'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_01_AP
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_ap5    = sqlsrv_query($cona,$query_ap5);
+                        $ap_ap             = sqlsrv_fetch_array($stmt_ap5, SQLSRV_FETCH_ASSOC);
                     $query_ap4 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_05_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_05_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_04_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_04_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_03_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_03_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_02_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_02_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_01_PA,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PA' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_01_PA
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap4    = mysqli_query($cona,$query_ap4);
-                                    $pa_ap             = mysqli_fetch_assoc($stmt_ap4);
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PA'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_05_PA,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PA'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_05_PA,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PA'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_04_PA,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PA'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_04_PA,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PA'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_03_PA,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PA'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_03_PA,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PA'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_02_PA,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PA'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_02_PA,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PA'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_01_PA,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PA'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_01_PA
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_ap4    = sqlsrv_query($cona,$query_ap4);
+                        $pa_ap             = sqlsrv_fetch_array($stmt_ap4, SQLSRV_FETCH_ASSOC);
                     $query_ap3 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_05_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_05_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_04_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_04_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_03_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_03_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_02_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_02_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_01_PM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'PM' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_01_PM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap3    = mysqli_query($cona,$query_ap3);
-                                    $pm_ap             = mysqli_fetch_assoc($stmt_ap3);
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_05_PM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_05_PM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_04_PM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_04_PM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_03_PM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_03_PM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_02_PM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_02_PM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_01_PM,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'PM'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_01_PM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_ap3    = sqlsrv_query($cona,$query_ap3);
+                        $pm_ap             = sqlsrv_fetch_array($stmt_ap3, SQLSRV_FETCH_ASSOC);
                     $query_ap2 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_05_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_05_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_04_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_04_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_03_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_03_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_02_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_02_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_01_GT,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'GT' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_01_GT
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_ap2    = mysqli_query($cona,$query_ap2);
-                                    $gt_ap             = mysqli_fetch_assoc($stmt_ap2);
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'GT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_05_GT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'GT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_05_GT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'GT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_04_GT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'GT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_04_GT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'GT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_03_GT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'GT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_03_GT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'GT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_02_GT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'GT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_02_GT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'GT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_01_GT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'GT'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_01_GT
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_ap2    = sqlsrv_query($cona,$query_ap2);
+                        $gt_ap             = sqlsrv_fetch_array($stmt_ap2, SQLSRV_FETCH_ASSOC);
                     $query_ap1 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_05_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_05_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_04_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_04_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_03_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_03_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_02_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_02_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_01_TG,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'TG' 
-                                                    AND kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_01_TG
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_ap1= mysqli_query($cona,$query_ap1);
-                        $tg_ap= mysqli_fetch_assoc($stmt_ap1);
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'TG'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_05_TG,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'TG'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_05_TG,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'TG'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_04_TG,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'TG'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_04_TG,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'TG'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_03_TG,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'TG'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_03_TG,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'TG'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_02_TG,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'TG'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_02_TG,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'TG'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_01_TG,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'TG'
+                                    AND kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_01_TG
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_ap1= sqlsrv_query($cona,$query_ap1);
+                        $tg_ap= sqlsrv_fetch_array($stmt_ap1, SQLSRV_FETCH_ASSOC);
                     // Total ap
                     $query_mesin_ap1 = "SELECT
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_05,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%05%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_05,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_04,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%04%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_04,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_03,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%03%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_03,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_02,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%02%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_02,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%' 
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_ap_01,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('TDR1') 
-                                                    AND mesin LIKE '%01%' 
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_ap_01
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_ap1= mysqli_query($cona,$query_mesin_ap1);
-                        $sum_mesin_ap= mysqli_fetch_assoc($stmt_mesin_ap1);
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_05,
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%05%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_05,
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_04,
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%04%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_04,
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_03,
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%03%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_03,
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_02,
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%02%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_02,
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_ap_01,
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('TDR1')
+                                    AND mesin LIKE '%01%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_ap_01
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_mesin_ap1= sqlsrv_query($cona,$query_mesin_ap1);
+                        $sum_mesin_ap= sqlsrv_fetch_array($stmt_mesin_ap1, SQLSRV_FETCH_ASSOC);
                                         ?>
                     <td rowspan="4" align="left"><strong>ANTI PILLING 01</strong></td>
                     <td align="center">'01</td>
                     <td align="center"><?php if ($lm_ap['jam_ap_01_LM'] != 0 || $lm_ap['menit_ap_01_LM'] != 0) {echo str_pad($lm_ap['jam_ap_01_LM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($lm_ap['menit_ap_01_LM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($lm_ap['jam_ap_01_LM'] != 0 || $lm_ap['menit_ap_01_LM'] != 0) { 
-						echo round(((($lm_ap['jam_ap_01_LM']*60)+$lm_ap['menit_ap_01_LM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($lm_ap['jam_ap_01_LM']*60)+$lm_ap['menit_ap_01_LM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($km_ap['jam_ap_01_KM'] != 0 || $km_ap['menit_ap_01_KM'] != 0) {echo str_pad($km_ap['jam_ap_01_KM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($km_ap['menit_ap_01_KM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($km_ap['jam_ap_01_KM'] != 0 || $km_ap['menit_ap_01_KM'] != 0) { 
-						echo round(((($km_ap['jam_ap_01_KM']*60)+$km_ap['menit_ap_01_KM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($km_ap['jam_ap_01_KM']*60)+$km_ap['menit_ap_01_KM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pt_ap['jam_ap_01_PT'] != 0 || $pt_ap['menit_ap_01_PT'] != 0) {echo str_pad($pt_ap['jam_ap_01_PT'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pt_ap['menit_ap_01_PT'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pt_ap['jam_ap_01_PT'] != 0 || $pt_ap['menit_ap_01_PT'] != 0) { 
-						echo round(((($pt_ap['jam_ap_01_PT']*60)+$pt_ap['menit_ap_01_PT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pt_ap['jam_ap_01_PT']*60)+$pt_ap['menit_ap_01_PT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($ko_ap['jam_ap_01_KO'] != 0 || $ko_ap['menit_ap_01_KO'] != 0) {echo str_pad($ko_ap['jam_ap_01_KO'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($ko_ap['menit_ap_01_KO'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($ko_ap['jam_ap_01_KO'] != 0 || $ko_ap['menit_ap_01_KO'] != 0) { 
-						echo round(((($ko_ap['jam_ap_01_KO']*60)+$ko_ap['menit_ap_01_KO'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($ko_ap['jam_ap_01_KO']*60)+$ko_ap['menit_ap_01_KO'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($ap_ap['jam_ap_01_AP'] != 0 || $ap_ap['menit_ap_01_AP'] != 0) {echo str_pad($ap_ap['jam_ap_01_AP'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($ap_ap['menit_ap_01_AP'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($ap_ap['jam_ap_01_AP'] != 0 || $ap_ap['menit_ap_01_AP'] != 0) { 
-						echo round(((($ap_ap['jam_ap_01_AP']*60)+$ap_ap['menit_ap_01_AP'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($ap_ap['jam_ap_01_AP']*60)+$ap_ap['menit_ap_01_AP'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pa_ap['jam_ap_01_PA'] != 0 || $pa_ap['menit_ap_01_PA'] != 0) {echo str_pad($pa_ap['jam_ap_01_PA'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pa_ap['menit_ap_01_PA'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pa_ap['jam_ap_01_PA'] != 0 || $pa_ap['menit_ap_01_PA'] != 0) { 
-						echo round(((($pa_ap['jam_ap_01_PA']*60)+$pa_ap['menit_ap_01_PA'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pa_ap['jam_ap_01_PA']*60)+$pa_ap['menit_ap_01_PA'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pm_ap['jam_ap_01_PM'] != 0 || $pm_ap['menit_ap_01_PM'] != 0) {echo str_pad($pm_ap['jam_ap_01_PM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pm_ap['menit_ap_01_PM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pm_ap['jam_ap_01_PM'] != 0 || $pm_ap['menit_ap_01_PM'] != 0) { 
-						echo round(((($pm_ap['jam_ap_01_PM']*60)+$pm_ap['menit_ap_01_PM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pm_ap['jam_ap_01_PM']*60)+$pm_ap['menit_ap_01_PM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($gt_ap['jam_ap_01_GT'] != 0 || $gt_ap['menit_ap_01_GT'] != 0) {echo str_pad($gt_ap['jam_ap_01_GT'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($gt_ap['menit_ap_01_GT'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($gt_ap['jam_ap_01_GT'] != 0 || $gt_ap['menit_ap_01_GT'] != 0) { 
-						echo round(((($gt_ap['jam_ap_01_GT']*60)+$gt_ap['menit_ap_01_GT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($gt_ap['jam_ap_01_GT']*60)+$gt_ap['menit_ap_01_GT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($tg_ap['jam_ap_01_TG'] != 0 || $tg_ap['menit_ap_01_TG'] != 0) {echo str_pad($tg_ap['jam_ap_01_TG'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($tg_ap['menit_ap_01_TG'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($tg_ap['jam_ap_01_TG'] != 0 || $tg_ap['menit_ap_01_TG']!= 0) { 
-						echo round(((($tg_ap['jam_ap_01_TG']*60)+$tg_ap['menit_ap_01_TG'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($tg_ap['jam_ap_01_TG']*60)+$tg_ap['menit_ap_01_TG'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($sum_mesin_ap['jam_ap_01'] != 0 || $sum_mesin_ap['menit_ap_01'] != 0) {echo str_pad($sum_mesin_ap['jam_ap_01'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($sum_mesin_ap['menit_ap_01'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($sum_mesin_ap['jam_ap_01'] != 0 || $sum_mesin_ap['menit_ap_01']!= 0) { 
-						echo round(((($sum_mesin_ap['jam_ap_01']*60)+$sum_mesin_ap['menit_ap_01'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($sum_mesin_ap['jam_ap_01']*60)+$sum_mesin_ap['menit_ap_01'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                 </tr>
-
                 <tr>
                     <td align="center">'02</td>
                     <td align="center"><?php if ($lm_ap['jam_ap_02_LM'] != 0 || $lm_ap['menit_ap_02_LM'] != 0) {echo str_pad($lm_ap['jam_ap_02_LM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($lm_ap['menit_ap_02_LM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
@@ -7748,455 +7087,344 @@ border:hidden;
             <!-- End Anti Piling4 -->
             <!-- Untuk Kolom Wet Sue -->
                 <tr>
-                    <?php $query_wet9 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'TG' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_wet_F_TG,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'TG' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_wet_F_TG
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet9    = mysqli_query($cona,$query_wet9);
-                            $tg_wet             = mysqli_fetch_assoc($stmt_wet9);
-                $query_wet8 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'GT' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_wet_F_GT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'GT' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_wet_F_GT
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet8    = mysqli_query($cona,$query_wet8);
-                            $gt_wet             = mysqli_fetch_assoc($stmt_wet8);
-                $query_wet7 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PM' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_wet_F_PM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PM' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_wet_F_PM
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet7    = mysqli_query($cona,$query_wet7);
-                            $pm_wet             = mysqli_fetch_assoc($stmt_wet7);
-                $query_wet6 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PA' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_wet_F_PA,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PA' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_wet_F_PA
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet6    = mysqli_query($cona,$query_wet6);
-                            $pa_wet             = mysqli_fetch_assoc($stmt_wet6);
-                $query_wet5 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'AP' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_wet_F_AP,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'AP' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_wet_F_AP
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet5    = mysqli_query($cona,$query_wet5);
-                            $ap_wet             = mysqli_fetch_assoc($stmt_wet5);
-                $query_wet4 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KO' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_wet_F_KO,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KO' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_wet_F_KO
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet4    = mysqli_query($cona,$query_wet4);
-                            $ko_wet             = mysqli_fetch_assoc($stmt_wet4);
-                $query_wet3 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PT' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_wet_F_PT,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'PT' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_wet_F_PT
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet3    = mysqli_query($cona,$query_wet3);
-                            $pt_wet             = mysqli_fetch_assoc($stmt_wet3);
-                $query_wet2 = "SELECT
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KM' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN FLOOR(durasi_jam_stop) 
-                                            ELSE 0 
-                                        END
-                                        ) AS jam_wet_F_KM,
-                                    SUM(
-                                        CASE 
-                                            WHEN kode_stop = 'KM' 
-                                            AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                            -- AND mesin like '%F%'
-                                            THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                            ELSE 0 
-                                        END
-                                        ) AS menit_wet_F_KM
-                                    FROM
-                                        tbl_stoppage
-                                    WHERE dept ='BRS'
-                                        AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                        AND tbl_stoppage.kode_stop <> ''";
-                            $stmt_wet2    = mysqli_query($cona,$query_wet2);
-                            $km_wet             = mysqli_fetch_assoc($stmt_wet2);
+                    <?php
+                    $query_wet9 = "SELECT
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'TG'
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_wet_F_TG,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'TG'
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_wet_F_TG
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_wet9    = sqlsrv_query($cona,$query_wet9);
+                        $tg_wet             = sqlsrv_fetch_array($stmt_wet9, SQLSRV_FETCH_ASSOC);
+                    $query_wet8 = "SELECT
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'GT'
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_wet_F_GT,
+                            SUM(
+                                CASE
+                                    WHEN kode_stop = 'GT'
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_wet_F_GT
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_wet8    = sqlsrv_query($cona,$query_wet8);
+                        $gt_wet             = sqlsrv_fetch_array($stmt_wet8, SQLSRV_FETCH_ASSOC);
+                    $query_wet7 = "SELECT
+                            SUM(
+                                CASE 
+                                    WHEN kode_stop = 'PM' 
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN FLOOR(durasi_jam_stop) 
+                                    ELSE 0 
+                                END
+                            ) AS jam_wet_F_PM,
+                            SUM(
+                                CASE 
+                                    WHEN kode_stop = 'PM' 
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0) 
+                                    ELSE 0 
+                                END
+                            ) AS menit_wet_F_PM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_wet7    = sqlsrv_query($cona,$query_wet7);
+                        $pm_wet             = sqlsrv_fetch_array($stmt_wet7, SQLSRV_FETCH_ASSOC);
+                    $query_wet6 = "SELECT
+                            SUM(
+                                CASE 
+                                    WHEN kode_stop = 'PA' 
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN FLOOR(durasi_jam_stop) 
+                                    ELSE 0 
+                                END
+                            ) AS jam_wet_F_PA,
+                            SUM(
+                                CASE 
+                                    WHEN kode_stop = 'PA' 
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0) 
+                                    ELSE 0 
+                                END
+                            ) AS menit_wet_F_PA
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_wet6    = sqlsrv_query($cona,$query_wet6);
+                        $pa_wet             = sqlsrv_fetch_array($stmt_wet6, SQLSRV_FETCH_ASSOC);
+                    $query_wet5 = "SELECT
+                            SUM(
+                                CASE 
+                                    WHEN kode_stop = 'AP' 
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN FLOOR(durasi_jam_stop) 
+                                    ELSE 0 
+                                END
+                            ) AS jam_wet_F_AP,
+                            SUM(
+                                CASE 
+                                    WHEN kode_stop = 'AP' 
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0 
+                                END
+                            ) AS menit_wet_F_AP
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_wet5    = sqlsrv_query($cona,$query_wet5);
+                        $ap_wet             = sqlsrv_fetch_array($stmt_wet5, SQLSRV_FETCH_ASSOC);
+                    $query_wet4 = "SELECT
+                            SUM(
+                                CASE 
+                                    WHEN kode_stop = 'KO' 
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN FLOOR(durasi_jam_stop) 
+                                    ELSE 0 
+                                END
+                            ) AS jam_wet_F_KO,
+                            SUM(
+                                CASE 
+                                    WHEN kode_stop = 'KO' 
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0 
+                                END
+                            ) AS menit_wet_F_KO
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_wet4    = sqlsrv_query($cona,$query_wet4);
+                        $ko_wet             = sqlsrv_fetch_array($stmt_wet4, SQLSRV_FETCH_ASSOC);
+                    $query_wet3 = "SELECT
+                            SUM(
+                                CASE 
+                                    WHEN kode_stop = 'PT' 
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN FLOOR(durasi_jam_stop) 
+                                    ELSE 0 
+                                END
+                            ) AS jam_wet_F_PT,
+                            SUM(
+                                CASE 
+                                    WHEN kode_stop = 'PT' 
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0 
+                                END
+                            ) AS menit_wet_F_PT
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_wet3    = sqlsrv_query($cona,$query_wet3);
+                        $pt_wet             = sqlsrv_fetch_array($stmt_wet3, SQLSRV_FETCH_ASSOC);
+                    $query_wet2 = "SELECT
+                            SUM(
+                                CASE 
+                                    WHEN kode_stop = 'KM' 
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN FLOOR(durasi_jam_stop) 
+                                    ELSE 0 
+                                END
+                            ) AS jam_wet_F_KM,
+                            SUM(
+                                CASE 
+                                    WHEN kode_stop = 'KM' 
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0 
+                                END
+                            ) AS menit_wet_F_KM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_wet2    = sqlsrv_query($cona,$query_wet2);
+                        $km_wet             = sqlsrv_fetch_array($stmt_wet2, SQLSRV_FETCH_ASSOC);
                     $query_wet1 = "SELECT
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                                    -- AND mesin like '%F%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_wet_F_LM,
-                                            SUM(
-                                                CASE 
-                                                    WHEN kode_stop = 'LM' 
-                                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                                    -- AND mesin like '%F%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_wet_F_LM
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                                    $stmt_wet1    = mysqli_query($cona,$query_wet1);
-                                    $lm_wet             = mysqli_fetch_assoc($stmt_wet1);
-                            // Total Garuk
+                            SUM(
+                                CASE 
+                                    WHEN kode_stop = 'LM'
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_wet_F_LM,
+                            SUM(
+                                CASE 
+                                    WHEN kode_stop = 'LM'
+                                    AND kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_wet_F_LM
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_wet1    = sqlsrv_query($cona,$query_wet1);
+                        $lm_wet             = sqlsrv_fetch_array($stmt_wet1, SQLSRV_FETCH_ASSOC);
+                    // Total Garuk
                     $query_mesin_wet = "SELECT
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                                    -- AND mesin like '%F%'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_wet_F,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
-                                                    -- AND mesin like '%F%'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_wet_F
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''";
-                        $stmt_mesin_wet= mysqli_query($cona,$query_mesin_wet);
-                        $sum_mesin_wet= mysqli_fetch_assoc($stmt_mesin_wet);
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN FLOOR(durasi_jam_stop)
+                                    ELSE 0
+                                END
+                            ) AS jam_wet_F,
+                            SUM(
+                                CASE
+                                    WHEN kode_operation IN ('WET1', 'WET2', 'WET3', 'WET4')
+                                    -- AND mesin like '%F%'
+                                    THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)
+                                    ELSE 0
+                                END
+                            ) AS menit_wet_F
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''";
+                        $stmt_mesin_wet= sqlsrv_query($cona,$query_mesin_wet);
+                        $sum_mesin_wet= sqlsrv_fetch_array($stmt_mesin_wet, SQLSRV_FETCH_ASSOC);
                     ?>
                     <td align="left"><strong>WET SUEDING</strong></td>
                     <td align="center">'01</td>
                     <td align="center"><?php if ($lm_wet['jam_wet_F_LM'] != 0 || $lm_wet['menit_wet_F_LM'] != 0) {echo str_pad($lm_wet['jam_wet_F_LM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($lm_wet['menit_wet_F_LM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($lm_wet['jam_wet_F_LM'] != 0 || $lm_wet['menit_wet_F_LM'] != 0) { 
-						echo round(((($lm_wet['jam_wet_F_LM']*60)+$lm_wet['menit_wet_F_LM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($lm_wet['jam_wet_F_LM']*60)+$lm_wet['menit_wet_F_LM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($km_wet['jam_wet_F_KM'] != 0 || $km_wet['menit_wet_F_KM'] != 0) {echo str_pad($km_wet['jam_wet_F_KM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($km_wet['menit_wet_F_KM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($km_wet['jam_wet_F_KM'] != 0 || $km_wet['menit_wet_F_KM'] != 0) { 
-						echo round(((($km_wet['jam_wet_F_KM']*60)+$km_wet['menit_wet_F_KM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($km_wet['jam_wet_F_KM']*60)+$km_wet['menit_wet_F_KM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pt_wet['jam_wet_F_PT'] != 0 || $pt_wet['menit_wet_F_PT'] != 0) {echo str_pad($pt_wet['jam_wet_F_PT'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pt_wet['menit_wet_F_PT'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pt_wet['jam_wet_F_PT'] != 0 || $pt_wet['menit_wet_F_PT'] != 0) { 
-						echo round(((($pt_wet['jam_wet_F_PT']*60)+$pt_wet['menit_wet_F_PT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pt_wet['jam_wet_F_PT']*60)+$pt_wet['menit_wet_F_PT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($ko_wet['jam_wet_F_KO'] != 0 || $ko_wet['menit_wet_F_KO'] != 0) {echo str_pad($ko_wet['jam_wet_F_KO'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($ko_wet['menit_wet_F_KO'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($ko_wet['jam_wet_F_KO'] != 0 || $ko_wet['menit_wet_F_KO'] != 0) { 
-						echo round(((($ko_wet['jam_wet_F_KO']*60)+$ko_wet['menit_wet_F_KO'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($ko_wet['jam_wet_F_KO']*60)+$ko_wet['menit_wet_F_KO'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($ap_wet['jam_wet_F_AP'] != 0 || $ap_wet['menit_wet_F_AP'] != 0) {echo str_pad($ap_wet['jam_wet_F_AP'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($ap_wet['menit_wet_F_AP'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($ap_wet['jam_wet_F_AP'] != 0 || $ap_wet['menit_wet_F_AP'] != 0) { 
-						echo round(((($ap_wet['jam_wet_F_AP']*60)+$ap_wet['menit_wet_F_AP'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($ap_wet['jam_wet_F_AP']*60)+$ap_wet['menit_wet_F_AP'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pa_wet['jam_wet_F_PA'] != 0 || $pa_wet['menit_wet_F_PA'] != 0) {echo str_pad($pa_wet['jam_wet_F_PA'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pa_wet['menit_wet_F_PA'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pa_wet['jam_wet_F_PA'] != 0 || $pa_wet['menit_wet_F_PA'] != 0) { 
-						echo round(((($pa_wet['jam_wet_F_PA']*60)+$pa_wet['menit_wet_F_PA'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pa_wet['jam_wet_F_PA']*60)+$pa_wet['menit_wet_F_PA'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($pm_wet['jam_wet_F_PM'] != 0 || $pm_wet['menit_wet_F_PM'] != 0) {echo str_pad($pm_wet['jam_wet_F_PM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($pm_wet['menit_wet_F_PM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($pm_wet['jam_wet_F_PM'] != 0 || $pm_wet['menit_wet_F_PM'] != 0) { 
-						echo round(((($pm_wet['jam_wet_F_PM']*60)+$pm_wet['menit_wet_F_PM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($pm_wet['jam_wet_F_PM']*60)+$pm_wet['menit_wet_F_PM'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($gt_wet['jam_wet_F_GT'] != 0 || $gt_wet['menit_wet_F_GT'] != 0) {echo str_pad($gt_wet['jam_wet_F_GT'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($gt_wet['menit_wet_F_GT'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($gt_wet['jam_wet_F_GT'] != 0 || $gt_wet['menit_wet_F_GT'] != 0) { 
-						echo round(((($gt_wet['jam_wet_F_GT']*60)+$gt_wet['menit_wet_F_GT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($gt_wet['jam_wet_F_GT']*60)+$gt_wet['menit_wet_F_GT'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($tg_wet['jam_wet_F_TG'] != 0 || $tg_wet['menit_wet_F_TG'] != 0) {echo str_pad($tg_wet['jam_wet_F_TG'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($tg_wet['menit_wet_F_TG'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($tg_wet['jam_wet_F_TG'] != 0 || $tg_wet['menit_wet_F_TG'] != 0) { 
-						echo round(((($tg_wet['jam_wet_F_TG']*60)+$tg_wet['menit_wet_F_TG'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($tg_wet['jam_wet_F_TG']*60)+$tg_wet['menit_wet_F_TG'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                     <td align="center"><?php if ($sum_mesin_wet['jam_wet_F'] != 0 || $sum_mesin_wet['menit_wet_F'] != 0) {echo str_pad($sum_mesin_wet['jam_wet_F'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($sum_mesin_wet['menit_wet_F'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>
                     <td align="center"><?php if ($sum_mesin_wet['jam_wet_F'] != 0 || $sum_mesin_wet['menit_wet_F'] != 0) { 
-						echo round(((($sum_mesin_wet['jam_wet_F']*60)+$sum_mesin_wet['menit_wet_F'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>
-%</td>
+						echo round(((($sum_mesin_wet['jam_wet_F']*60)+$sum_mesin_wet['menit_wet_F'])/$hariKrjBln)*100,2);} else {echo '0.0';}?>%</td>
                 </tr>
             <!-- End Wet Sue -->
             <!-- Untuk Kolom Total -->
                 <tr>
                     <?php
                     $query_total_tbl3 = "SELECT
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'LM'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_total_LM,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'LM'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_total_LM,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'KM'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_total_KM,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'KM'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_total_KM,                                                
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'PT'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_total_PT,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'PT'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_total_PT,                                                
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'PM'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_total_PM,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'PM'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_total_PM,                                                
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'GT'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_total_GT,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'GT'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_total_GT,                                                
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'TG'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_total_TG,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'TG'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_total_TG,                                                
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'PA'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_total_PA,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'PA'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_total_PA,                                                
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'AP'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_total_AP,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'AP'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_total_AP,                                                
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'KO'
-                                                    THEN FLOOR(durasi_jam_stop) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS jam_total_KO,
-                                            SUM(
-                                                CASE
-                                                    WHEN kode_stop = 'KO'
-                                                    THEN round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                    ELSE 0 
-                                                END
-                                                ) AS menit_total_KO,
-                                            SUM(
-                                                FLOOR(durasi_jam_stop) 
-                                                ) AS jam_total,
-                                            SUM(
-                                                round((durasi_jam_stop-floor(durasi_jam_stop))*60) 
-                                                ) AS menit_total
-                                            FROM
-                                                tbl_stoppage
-                                            WHERE dept ='BRS'
-                                                AND year(tgl_buat)='$_GET[tahun]' and month(tgl_buat)='$_GET[bulan]'
-                                                AND tbl_stoppage.kode_stop <> ''
-                                                and mesin <> ''";
-                                                // echo $query_total_tbl3;
-                        $stmt_total_tbl3= mysqli_query($cona,$query_total_tbl3);
-                        $sum_tbl3= mysqli_fetch_assoc($stmt_total_tbl3);
+                            -- LM
+                            SUM(CASE WHEN kode_stop = 'LM' THEN FLOOR(durasi_jam_stop) ELSE 0 END) AS jam_total_LM,
+                            SUM(CASE WHEN kode_stop = 'LM' THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0) ELSE 0 END) AS menit_total_LM,
+                            -- KM
+                            SUM(CASE WHEN kode_stop = 'KM' THEN FLOOR(durasi_jam_stop) ELSE 0 END) AS jam_total_KM,
+                            SUM(CASE WHEN kode_stop = 'KM' THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0) ELSE 0 END) AS menit_total_KM,
+                            -- PT
+                            SUM(CASE WHEN kode_stop = 'PT' THEN FLOOR(durasi_jam_stop) ELSE 0 END) AS jam_total_PT,
+                            SUM(CASE WHEN kode_stop = 'PT' THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0) ELSE 0 END) AS menit_total_PT,
+                            -- PM
+                            SUM(CASE WHEN kode_stop = 'PM' THEN FLOOR(durasi_jam_stop) ELSE 0 END) AS jam_total_PM,
+                            SUM(CASE WHEN kode_stop = 'PM' THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0) ELSE 0 END) AS menit_total_PM,
+                            -- GT
+                            SUM(CASE WHEN kode_stop = 'GT' THEN FLOOR(durasi_jam_stop) ELSE 0 END) AS jam_total_GT,
+                            SUM(CASE WHEN kode_stop = 'GT' THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0) ELSE 0 END) AS menit_total_GT,
+                            -- TG
+                            SUM(CASE WHEN kode_stop = 'TG' THEN FLOOR(durasi_jam_stop) ELSE 0 END) AS jam_total_TG,
+                            SUM(CASE WHEN kode_stop = 'TG' THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0) ELSE 0 END) AS menit_total_TG,
+                            -- PA
+                            SUM(CASE WHEN kode_stop = 'PA' THEN FLOOR(durasi_jam_stop) ELSE 0 END) AS jam_total_PA,
+                            SUM(CASE WHEN kode_stop = 'PA' THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0) ELSE 0 END) AS menit_total_PA,
+                            -- AP
+                            SUM(CASE WHEN kode_stop = 'AP' THEN FLOOR(durasi_jam_stop) ELSE 0 END) AS jam_total_AP,
+                            SUM(CASE WHEN kode_stop = 'AP' THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0) ELSE 0 END) AS menit_total_AP,
+                            -- KO
+                            SUM(CASE WHEN kode_stop = 'KO' THEN FLOOR(durasi_jam_stop) ELSE 0 END) AS jam_total_KO,
+                            SUM(CASE WHEN kode_stop = 'KO' THEN ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0) ELSE 0 END) AS menit_total_KO,
+                            -- TOTAL (SEMUA KODE_STOP)
+                            SUM(FLOOR(durasi_jam_stop)) AS jam_total,
+                            SUM(ROUND((durasi_jam_stop - FLOOR(durasi_jam_stop)) * 60, 0)) AS menit_total
+                        FROM db_adm.tbl_stoppage
+                        WHERE dept = 'BRS'
+                            AND YEAR(tgl_buat) = '$_GET[tahun]'
+                            AND MONTH(tgl_buat) = '$_GET[bulan]'
+                            AND kode_stop <> ''
+                            AND mesin <> ''";
+                        // echo $query_total_tbl3;
+                        $stmt_total_tbl3= sqlsrv_query($cona,$query_total_tbl3);
+                        $sum_tbl3= sqlsrv_fetch_array($stmt_total_tbl3, SQLSRV_FETCH_ASSOC);
                     ?>
                     <td align="center" colspan="2"><strong>TOTAL</strong></td>
                     <td align="center"><?php if ($sum_tbl3['jam_total_LM'] != 0 || $sum_tbl3['menit_total_LM'] != 0) {echo str_pad($sum_tbl3['jam_total_LM'], 2, '0', STR_PAD_LEFT) . ':' . str_pad($sum_tbl3['menit_total_LM'], 2, '0', STR_PAD_LEFT) . ':00';} else {echo '00:00:00';}?></td>

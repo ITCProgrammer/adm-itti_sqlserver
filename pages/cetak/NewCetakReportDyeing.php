@@ -20,26 +20,31 @@ $Akhir = $_GET['akhir'];
 $shft = $_GET['shft'];
 $Tgl = substr($Awal, 0, 10);
 
-$qTgl = mysqli_query($con, "SELECT DATE_FORMAT(now(),'%Y-%m-%d') as tgl_skrg, DATE_FORMAT(now(),'%Y-%m-%d')+ INTERVAL 1 DAY as tgl_besok");
-$rTgl = mysqli_fetch_array($qTgl);
+$qTgl = sqlsrv_query(
+  $con,
+  "SELECT 
+     CONVERT(varchar(10), GETDATE(), 23) AS tgl_skrg,
+     CONVERT(varchar(10), DATEADD(DAY, 1, GETDATE()), 23) AS tgl_besok"
+);
+$rTgl = sqlsrv_fetch_array($qTgl, SQLSRV_FETCH_ASSOC);
 
 // Penyesuaian tanggal
 if ($Awal == $Akhir) {
   $TglPAl = substr($Awal, 0, 10);
   $TglPAr = substr($Akhir, 0, 10);
-  $Where = " DATE_FORMAT(c.tgl_update, '%Y-%m-%d')='$Tgl' ";
+  $Where  = " CONVERT(date, c.tgl_update) = CONVERT(date, '$Tgl') ";
 } else {
   $TglPAl = $Awal;
   $TglPAr = $Akhir;
-  $Where = " DATE_FORMAT(c.tgl_update, '%Y-%m-%d %H:%i') BETWEEN '$Awal' AND '$Akhir' ";
+  $Where  = " c.tgl_update BETWEEN '$Awal' AND '$Akhir' ";
 }
 
-$shftWhere = ($shft == "ALL") ? "" : " if(ISNULL(a.g_shift),c.g_shift,a.g_shift)='$shft' AND ";
+$shftWhere = ($shft == "ALL") ? "" : " ISNULL(a.g_shift, c.g_shift)='$shft' AND ";
 
-$sql = mysqli_query(
+$sql = sqlsrv_query(
   $con,
   "SELECT x.*, a.no_mesin as mc 
-    FROM tbl_mesin a
+    FROM db_dying.tbl_mesin a
     LEFT JOIN
     (
       SELECT
@@ -51,21 +56,21 @@ $sql = mysqli_query(
         c.bruto,
         b.langganan,
         CASE
-          WHEN SUBSTR(b.kategori_warna, 1,1) = 'D' THEN 'Dark'
-          WHEN SUBSTR(b.kategori_warna, 1,1) = 'H' THEN 'Heater'
-          WHEN SUBSTR(b.kategori_warna, 1,1) = 'L' THEN 'Light'
-          WHEN SUBSTR(b.kategori_warna, 1,1) = 'M' THEN 'Medium'
-          WHEN SUBSTR(b.kategori_warna, 1,1) = 'S' THEN 'Dark'
-          WHEN SUBSTR(b.kategori_warna, 1,1) = 'W' THEN 'White'
+          WHEN SUBSTRING(b.kategori_warna, 1,1) = 'D' THEN 'Dark'
+          WHEN SUBSTRING(b.kategori_warna, 1,1) = 'H' THEN 'Heater'
+          WHEN SUBSTRING(b.kategori_warna, 1,1) = 'L' THEN 'Light'
+          WHEN SUBSTRING(b.kategori_warna, 1,1) = 'M' THEN 'Medium'
+          WHEN SUBSTRING(b.kategori_warna, 1,1) = 'S' THEN 'Dark'
+          WHEN SUBSTRING(b.kategori_warna, 1,1) = 'W' THEN 'White'
         END AS kategori_warna,
         a.g_shift as shft,
-        DATE_FORMAT(a.tgl_buat,'%Y-%m-%d') as tgl_out,
+        CONVERT(varchar(10), a.tgl_buat, 23) as tgl_out,
         a.k_resep,
         b.nokk
       FROM
-        tbl_schedule b
-        LEFT JOIN  tbl_montemp c ON c.id_schedule = b.id
-        LEFT JOIN tbl_hasilcelup a ON a.id_montemp=c.id	
+        db_dying.tbl_schedule b
+        LEFT JOIN  db_dying.tbl_montemp c ON c.id_schedule = b.id
+        LEFT JOIN db_dying.tbl_hasilcelup a ON a.id_montemp=c.id	
       WHERE
         $shftWhere
         $Where
@@ -75,12 +80,13 @@ $sql = mysqli_query(
 
 $tanggalInput = substr($Awal, 0, 10);
 $tanggalAwalBulan = date('Y-m-01', strtotime($tanggalInput));
-$Where2 = " DATE_FORMAT(c.tgl_update, '%Y-%m-%d') BETWEEN '$tanggalAwalBulan' AND '$tanggalInput' ";
+// Range TOTAL harus berbasis tanggal (tanpa jam), sama seperti versi MySQL
+$Where2 = " CONVERT(date, c.tgl_update) BETWEEN '$tanggalAwalBulan' AND '$tanggalInput' ";
 
-$sqlTot = mysqli_query(
+$sqlTot = sqlsrv_query(
     $con,
     "SELECT x.*, a.no_mesin as mc 
-      FROM tbl_mesin a
+      FROM db_dying.tbl_mesin a
       LEFT JOIN
       (
         SELECT
@@ -92,21 +98,21 @@ $sqlTot = mysqli_query(
           c.bruto,
           b.langganan,
           CASE
-            WHEN SUBSTR(b.kategori_warna, 1,1) = 'D' THEN 'Dark'
-            WHEN SUBSTR(b.kategori_warna, 1,1) = 'H' THEN 'Heater'
-            WHEN SUBSTR(b.kategori_warna, 1,1) = 'L' THEN 'Light'
-            WHEN SUBSTR(b.kategori_warna, 1,1) = 'M' THEN 'Medium'
-            WHEN SUBSTR(b.kategori_warna, 1,1) = 'S' THEN 'Dark'
-            WHEN SUBSTR(b.kategori_warna, 1,1) = 'W' THEN 'White'
+            WHEN SUBSTRING(b.kategori_warna, 1,1) = 'D' THEN 'Dark'
+            WHEN SUBSTRING(b.kategori_warna, 1,1) = 'H' THEN 'Heater'
+            WHEN SUBSTRING(b.kategori_warna, 1,1) = 'L' THEN 'Light'
+            WHEN SUBSTRING(b.kategori_warna, 1,1) = 'M' THEN 'Medium'
+            WHEN SUBSTRING(b.kategori_warna, 1,1) = 'S' THEN 'Dark'
+            WHEN SUBSTRING(b.kategori_warna, 1,1) = 'W' THEN 'White'
           END AS kategori_warna,
           a.g_shift AS shft,
-          DATE_FORMAT(a.tgl_buat,'%Y-%m-%d') AS tgl_out,
+          CONVERT(varchar(10), a.tgl_buat, 23) AS tgl_out,
           a.k_resep,
           b.nokk
         FROM
-          tbl_schedule b
-          LEFT JOIN tbl_montemp c ON c.id_schedule = b.id
-          LEFT JOIN tbl_hasilcelup a ON a.id_montemp = c.id
+          db_dying.tbl_schedule b
+          LEFT JOIN db_dying.tbl_montemp c ON c.id_schedule = b.id
+          LEFT JOIN db_dying.tbl_hasilcelup a ON a.id_montemp = c.id
         WHERE
           $shftWhere
           $Where2
@@ -114,20 +120,26 @@ $sqlTot = mysqli_query(
     ORDER BY a.no_mesin"
 );
 
-$nokkList = [];
+$rowsNow   = [];
+$rowsTotal = [];
+$nokkList  = [];
 
-mysqli_data_seek($sql, 0);
-while ($rowd = mysqli_fetch_array($sql)) {
-    if (!empty($rowd['nokk'])) {
-        $nokkList[] = $rowd['nokk'];
-    }
+if ($sql !== false) {
+  while ($rowd = sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC)) {
+      $rowsNow[] = $rowd;
+      if (!empty($rowd['nokk'])) {
+          $nokkList[] = $rowd['nokk'];
+      }
+  }
 }
 
-mysqli_data_seek($sqlTot, 0);
-while ($rowd = mysqli_fetch_array($sqlTot)) {
-    if (!empty($rowd['nokk'])) {
-        $nokkList[] = $rowd['nokk'];
-    }
+if ($sqlTot !== false) {
+  while ($rowd = sqlsrv_fetch_array($sqlTot, SQLSRV_FETCH_ASSOC)) {
+      $rowsTotal[] = $rowd;
+      if (!empty($rowd['nokk'])) {
+          $nokkList[] = $rowd['nokk'];
+      }
+  }
 }
 
 $nokkList = array_unique($nokkList);
@@ -167,10 +179,10 @@ function parseRowData($rowd, $con, $db2Data, $Awal, $Akhir, $shftParam) {
     $resep = $rowd['resep'];
 
     $shftSM = ($shftParam == "ALL") ? "" : " g_shift='$shftParam' AND ";
-    $sqlSM = mysqli_query(
+    $sqlSM = sqlsrv_query(
         $con,
         "SELECT *, kapasitas as kapSM, g_shift as shiftSM, proses, no_stop, keterangan
-         FROM tbl_stopmesin
+         FROM db_dying.tbl_stopmesin
          WHERE $shftSM tgl_update BETWEEN '$Awal' AND '$Akhir' AND no_mesin='$no_mesin'"
     );
 
@@ -180,7 +192,7 @@ function parseRowData($rowd, $con, $db2Data, $Awal, $Akhir, $shftParam) {
     $shiftKeterangan = null;
     $kapSM = null;
 
-    if ($rowSM = mysqli_fetch_array($sqlSM)) {
+    if ($sqlSM !== false && $rowSM = sqlsrv_fetch_array($sqlSM, SQLSRV_FETCH_ASSOC)) {
         $shiftSM = $rowSM['shiftSM'];
         $shiftProses = $rowSM['proses'];
         $shiftNostop = $rowSM['no_stop'];
@@ -196,9 +208,9 @@ function parseRowData($rowd, $con, $db2Data, $Awal, $Akhir, $shftParam) {
     // Ambil deskripsi kain
     $desc = null;
     if ($subcode01) {
-        $q_desc = mysqli_query($con, "SELECT `desc` FROM tbl_type_kain WHERE subcode = '$subcode01' LIMIT 1");
-        if ($rowDesc = mysqli_fetch_assoc($q_desc)) {
-            $desc = $rowDesc['desc'];
+        $q_desc = sqlsrv_query($con, "SELECT TOP 1 [desc] AS desckain FROM db_dying.tbl_type_kain WHERE subcode = '$subcode01'");
+        if ($q_desc !== false && $rowDesc = sqlsrv_fetch_array($q_desc, SQLSRV_FETCH_ASSOC)) {
+            $desc = $rowDesc['desckain'];
         }
     }
 
@@ -252,14 +264,12 @@ function parseRowData($rowd, $con, $db2Data, $Awal, $Akhir, $shftParam) {
 }
 
 $dataNow = [];
-mysqli_data_seek($sql, 0);
-while ($rowd = mysqli_fetch_array($sql)) {
+foreach ($rowsNow as $rowd) {
     $dataNow[] = parseRowData($rowd, $con, $db2Data, $Awal, $Akhir, $shft);
 }
 
 $dataTotal = [];
-mysqli_data_seek($sqlTot, 0);
-while ($rowd = mysqli_fetch_array($sqlTot)) {
+foreach ($rowsTotal as $rowd) {
     $dataTotal[] = parseRowData($rowd, $con, $db2Data, $tanggalAwalBulan, $tanggalInput, $shft);
 }
 
@@ -2797,7 +2807,7 @@ $sheet->getStyle('A5:G6')->getBorders()->getAllBorders()->setBorderStyle(\PhpOff
             $sheet->getStyle('K11:L11')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
             $sheet->mergeCells('K12:L12');
-            $sheet->setCellValue('K12', $PolyPerbaikanA);
+            $sheet->setCellValue('K12', $PolyTotPerbaikanA);
             $sheet->getStyle('K12')->getAlignment()->setHorizontal('center')->setVertical('center');
             $sheet->getStyle('K12:L12')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             

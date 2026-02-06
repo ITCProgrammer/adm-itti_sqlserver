@@ -738,30 +738,31 @@ if ($Awal == $Akhir) {
                             a.status_proses,
                             COALESCE(a.point2, b.target) as point2
                           FROM
-                            tbl_schedule b
-                              LEFT JOIN  tbl_montemp c ON c.id_schedule = b.id
-                              LEFT JOIN tbl_hasilcelup a ON a.id_montemp=c.id	
-                            left join penyelesaian_gagalproses p on
+                            db_dying.tbl_schedule b
+                              LEFT JOIN db_dying.tbl_montemp c ON c.id_schedule = b.id
+                              LEFT JOIN db_dying.tbl_hasilcelup a ON a.id_montemp=c.id	
+                            left join db_dying.penyelesaian_gagalproses p on
                                 p.id_schedule = b.id
                                 and p.id_hasil_celup = a.id
                                 and p.id_montemp = c.id
-                            left join tbl_keterangan_gagalproses k on
+                            left join db_dying.tbl_keterangan_gagalproses k on
                               k.id_hasil_celup = a.id
                               and k.id_montemp = c.id
                           WHERE
                             $where_dye
                             )x ON (a.no_mesin=x.no_mesin) ORDER BY a.no_mesin";
                             // echo $q_dye;
-              $sql_dye = mysqli_query($con,$q_dye);
-        if ($sql_dye && mysqli_num_rows($sql_dye) > 0) {
-            while ($row = mysqli_fetch_assoc($sql_dye)) {
-                $bruto = (float)$row['bruto'];
-                $bruto_bagi = (float)$row['bruto_bagi'];
-                greige_perbaikan($row['proses'], $bruto);
-                gproses($row['status'],$row['dept_penyebab'], $bruto_bagi);
-                disp_gproses($row['status'],$row['tindakan_tindak_lanjut'],$row['dept_penyebab'], $bruto_bagi);
-            }
-        }
+              $sql_dye = sqlsrv_query($con, $q_dye, [], ["Scrollable" => SQLSRV_CURSOR_KEYSET]);
+
+              if ($sql_dye && sqlsrv_num_rows($sql_dye) > 0) {
+                while ($row = sqlsrv_fetch_array($sql_dye, SQLSRV_FETCH_ASSOC)) {
+                  $bruto = (float)$row['bruto'];
+                  $bruto_bagi = (float)$row['bruto_bagi'];
+                  greige_perbaikan($row['proses'], $bruto);
+                  gproses($row['status'],$row['dept_penyebab'], $bruto_bagi);
+                  disp_gproses($row['status'],$row['tindakan_tindak_lanjut'],$row['dept_penyebab'], $bruto_bagi);
+                }
+              }
         // echo $formatAkhir1mth;
     $where_dye1 = "DATE_FORMAT(c.tgl_update, '%Y-%m-%d %H:%i') BETWEEN '$formatAwal1mth1' AND '$formatAkhir1mth'";
             $q_dye1 =  "SELECT x.*, 
@@ -839,9 +840,9 @@ if ($Awal == $Akhir) {
                           WHERE
                             $where_dye1
                             )x ON (a.no_mesin=x.no_mesin) ORDER BY a.no_mesin";
-              $sql_dye1 = mysqli_query($con,$q_dye1);
-        if ($sql_dye1 && mysqli_num_rows($sql_dye1) > 0) {
-            while ($row1 = mysqli_fetch_assoc($sql_dye1)) {
+              $sql_dye1 = sqlsrv_query($con,$q_dye1);
+        if ($sql_dye1 && sqlsrv_num_rows($sql_dye1) > 0) {
+            while ($row1 = sqlsrv_fetch_assoc($sql_dye1)) {
                 $bruto1 = (float)$row1['bruto'];
                 $bruto1_bagi = (float)$row1['bruto_bagi'];
                 greige_perbaikan1($row1['proses'], $bruto1);
@@ -927,9 +928,9 @@ if ($Awal == $Akhir) {
                             $where_dye2
                             )x ON (a.no_mesin=x.no_mesin) ORDER BY a.no_mesin";
               // echo $q_dye2;
-              $sql_dye2 = mysqli_query($con,$q_dye2);
-        if ($sql_dye2 && mysqli_num_rows($sql_dye2) > 0) {
-            while ($row2 = mysqli_fetch_assoc($sql_dye2)) {
+              $sql_dye2 = sqlsrv_query($con,$q_dye2);
+        if ($sql_dye2 && sqlsrv_num_rows($sql_dye2) > 0) {
+            while ($row2 = sqlsrv_fetch_assoc($sql_dye2)) {
                 $bruto2 = (float)$row2['bruto'];
                 $bruto2_bagi = (float)$row2['bruto_bagi'];
                 greige_perbaikan2($row2['proses'], $bruto2);
@@ -1022,10 +1023,18 @@ if ($Awal == $Akhir) {
 // End Fin
 
 // QTY BRS
-  $where_brs = " tp.tgl_buat between '$Awal_Sebelum 23:01' and '$Akhir 23:00'";
+  $where_brs = " tgl_buat BETWEEN '$Awal_Sebelum 23:01:00' AND '$Akhir 23:00:00'";
   $q_brs ="SELECT (garuk_fleece + garuk_ap + peach + airo + polish )as QTY from (SELECT
                                             SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08','09') AND nama_mesin IN ('Garuk A','Garuk B','Garuk C','Garuk D','Garuk E','Garuk F') and proses = 'GARUK ANTI PILLING (Normal)' THEN qty ELSE 0 END) AS garuk_ap,
-                                            GROUP_CONCAT(DISTINCT CASE WHEN proses = 'GARUK ANTI PILLING (Normal)' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' THEN TRIM(nodemand) ELSE NULL END) AS demand_garuk_ap,
+                                            STUFF((
+                                                SELECT DISTINCT ', ' + LTRIM(RTRIM(tp2.nodemand))
+                                                FROM db_brushing.tbl_produksi tp2
+                                                WHERE $where_brs
+                                                  AND tp2.proses = 'GARUK ANTI PILLING (Normal)'
+                                                  AND tp2.nodemand IS NOT NULL
+                                                  AND LTRIM(RTRIM(tp2.nodemand)) <> ''
+                                                FOR XML PATH(''), TYPE
+                                            ).value('.', 'nvarchar(max)'), 1, 2, '') AS demand_garuk_ap,
                                             SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08','09') AND nama_mesin IN ('Garuk A','Garuk B','Garuk C','Garuk D','Garuk E','Garuk F') and  proses in('GARUK FLEECE (Normal)', 'GARUK SLIGHT BRUSH (Normal)', 'GARUK SLIGHTLY BRUS (Normal)', 'GARUK GREIGE (Normal)', 'GARUK BANTU - DYG (Bantu)', 'GARUK BANTU - FIN (Bantu)','GARUK GREIGE (Bantu)','GARUK PERBAIKAN DYG (Bantu)') THEN qty ELSE 0 END) AS garuk_fleece,
                                             SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08') AND nama_mesin IN ('Potong Bulu') and  proses IN ('POTONG BULU FLEECE (Normal)','GARUK FLEECE (Normal)','GARUK FLEECE (Normal)','GARUK SLIGHT BRUSH (Normal)','GARUK SLIGHTLY BRUS (Normal)') THEN qty ELSE 0 END) AS potong_bulu_fleece,
                                             SUM(CASE WHEN no_mesin IN ('01') AND nama_mesin IN ('Sisir') and proses IN ('SISIR ANTI PILLING (Normal)','SISIR BANTU (FIN) (Bantu)','SISIR LAIN-LAIN (Bantu)','GARUK ANTI PILLING (Normal)') THEN qty ELSE 0 END) AS sisir_ap,
@@ -1078,35 +1087,55 @@ if ($Awal == $Akhir) {
                                                                     'POTONG BULU LAIN-LAIN KHUSUS-CQA (Ulang)',
                                                                     'ANTI PILLING LAIN-LAIN KHUSUS-FIN (Ulang)',
                                                                     'ANTI PILLING LAIN-LAIN KHUSUS-DYE (Ulang)','ANTI PILLING LAIN-LAIN KHUSUS-BRS (Ulang)','ANTI PILLING LAIN-LAIN KHUSUS-CQA (Ulang)') THEN qty ELSE 0 END) AS bantu,
-                                            GROUP_CONCAT(DISTINCT CASE 
-                                                WHEN proses = 'GARUK FLEECE (Normal)' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' 
-                                                THEN TRIM(nodemand) 
-                                                ELSE NULL 
-                                            END) AS demand_garuk_fleece,
+                                            STUFF((
+                                                SELECT DISTINCT ', ' + LTRIM(RTRIM(tp2.nodemand))
+                                                FROM db_brushing.tbl_produksi tp2
+                                                WHERE $where_brs
+                                                  AND tp2.proses = 'GARUK FLEECE (Normal)'
+                                                  AND tp2.nodemand IS NOT NULL
+                                                  AND LTRIM(RTRIM(tp2.nodemand)) <> ''
+                                                FOR XML PATH(''), TYPE
+                                            ).value('.', 'nvarchar(max)'), 1, 2, '') AS demand_garuk_fleece,
                                             SUM(CASE WHEN proses LIKE '%(Bantu)%' THEN qty ELSE 0 END) AS produksi_ulang,
-                                            GROUP_CONCAT(DISTINCT CASE 
-                                                WHEN proses LIKE '%(Bantu)%' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' 
-                                                THEN TRIM(nodemand) 
-                                                ELSE NULL 
-                                            END) AS demand_produksi_ulang,
-                                            GROUP_CONCAT(DISTINCT CASE 
-                                                WHEN proses = 'PEACH SKIN (Normal)' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' 
-                                                THEN TRIM(nodemand) 
-                                                ELSE NULL 
-                                            END) AS demand_peach_skin,
+                                            STUFF((
+                                                SELECT DISTINCT ', ' + LTRIM(RTRIM(tp2.nodemand))
+                                                FROM db_brushing.tbl_produksi tp2
+                                                WHERE $where_brs
+                                                  AND tp2.proses LIKE '%(Bantu)%'
+                                                  AND tp2.nodemand IS NOT NULL
+                                                  AND LTRIM(RTRIM(tp2.nodemand)) <> ''
+                                                FOR XML PATH(''), TYPE
+                                            ).value('.', 'nvarchar(max)'), 1, 2, '') AS demand_produksi_ulang,
+                                            STUFF((
+                                                SELECT DISTINCT ', ' + LTRIM(RTRIM(tp2.nodemand))
+                                                FROM db_brushing.tbl_produksi tp2
+                                                WHERE $where_brs
+                                                  AND tp2.proses = 'PEACH SKIN (Normal)'
+                                                  AND tp2.nodemand IS NOT NULL
+                                                  AND LTRIM(RTRIM(tp2.nodemand)) <> ''
+                                                FOR XML PATH(''), TYPE
+                                            ).value('.', 'nvarchar(max)'), 1, 2, '') AS demand_peach_skin,
                                             count(distinct nodemand) as total_kk
                                         FROM
-                                            tbl_produksi tp
+                                            db_brushing.tbl_produksi tp
                                         WHERE  
                                         $where_brs) t";
     // echo $q_brs;
-    $stmt_brs = mysqli_query($conb, $q_brs);
-    $row_brs = mysqli_fetch_assoc($stmt_brs);
+    $stmt_brs = sqlsrv_query($conb, $q_brs);
+    $row_brs = sqlsrv_fetch_array($stmt_brs, SQLSRV_FETCH_ASSOC);
 
-    $where_brs1 = " tp.tgl_buat between '$Awal_Sebelum1mth 23:01' and '$Akhir1mth1 23:00'";
+  $where_brs1 = " tgl_buat between '$Awal_Sebelum1mth 23:01:00' and '$Akhir1mth1 23:00:00'";
   $q_brs1 ="SELECT (garuk_fleece + garuk_ap + peach + airo + polish )as QTY from (SELECT
                                             SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08','09') AND nama_mesin IN ('Garuk A','Garuk B','Garuk C','Garuk D','Garuk E','Garuk F') and proses = 'GARUK ANTI PILLING (Normal)' THEN qty ELSE 0 END) AS garuk_ap,
-                                            GROUP_CONCAT(DISTINCT CASE WHEN proses = 'GARUK ANTI PILLING (Normal)' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' THEN TRIM(nodemand) ELSE NULL END) AS demand_garuk_ap,
+                                            STUFF((
+                                              SELECT DISTINCT ', ' + LTRIM(RTRIM(tp2.nodemand))
+                                              FROM db_brushing.tbl_produksi tp2
+                                              WHERE $where_brs1
+                                                AND tp2.proses = 'GARUK ANTI PILLING (Normal)'
+                                                AND tp2.nodemand IS NOT NULL
+                                                AND LTRIM(RTRIM(tp2.nodemand)) <> ''
+                                              FOR XML PATH(''), TYPE
+                                            ).value('.', 'nvarchar(max)'), 1, 2, '') AS demand_garuk_ap,
                                             SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08','09') AND nama_mesin IN ('Garuk A','Garuk B','Garuk C','Garuk D','Garuk E','Garuk F') and  proses in('GARUK FLEECE (Normal)', 'GARUK SLIGHT BRUSH (Normal)', 'GARUK SLIGHTLY BRUS (Normal)', 'GARUK GREIGE (Normal)', 'GARUK BANTU - DYG (Bantu)', 'GARUK BANTU - FIN (Bantu)','GARUK GREIGE (Bantu)','GARUK PERBAIKAN DYG (Bantu)') THEN qty ELSE 0 END) AS garuk_fleece,
                                             SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08') AND nama_mesin IN ('Potong Bulu') and  proses IN ('POTONG BULU FLEECE (Normal)','GARUK FLEECE (Normal)','GARUK FLEECE (Normal)','GARUK SLIGHT BRUSH (Normal)','GARUK SLIGHTLY BRUS (Normal)') THEN qty ELSE 0 END) AS potong_bulu_fleece,
                                             SUM(CASE WHEN no_mesin IN ('01') AND nama_mesin IN ('Sisir') and proses IN ('SISIR ANTI PILLING (Normal)','SISIR BANTU (FIN) (Bantu)','SISIR LAIN-LAIN (Bantu)','GARUK ANTI PILLING (Normal)') THEN qty ELSE 0 END) AS sisir_ap,
@@ -1159,109 +1188,150 @@ if ($Awal == $Akhir) {
                                                                     'POTONG BULU LAIN-LAIN KHUSUS-CQA (Ulang)',
                                                                     'ANTI PILLING LAIN-LAIN KHUSUS-FIN (Ulang)',
                                                                     'ANTI PILLING LAIN-LAIN KHUSUS-DYE (Ulang)','ANTI PILLING LAIN-LAIN KHUSUS-BRS (Ulang)','ANTI PILLING LAIN-LAIN KHUSUS-CQA (Ulang)') THEN qty ELSE 0 END) AS bantu,
-                                            GROUP_CONCAT(DISTINCT CASE 
-                                                WHEN proses = 'GARUK FLEECE (Normal)' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' 
-                                                THEN TRIM(nodemand) 
-                                                ELSE NULL 
-                                            END) AS demand_garuk_fleece,
+                                            STUFF((
+                                              SELECT DISTINCT ', ' + LTRIM(RTRIM(tp2.nodemand))
+                                              FROM db_brushing.tbl_produksi tp2
+                                              WHERE $where_brs1
+                                                AND tp2.proses = 'GARUK FLEECE (Normal)'
+                                                AND tp2.nodemand IS NOT NULL
+                                                AND LTRIM(RTRIM(tp2.nodemand)) <> ''
+                                              FOR XML PATH(''), TYPE
+                                            ).value('.', 'nvarchar(max)'), 1, 2, '') AS demand_garuk_fleece,
                                             SUM(CASE WHEN proses LIKE '%(Bantu)%' THEN qty ELSE 0 END) AS produksi_ulang,
-                                            GROUP_CONCAT(DISTINCT CASE 
-                                                WHEN proses LIKE '%(Bantu)%' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' 
-                                                THEN TRIM(nodemand) 
-                                                ELSE NULL 
-                                            END) AS demand_produksi_ulang,
-                                            GROUP_CONCAT(DISTINCT CASE 
-                                                WHEN proses = 'PEACH SKIN (Normal)' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' 
-                                                THEN TRIM(nodemand) 
-                                                ELSE NULL 
-                                            END) AS demand_peach_skin,
+                                            STUFF((
+                                              SELECT DISTINCT ', ' + LTRIM(RTRIM(tp2.nodemand))
+                                              FROM db_brushing.tbl_produksi tp2
+                                              WHERE $where_brs1
+                                                AND tp2.proses LIKE '%(Bantu)%'
+                                                AND tp2.nodemand IS NOT NULL
+                                                AND LTRIM(RTRIM(tp2.nodemand)) <> ''
+                                              FOR XML PATH(''), TYPE
+                                            ).value('.', 'nvarchar(max)'), 1, 2, '') AS demand_produksi_ulang,
+                                            STUFF((
+                                              SELECT DISTINCT ', ' + LTRIM(RTRIM(tp2.nodemand))
+                                              FROM db_brushing.tbl_produksi tp2
+                                              WHERE $where_brs1
+                                                AND tp2.proses = 'PEACH SKIN (Normal)'
+                                                AND tp2.nodemand IS NOT NULL
+                                                AND LTRIM(RTRIM(tp2.nodemand)) <> ''
+                                              FOR XML PATH(''), TYPE
+                                            ).value('.', 'nvarchar(max)'), 1, 2, '') AS demand_peach_skin,
                                             count(distinct nodemand) as total_kk
                                         FROM
-                                            tbl_produksi tp
+                                            db_brushing.tbl_produksi tp
                                         WHERE 
                                         $where_brs1) t";
-    $stmt_brs1 = mysqli_query($conb, $q_brs1);
-    $row_brs1 = mysqli_fetch_assoc($stmt_brs1);
+    $stmt_brs1 = sqlsrv_query($conb, $q_brs1);
+    $row_brs1 = sqlsrv_fetch_array($stmt_brs1, SQLSRV_FETCH_ASSOC);
 
-    $where_brs2 = " tp.tgl_buat between '$Awal_Sebelum2mth 23:01' and '$Akhir2mth1 23:00'";
-  $q_brs2 ="SELECT (garuk_fleece + garuk_ap + peach + airo + polish )as QTY from (SELECT
+  $where_brs2 = " tgl_buat between '$Awal_Sebelum2mth 23:01:00' and '$Akhir2mth1 23:00:00'";
+  $q_brs2 = "SELECT (garuk_fleece + garuk_ap + peach + airo + polish )as QTY from (SELECT
                                             SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08','09') AND nama_mesin IN ('Garuk A','Garuk B','Garuk C','Garuk D','Garuk E','Garuk F') and proses = 'GARUK ANTI PILLING (Normal)' THEN qty ELSE 0 END) AS garuk_ap,
-                                            GROUP_CONCAT(DISTINCT CASE WHEN proses = 'GARUK ANTI PILLING (Normal)' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' THEN TRIM(nodemand) ELSE NULL END) AS demand_garuk_ap,
-                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08','09') AND nama_mesin IN ('Garuk A','Garuk B','Garuk C','Garuk D','Garuk E','Garuk F') and  proses in('GARUK FLEECE (Normal)', 'GARUK SLIGHT BRUSH (Normal)', 'GARUK SLIGHTLY BRUS (Normal)', 'GARUK GREIGE (Normal)', 'GARUK BANTU - DYG (Bantu)', 'GARUK BANTU - FIN (Bantu)','GARUK GREIGE (Bantu)','GARUK PERBAIKAN DYG (Bantu)') THEN qty ELSE 0 END) AS garuk_fleece,
-                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08') AND nama_mesin IN ('Potong Bulu') and  proses IN ('POTONG BULU FLEECE (Normal)','GARUK FLEECE (Normal)','GARUK FLEECE (Normal)','GARUK SLIGHT BRUSH (Normal)','GARUK SLIGHTLY BRUS (Normal)') THEN qty ELSE 0 END) AS potong_bulu_fleece,
-                                            SUM(CASE WHEN no_mesin IN ('01') AND nama_mesin IN ('Sisir') and proses IN ('SISIR ANTI PILLING (Normal)','SISIR BANTU (FIN) (Bantu)','SISIR LAIN-LAIN (Bantu)','GARUK ANTI PILLING (Normal)') THEN qty ELSE 0 END) AS sisir_ap,
-                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08') AND nama_mesin IN ('Potong Bulu') and  proses IN ('POTONG BULU ANTI PILLING (Normal)','GARUK ANTI PILLING (Normal)','SISIR ANTI PILLING (Normal)','ANTI PILLING (Khusus)','ANTI PILLING NORMAL (Normal)','ANTI PILLING (Normal)','ANTI PILLING BIASA (Normal)') THEN qty ELSE 0 END) AS pbulu_ap,
-                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04') AND nama_mesin IN ('Anti Pilling') and proses IN ('ANTI PILLING (Khusus)','ANTI PILLING (Normal)','ANTI PILLING NORMAL (Normal)','ANTI PILLING BIASA (Normal)','GARUK ANTI PILLING (Normal)','SISIR ANTI PILLING (Normal)','POTONG BULU ANTI PILLING (Normal)','PEACH SKIN (Normal)','POTONG BULU PEACH SKIN (Normal)','POTONG BULU FLEECE (Normal)') THEN qty ELSE 0 END) AS oven_ap,
-                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06') AND nama_mesin IN ('Peach Skin') and  proses IN ('PEACH SKIN (Normal)','PEACHSKIN GREIGE (Normal)','PEACH BANTU TAS (Bantu)','PEACH SKIN (Bantu)','PEACH SKIN BANTU - DYE (Bantu)','PEACH SKIN BANTU - FIN (Bantu)','POTONG BULU PEACH SKIN (Normal)') THEN qty ELSE 0 END) AS peach,
-                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08') AND nama_mesin IN ('Potong Bulu') and  proses IN ('POTONG BULU PEACH SKIN (Normal)','PEACH SKIN (Normal)') THEN qty ELSE 0 END) AS pb_peach,
-                                            SUM(CASE WHEN no_mesin IN ('01','02') AND nama_mesin IN ('Airo') and proses = 'AIRO (Normal)' THEN qty ELSE 0 END) AS airo,
-                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08') AND nama_mesin IN ('Potong Bulu') and  proses IN ('Potong Bulu (Bantu)','POTONG BULU 07 (Bantu)','POTONG BULU LAIN-LAIN (Bantu)','POTONG BULU LAIN-LAIN (Khusus)','POTONG BULU BACK BANTU-DYEING (Bantu)','POTONG BULU BACK BANTU-FIN (Bantu)','POTONG BULU BACK TAS BANTU (Bantu)','POTONG BULU FACE BANTU-DYEING (Bantu)','POTONG BULU FACE BANTU-FIN (Bantu)','POTONG BULU FACE BANTU-TAS (Bantu)','POTONG BULU FACE TAS BANTU (Bantu)','POTONG BULU GREIGE (Bantu)','POTONG BULU GREIGE (Normal)','PEACH BANTU TAS (Bantu)','PEACH SKIN (Bantu)','PEACH SKIN BANTU - DYE (Bantu)',
-                                                                     'PEACH SKIN BANTU - FIN (Bantu)','GARUK BANTU - DYG (Bantu)','GARUK BANTU - FIN (Bantu)','GARUK GREIGE (Bantu)','GARUK PERBAIKAN DYG (Bantu)') THEN qty ELSE 0 END) AS pb_lain,
-                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04') AND nama_mesin IN ('Anti Pilling') and proses IN ('ANTI PILLING BANTU - DYE (Bantu)',
-                                                                        'ANTI PILLING BANTU - FIN (Bantu)',
-                                                                        'ANTI PILLING BANTU - QC (Bantu)',
-                                                                        'ANTI PILLING BANTU - TAS (Bantu)',
-                                                                        'ANTI PILLING BANTU-DYEING (Bantu)',
-                                                                        'ANTI PILLING BANTU-FINISHING (Bantu)',
-                                                                        'ANTI PILLING LAIN-LAIN (Bantu)',
-                                                                        'ANTI PILLING LAIN-LAIN (Khusus)',
-                                                                        'PEACH BANTU TAS (Bantu)',
-                                                                        'PEACH SKIN (Bantu)',
-                                                                        'PEACH SKIN BANTU - DYE (Bantu)',
-                                                                        'PEACH SKIN BANTU - FIN (Bantu)',
-                                                                        'GARUK BANTU - DYG (Bantu)',
-                                                                        'GARUK BANTU - FIN (Bantu)',
-                                                                        'GARUK GREIGE (Bantu)',
-                                                                        'GARUK PERBAIKAN DYG (Bantu)') THEN qty ELSE 0 END) AS ap_lain,
-                                            SUM(CASE WHEN no_mesin IN ('01') AND nama_mesin IN ('Polishing') and proses = 'POLISHING (Normal)' THEN qty ELSE 0 END) AS polish,
+                                            STUFF((
+                                                SELECT DISTINCT ', ' + LTRIM(RTRIM(tp2.nodemand))
+                                                FROM db_brushing.tbl_produksi tp2
+                                                WHERE $where_brs2
+                                                  AND tp2.proses = 'GARUK ANTI PILLING (Normal)'
+                                                  AND tp2.nodemand IS NOT NULL
+                                                  AND LTRIM(RTRIM(tp2.nodemand)) <> ''
+                                                FOR XML PATH(''), TYPE
+                                            ).value('.', 'nvarchar(max)'), 1, 2, '') AS demand_garuk_ap,
+                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08','09') AND nama_mesin IN ('Garuk A','Garuk B','Garuk C','Garuk D','Garuk E','Garuk F') and proses in('GARUK FLEECE (Normal)', 'GARUK SLIGHT BRUSH (Normal)', 'GARUK SLIGHTLY BRUS (Normal)', 'GARUK GREIGE (Normal)', 'GARUK BANTU - DYG (Bantu)', 'GARUK BANTU - FIN (Bantu)', 'GARUK GREIGE (Bantu)','GARUK PERBAIKAN DYG (Bantu)') THEN qty ELSE 0 END) AS garuk_fleece,
+                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08')
+                                                      AND nama_mesin IN ('Potong Bulu')
+                                                      and proses IN ('POTONG BULU FLEECE (Normal)','GARUK FLEECE (Normal)','GARUK FLEECE (Normal)',
+                                                                    'GARUK SLIGHT BRUSH (Normal)','GARUK SLIGHTLY BRUS (Normal)') THEN qty ELSE 0 END) AS potong_bulu_fleece,
+                                            SUM(CASE WHEN no_mesin IN ('01') AND nama_mesin IN ('Sisir')
+                                                      and proses IN ('SISIR ANTI PILLING (Normal)','SISIR BANTU (FIN) (Bantu)',
+                                                                    'SISIR LAIN-LAIN (Bantu)','GARUK ANTI PILLING (Normal)') THEN qty ELSE 0 END) AS sisir_ap,
+                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08')
+                                                      AND nama_mesin IN ('Potong Bulu')
+                                                      and proses IN ('POTONG BULU ANTI PILLING (Normal)','GARUK ANTI PILLING (Normal)','SISIR ANTI PILLING (Normal)',
+                                                                    'ANTI PILLING (Khusus)','ANTI PILLING NORMAL (Normal)','ANTI PILLING (Normal)','ANTI PILLING BIASA (Normal)') THEN qty ELSE 0 END) AS pbulu_ap,
+                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04') AND nama_mesin IN ('Anti Pilling')
+                                                      and proses IN ('ANTI PILLING (Khusus)','ANTI PILLING (Normal)','ANTI PILLING NORMAL (Normal)',
+                                                                    'ANTI PILLING BIASA (Normal)','GARUK ANTI PILLING (Normal)','SISIR ANTI PILLING (Normal)',
+                                                                    'POTONG BULU ANTI PILLING (Normal)','PEACH SKIN (Normal)','POTONG BULU PEACH SKIN (Normal)',
+                                                                    'POTONG BULU FLEECE (Normal)') THEN qty ELSE 0 END) AS oven_ap,
+                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06') AND nama_mesin IN ('Peach Skin')
+                                                      and proses IN ('PEACH SKIN (Normal)','PEACHSKIN GREIGE (Normal)','PEACH BANTU TAS (Bantu)',
+                                                                    'PEACH SKIN (Bantu)','PEACH SKIN BANTU - DYE (Bantu)','PEACH SKIN BANTU - FIN (Bantu)',
+                                                                    'POTONG BULU PEACH SKIN (Normal)') THEN qty ELSE 0 END) AS peach,
+                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08') AND nama_mesin IN ('Potong Bulu')
+                                                      and proses IN ('POTONG BULU PEACH SKIN (Normal)','PEACH SKIN (Normal)') THEN qty ELSE 0 END) AS pb_peach,
+                                            SUM(CASE WHEN no_mesin IN ('01','02') AND nama_mesin IN ('Airo')
+                                                      and proses = 'AIRO (Normal)' THEN qty ELSE 0 END) AS airo,
+                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04','05','06','07','08') AND nama_mesin IN ('Potong Bulu')
+                                                      and proses IN ('Potong Bulu (Bantu)','POTONG BULU 07 (Bantu)','POTONG BULU LAIN-LAIN (Bantu)',
+                                                                    'POTONG BULU LAIN-LAIN (Khusus)','POTONG BULU BACK BANTU-DYEING (Bantu)',
+                                                                    'POTONG BULU BACK BANTU-FIN (Bantu)','POTONG BULU BACK TAS BANTU (Bantu)',
+                                                                    'POTONG BULU FACE BANTU-DYEING (Bantu)','POTONG BULU FACE BANTU-FIN (Bantu)',
+                                                                    'POTONG BULU FACE BANTU-TAS (Bantu)','POTONG BULU FACE TAS BANTU (Bantu)',
+                                                                    'POTONG BULU GREIGE (Bantu)','POTONG BULU GREIGE (Normal)','PEACH BANTU TAS (Bantu)',
+                                                                    'PEACH SKIN (Bantu)','PEACH SKIN BANTU - DYE (Bantu)','PEACH SKIN BANTU - FIN (Bantu)',
+                                                                    'GARUK BANTU - DYG (Bantu)','GARUK BANTU - FIN (Bantu)','GARUK GREIGE (Bantu)',
+                                                                    'GARUK PERBAIKAN DYG (Bantu)') THEN qty ELSE 0 END) AS pb_lain,
+                                            SUM(CASE WHEN no_mesin IN ('01','02','03','04') AND nama_mesin IN ('Anti Pilling')
+                                                      and proses IN ('ANTI PILLING BANTU - DYE (Bantu)','ANTI PILLING BANTU - FIN (Bantu)',
+                                                                    'ANTI PILLING BANTU - QC (Bantu)','ANTI PILLING BANTU - TAS (Bantu)',
+                                                                    'ANTI PILLING BANTU-DYEING (Bantu)','ANTI PILLING BANTU-FINISHING (Bantu)',
+                                                                    'ANTI PILLING LAIN-LAIN (Bantu)','ANTI PILLING LAIN-LAIN (Khusus)','PEACH BANTU TAS (Bantu)',
+                                                                    'PEACH SKIN (Bantu)','PEACH SKIN BANTU - DYE (Bantu)','PEACH SKIN BANTU - FIN (Bantu)',
+                                                                    'GARUK BANTU - DYG (Bantu)','GARUK BANTU - FIN (Bantu)','GARUK GREIGE (Bantu)',
+                                                                    'GARUK PERBAIKAN DYG (Bantu)') THEN qty ELSE 0 END) AS ap_lain,
+                                            SUM(CASE WHEN no_mesin IN ('01') AND nama_mesin IN ('Polishing')
+                                                      and proses = 'POLISHING (Normal)' THEN qty ELSE 0 END) AS polish,
                                             SUM(CASE WHEN (proses LIKE '%bantu%' OR proses LIKE '%NCP%') THEN qty ELSE 0 END) AS lain,
-                                            SUM(CASE WHEN no_mesin IN ('01') AND nama_mesin IN ('Wet Sueding') and proses IN ('WET SUEDING (Normal)','WET SUEDING FINISHED BACK (Normal)',
-                                                                    'WET SUEDING FINISHED FACE (Normal)',
-                                                                    'WET SUEDING GREIGE BACK (Normal)',
+                                            SUM(CASE WHEN no_mesin IN ('01') AND nama_mesin IN ('Wet Sueding')
+                                                      and proses IN ('WET SUEDING (Normal)','WET SUEDING FINISHED BACK (Normal)',
+                                                                    'WET SUEDING FINISHED FACE (Normal)','WET SUEDING GREIGE BACK (Normal)',
                                                                     'WET SUEDING GREIGE FACE (Normal)') THEN qty ELSE 0 END) AS wet_sue,
-                                            SUM(CASE WHEN proses IN ('NCP - Tunggu Perbaikan (Normal)',
-                                                                    'GARUK FLEECE ULANG-DYE (Ulang)',
-                                                                    'GARUK FLEECE ULANG-FIN (Ulang)',
-                                                                    'GARUK FLEECE ULANG-BRS (Ulang)',
-                                                                    'GARUK FLEECE ULANG-CQA (Ulang)',
-                                                                    'GARUK ANTI PILLING-FIN (Ulang)',
-                                                                    'GARUK ANTI PILLING-DYE (Ulang)',
-                                                                    'GARUK ANTI PILLING-BRS (Ulang)',
-                                                                    'GARUK ANTI PILLING-CQA (Ulang)',
-                                                                    'PEACHSKIN GREIGE (Ulang)',
-                                                                    'PEACHSKIN ULANG-DYE (Ulang)',
-                                                                    'PEACHSKIN ULANG-BRS (Ulang)',
-                                                                    'PEACHSKIN ULANG-CQA (Ulang)',
-                                                                    'PEACHSKIN ULANG-FIN (Ulang)',
-                                                                    'POTONG BULU LAIN-LAIN KHUSUS-FIN (Ulang)',
-                                                                    'POTONG BULU LAIN-LAIN KHUSUS-DYE (Ulang)',
-                                                                    'POTONG BULU LAIN-LAIN KHUSUS-BRS (Ulang)',
-                                                                    'POTONG BULU LAIN-LAIN KHUSUS-CQA (Ulang)',
-                                                                    'ANTI PILLING LAIN-LAIN KHUSUS-FIN (Ulang)',
-                                                                    'ANTI PILLING LAIN-LAIN KHUSUS-DYE (Ulang)','ANTI PILLING LAIN-LAIN KHUSUS-BRS (Ulang)','ANTI PILLING LAIN-LAIN KHUSUS-CQA (Ulang)') THEN qty ELSE 0 END) AS bantu,
-                                            GROUP_CONCAT(DISTINCT CASE 
-                                                WHEN proses = 'GARUK FLEECE (Normal)' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' 
-                                                THEN TRIM(nodemand) 
-                                                ELSE NULL 
-                                            END) AS demand_garuk_fleece,
+                                            SUM(CASE WHEN proses IN ('NCP - Tunggu Perbaikan (Normal)','GARUK FLEECE ULANG-DYE (Ulang)','GARUK FLEECE ULANG-FIN (Ulang)',
+                                                                    'GARUK FLEECE ULANG-BRS (Ulang)','GARUK FLEECE ULANG-CQA (Ulang)','GARUK ANTI PILLING-FIN (Ulang)',
+                                                                    'GARUK ANTI PILLING-DYE (Ulang)','GARUK ANTI PILLING-BRS (Ulang)','GARUK ANTI PILLING-CQA (Ulang)',
+                                                                    'PEACHSKIN GREIGE (Ulang)','PEACHSKIN ULANG-DYE (Ulang)','PEACHSKIN ULANG-BRS (Ulang)',
+                                                                    'PEACHSKIN ULANG-CQA (Ulang)','PEACHSKIN ULANG-FIN (Ulang)','POTONG BULU LAIN-LAIN KHUSUS-FIN (Ulang)',
+                                                                    'POTONG BULU LAIN-LAIN KHUSUS-DYE (Ulang)','POTONG BULU LAIN-LAIN KHUSUS-BRS (Ulang)',
+                                                                    'POTONG BULU LAIN-LAIN KHUSUS-CQA (Ulang)','ANTI PILLING LAIN-LAIN KHUSUS-FIN (Ulang)',
+                                                                    'ANTI PILLING LAIN-LAIN KHUSUS-DYE (Ulang)','ANTI PILLING LAIN-LAIN KHUSUS-BRS (Ulang)',
+                                                                    'ANTI PILLING LAIN-LAIN KHUSUS-CQA (Ulang)') THEN qty ELSE 0 END) AS bantu,
+                                            STUFF((
+                                                SELECT DISTINCT ', ' + LTRIM(RTRIM(tp2.nodemand))
+                                                FROM db_brushing.tbl_produksi tp2
+                                                WHERE $where_brs2
+                                                  AND tp2.proses = 'GARUK FLEECE (Normal)'
+                                                  AND tp2.nodemand IS NOT NULL
+                                                  AND LTRIM(RTRIM(tp2.nodemand)) <> ''
+                                                FOR XML PATH(''), TYPE
+                                            ).value('.', 'nvarchar(max)'), 1, 2, '') AS demand_garuk_fleece,
+
                                             SUM(CASE WHEN proses LIKE '%(Bantu)%' THEN qty ELSE 0 END) AS produksi_ulang,
-                                            GROUP_CONCAT(DISTINCT CASE 
-                                                WHEN proses LIKE '%(Bantu)%' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' 
-                                                THEN TRIM(nodemand) 
-                                                ELSE NULL 
-                                            END) AS demand_produksi_ulang,
-                                            GROUP_CONCAT(DISTINCT CASE 
-                                                WHEN proses = 'PEACH SKIN (Normal)' AND nodemand IS NOT NULL AND TRIM(nodemand) != '' 
-                                                THEN TRIM(nodemand) 
-                                                ELSE NULL 
-                                            END) AS demand_peach_skin,
+
+                                            STUFF((
+                                                SELECT DISTINCT ', ' + LTRIM(RTRIM(tp2.nodemand))
+                                                FROM db_brushing.tbl_produksi tp2
+                                                WHERE $where_brs2
+                                                  AND tp2.proses LIKE '%(Bantu)%'
+                                                  AND tp2.nodemand IS NOT NULL
+                                                  AND LTRIM(RTRIM(tp2.nodemand)) <> ''
+                                                FOR XML PATH(''), TYPE
+                                            ).value('.', 'nvarchar(max)'), 1, 2, '') AS demand_produksi_ulang,
+
+                                            STUFF((
+                                                SELECT DISTINCT ', ' + LTRIM(RTRIM(tp2.nodemand))
+                                                FROM db_brushing.tbl_produksi tp2
+                                                WHERE $where_brs2
+                                                  AND tp2.proses = 'PEACH SKIN (Normal)'
+                                                  AND tp2.nodemand IS NOT NULL
+                                                  AND LTRIM(RTRIM(tp2.nodemand)) <> ''
+                                                FOR XML PATH(''), TYPE
+                                            ).value('.', 'nvarchar(max)'), 1, 2, '') AS demand_peach_skin,
+
                                             count(distinct nodemand) as total_kk
-                                        FROM
-                                            tbl_produksi tp
-                                        WHERE 
-                                        $where_brs2) t";
-    $stmt_brs2 = mysqli_query($conb, $q_brs2);
-    $row_brs2 = mysqli_fetch_assoc($stmt_brs2);
+                                        FROM db_brushing.tbl_produksi tp
+                                        WHERE $where_brs2) t";
+    $stmt_brs2 = sqlsrv_query($conb, $q_brs2);
+    $row_brs2 = sqlsrv_fetch_array($stmt_brs2, SQLSRV_FETCH_ASSOC);
 
 // End BRS
 
@@ -1279,13 +1349,13 @@ if ($Awal == $Akhir) {
                   t.t_jawab4 as dept5,
                   b.kg_bruto*t.persen4/100 as kg_5
                 FROM
-                  tbl_gantikain t
+                  db_adm.tbl_gantikain t
                 LEFT JOIN (
                         SELECT *
                         FROM (
                             SELECT b.*,
                                   row_number() OVER (partition by b.id_nsp order by b.no_bon ASC) as rn
-                            FROM tbl_bonkain b
+                            FROM db_adm.tbl_bonkain b
                         ) x
                         where rn = 1
                       ) b on b.id_nsp = t.id
@@ -1293,9 +1363,9 @@ if ($Awal == $Akhir) {
                   $where_gkain
                   ";
       // echo $q_gkain;
-      $stmt_gkain = mysqli_query($cona,$q_gkain);
-      if ($stmt_gkain && mysqli_num_rows($stmt_gkain) > 0) {
-              while ($row_gkain = mysqli_fetch_assoc($stmt_gkain)) {
+      $stmt_gkain = sqlsrv_query($cona,$q_gkain);
+      if ($stmt_gkain && sqlsrv_num_rows($stmt_gkain) > 0) {
+              while ($row_gkain = sqlsrv_fetch_array($stmt_gkain, SQLSRV_FETCH_ASSOC)) {
                   $bruto1 = (float)$row_gkain['kg_1'];
                   $bruto2 = (float)$row_gkain['kg_2'];
                   $bruto3 = (float)$row_gkain['kg_3'];
@@ -1318,22 +1388,22 @@ if ($Awal == $Akhir) {
                   t.t_jawab4 as dept5,
                   b.kg_bruto*t.persen4/100 as kg_5
                 FROM
-                  tbl_gantikain t
+                  db_adm.tbl_gantikain t
                 LEFT JOIN (
                         SELECT *
                         FROM (
                             SELECT b.*,
                                   row_number() OVER (partition by b.id_nsp order by b.no_bon ASC) as rn
-                            FROM tbl_bonkain b
+                            FROM db_adm.tbl_bonkain b
                         ) x
                         where rn = 1
                       ) b on b.id_nsp = t.id
                 WHERE 
                   $where_gkain1
                   ";
-      $stmt_gkain1 = mysqli_query($cona,$q_gkain1);
-      if ($stmt_gkain1 && mysqli_num_rows($stmt_gkain1) > 0) {
-              while ($row_gkain1 = mysqli_fetch_assoc($stmt_gkain1)) {
+      $stmt_gkain1 = sqlsrv_query($cona,$q_gkain1);
+      if ($stmt_gkain1 && sqlsrv_num_rows($stmt_gkain1) > 0) {
+              while ($row_gkain1 = sqlsrv_fetch_array($stmt_gkain1, SQLSRV_FETCH_ASSOC)) {
                   $bruto11 = (float)$row_gkain1['kg_1'];
                   $bruto12 = (float)$row_gkain1['kg_2'];
                   $bruto13 = (float)$row_gkain1['kg_3'];
@@ -1356,22 +1426,22 @@ if ($Awal == $Akhir) {
                   t.t_jawab4 as dept5,
                   b.kg_bruto*t.persen4/100 as kg_5
                 FROM
-                  tbl_gantikain t
+                  db_adm.tbl_gantikain t
                 LEFT JOIN (
                         SELECT *
                         FROM (
                             SELECT b.*,
                                   row_number() OVER (partition by b.id_nsp order by b.no_bon ASC) as rn
-                            FROM tbl_bonkain b
+                            FROM db_adm.tbl_bonkain b
                         ) x
                         where rn = 1
                       ) b on b.id_nsp = t.id
                 WHERE 
                   $where_gkain2
                   ";
-      $stmt_gkain2 = mysqli_query($cona,$q_gkain2);
-      if ($stmt_gkain2 && mysqli_num_rows($stmt_gkain2) > 0) {
-              while ($row_gkain2 = mysqli_fetch_assoc($stmt_gkain2)) {
+      $stmt_gkain2 = sqlsrv_query($cona,$q_gkain2);
+      if ($stmt_gkain2 && sqlsrv_num_rows($stmt_gkain2) > 0) {
+              while ($row_gkain2 = sqlsrv_fetch_array($stmt_gkain2, SQLSRV_FETCH_ASSOC)) {
                   $bruto21 = (float)$row_gkain2['kg_1'];
                   $bruto22 = (float)$row_gkain2['kg_2'];
                   $bruto23 = (float)$row_gkain2['kg_3'];
@@ -1389,16 +1459,16 @@ if ($Awal == $Akhir) {
                   DATEDIFF(tgl_rencana, DATE_FORMAT(now(), '%Y-%m-%d')) as lama,
                   DATEDIFF(DATE_FORMAT(now(), '%Y-%m-%d'), tgl_rencana) as delay
                 from
-                  tbl_ncp_qcf_now
+                  db_qc.tbl_ncp_qcf_now
                 where
                   status in ('Belum OK', 'OK', 'BS', 'Cancel', 'Disposisi')
                   AND ncp_hitung = 'ya'
                   $where_ncp    
                 order by
                   id asc";
-    $stmt_ncp = mysqli_query($cond,$q_ncp);
-    if ($stmt_ncp && mysqli_num_rows($stmt_ncp) > 0) {
-            while ($row_ncp = mysqli_fetch_assoc($stmt_ncp)) {
+    $stmt_ncp = sqlsrv_query($cond,$q_ncp);
+    if ($stmt_ncp && sqlsrv_num_rows($stmt_ncp) > 0) {
+            while ($row_ncp = sqlsrv_fetch_array($stmt_ncp, SQLSRV_FETCH_ASSOC)) {
                 $bruto_ncp = (float)$row_ncp['berat'];
                 ncp($row_ncp['dept'], $bruto_ncp);
                 disp($row_ncp['dept'], $row_ncp['status'], $bruto_ncp);
@@ -1411,16 +1481,16 @@ if ($Awal == $Akhir) {
                   DATEDIFF(tgl_rencana, DATE_FORMAT(now(), '%Y-%m-%d')) as lama,
                   DATEDIFF(DATE_FORMAT(now(), '%Y-%m-%d'), tgl_rencana) as delay
                 from
-                  tbl_ncp_qcf_now
+                  db_qc.tbl_ncp_qcf_now
                 where
                   status in ('Belum OK', 'OK', 'BS', 'Cancel', 'Disposisi')
                   AND ncp_hitung = 'ya'
                   $where_ncp1    
                 order by
                   id asc";
-    $stmt_ncp1 = mysqli_query($cond,$q_ncp1);
-    if ($stmt_ncp1 && mysqli_num_rows($stmt_ncp1) > 0) {
-            while ($row_ncp1 = mysqli_fetch_assoc($stmt_ncp1)) {
+    $stmt_ncp1 = sqlsrv_query($cond,$q_ncp1);
+    if ($stmt_ncp1 && sqlsrv_num_rows($stmt_ncp1) > 0) {
+            while ($row_ncp1 = sqlsrv_fetch_array($stmt_ncp1, SQLSRV_FETCH_ASSOC)) {
                 $bruto_ncp1 = (float)$row_ncp1['berat'];
                 ncp1($row_ncp1['dept'], $bruto_ncp1);
                 disp1($row_ncp1['dept'], $row_ncp1['status'], $bruto_ncp1);
@@ -1433,16 +1503,16 @@ if ($Awal == $Akhir) {
                   DATEDIFF(tgl_rencana, DATE_FORMAT(now(), '%Y-%m-%d')) as lama,
                   DATEDIFF(DATE_FORMAT(now(), '%Y-%m-%d'), tgl_rencana) as delay
                 from
-                  tbl_ncp_qcf_now
+                  db_qc.tbl_ncp_qcf_now
                 where
                   status in ('Belum OK', 'OK', 'BS', 'Cancel', 'Disposisi')
                   AND ncp_hitung = 'ya'
                   $where_ncp2    
                 order by
                   id asc";
-    $stmt_ncp2 = mysqli_query($cond,$q_ncp2);
-    if ($stmt_ncp2 && mysqli_num_rows($stmt_ncp2) > 0) {
-            while ($row_ncp2 = mysqli_fetch_assoc($stmt_ncp2)) {
+    $stmt_ncp2 = sqlsrv_query($cond,$q_ncp2);
+    if ($stmt_ncp2 && sqlsrv_num_rows($stmt_ncp2) > 0) {
+            while ($row_ncp2 = sqlsrv_fetch_array($stmt_ncp2, SQLSRV_FETCH_ASSOC)) {
                 $bruto_ncp2 = (float)$row_ncp2['berat'];
                 ncp2($row_ncp2['dept'], $bruto_ncp2);
                 disp2($row_ncp2['dept'], $row_ncp2['status'], $bruto_ncp2);
@@ -1460,8 +1530,8 @@ if ($Awal == $Akhir) {
               p.pemberi_instruksi,
               p.keterangan  
             FROM 
-              tbl_cocok_warna_dye t
-            LEFT JOIN penyelesaian_tolakbasah p
+              db_qc.tbl_cocok_warna_dye t
+            LEFT JOIN db_qc.penyelesaian_tolakbasah p
               ON t.id = p.id_cocok_warna 
             WHERE 
               t.status_warna LIKE '%TOLAK BASAH%'
@@ -1469,9 +1539,9 @@ if ($Awal == $Akhir) {
             ORDER BY 
               t.id DESC";
   // echo $q_tb;
-  $stmt_tb = mysqli_query($cond,$q_tb);
-  if ($stmt_tb && mysqli_num_rows($stmt_tb) > 0) {
-            while ($row_tb = mysqli_fetch_assoc($stmt_tb)) {
+  $stmt_tb = sqlsrv_query($cond,$q_tb);
+  if ($stmt_tb && sqlsrv_num_rows($stmt_tb) > 0) {
+            while ($row_tb = sqlsrv_fetch_array($stmt_tb, SQLSRV_FETCH_ASSOC)) {
                 $bruto_tb = (float)$row_tb['bruto'];
                 tbasah($row_tb['status_warna'], $bruto_tb);
                 disp_tbasah($row_tb['status_warna'],$row_tb['tindakan'], $bruto_tb);
@@ -1488,17 +1558,17 @@ if ($Awal == $Akhir) {
               p.pemberi_instruksi,
               p.keterangan  
             FROM 
-              tbl_cocok_warna_dye t
-            LEFT JOIN penyelesaian_tolakbasah p
+              db_qc.tbl_cocok_warna_dye t
+            LEFT JOIN db_qc.penyelesaian_tolakbasah p
               ON t.id = p.id_cocok_warna 
             WHERE 
               t.status_warna LIKE '%TOLAK BASAH%'
               $where_tb1
             ORDER BY 
               t.id DESC";
-  $stmt_tb1 = mysqli_query($cond,$q_tb1);
-  if ($stmt_tb1 && mysqli_num_rows($stmt_tb1) > 0) {
-            while ($row_tb1 = mysqli_fetch_assoc($stmt_tb1)) {
+  $stmt_tb1 = sqlsrv_query($cond,$q_tb1);
+  if ($stmt_tb1 && sqlsrv_num_rows($stmt_tb1) > 0) {
+            while ($row_tb1 = sqlsrv_fetch_array($stmt_tb1, SQLSRV_FETCH_ASSOC)) {
                 $bruto_tb1 = (float)$row_tb1['bruto'];
                 tbasah1($row_tb1['status_warna'], $bruto_tb1);
                 disp_tbasah1($row_tb1['status_warna'],$row_tb1['tindakan'], $bruto_tb1);
@@ -1515,8 +1585,8 @@ if ($Awal == $Akhir) {
               p.pemberi_instruksi,
               p.keterangan  
             FROM 
-              tbl_cocok_warna_dye t
-            LEFT JOIN penyelesaian_tolakbasah p
+              db_qc.tbl_cocok_warna_dye t
+            LEFT JOIN db_qc.penyelesaian_tolakbasah p
               ON t.id = p.id_cocok_warna 
             WHERE 
               t.status_warna LIKE '%TOLAK BASAH%'
@@ -1524,9 +1594,9 @@ if ($Awal == $Akhir) {
             ORDER BY 
               t.id DESC";
   // echo $q_tb2;
-  $stmt_tb2 = mysqli_query($cond,$q_tb2);
-  if ($stmt_tb2 && mysqli_num_rows($stmt_tb2) > 0) {
-            while ($row_tb2 = mysqli_fetch_assoc($stmt_tb2)) {
+  $stmt_tb2 = sqlsrv_query($cond,$q_tb2);
+  if ($stmt_tb2 && sqlsrv_num_rows($stmt_tb2) > 0) {
+            while ($row_tb2 = sqlsrv_fetch_array($stmt_tb2, SQLSRV_FETCH_ASSOC)) {
                 $bruto_tb2 = (float)$row_tb2['bruto'];
                 tbasah2($row_tb2['status_warna'], $bruto_tb2);
                 disp_tbasah2($row_tb2['status_warna'],$row_tb2['tindakan'], $bruto_tb2);

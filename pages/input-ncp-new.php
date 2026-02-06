@@ -438,19 +438,17 @@ $sqlwarna = "SELECT
 $stmtwarna1 = db2_exec($conn2, $sqlwarna, array('cursor' => DB2_SCROLLABLE));
 $rowwarna = db2_fetch_assoc($stmtwarna1);
 
-$sqlCek = mysqli_query($cond, "SELECT * FROM tbl_ncp_qcf_now WHERE nodemand='$nodemand' and no_ncp_gabungan='$NCPNO' ORDER BY id DESC LIMIT 1");
-$cek = mysqli_num_rows($sqlCek);
-$rcek = mysqli_fetch_array($sqlCek);
+$sqlCek = sqlsrv_query($cond, "SELECT TOP 1 * FROM db_qc.tbl_ncp_qcf_now WHERE nodemand='$nodemand' and no_ncp_gabungan='$NCPNO' ORDER BY id DESC");
+$rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
+$cek = ($rcek) ? 1 : 0;
+
 
 $rev = substr($Revisi, -1, 1);
 $ncpG = trim($CekSalinan);
-/*$sqlCek = mysqli_query($cond, "SELECT * FROM tbl_ncp_qcf_now WHERE reg_no='$REGNO' ORDER BY id DESC LIMIT 1");
-$cek = mysqli_num_rows($sqlCek);
-$rcek = mysqli_fetch_array($sqlCek);*/
 
-$sqlCek0 = mysqli_query($cond, "SELECT * FROM tbl_ncp_qcf_now WHERE nodemand='$nodemand' ORDER BY id DESC LIMIT 1");
-$cek0 = mysqli_num_rows($sqlCek0);
-$rcek0 = mysqli_fetch_array($sqlCek0);
+$sqlCek0 = sqlsrv_query($cond, "SELECT TOP 1 * FROM db_qc.tbl_ncp_qcf_now WHERE nodemand='$nodemand' ORDER BY id DESC");
+$rcek0 = sqlsrv_fetch_array($sqlCek0, SQLSRV_FETCH_ASSOC);
+$cek0 = ($rcek0) ? 1 : 0;
 
 if ($rowdb2['TGL_DELIV_GREIGE'] != "") {
 	$awal  = date_create($rowdb2['TGL_DELIV_GREIGE']);
@@ -471,8 +469,9 @@ if ($rowdb2['TGL_DELIV_GREIGE'] != "") {
 	//echo $startTime;	
 }
 
-$q_cocok_warna_dye	= mysqli_query($cond, "SELECT * FROM tbl_cocok_warna_dye WHERE nodemand = '$nodemand' ");
-$row_cocok_warna_dye = mysqli_fetch_assoc($q_cocok_warna_dye);
+$q_cocok_warna_dye	= sqlsrv_query($cond, "SELECT * FROM db_qc.tbl_cocok_warna_dye WHERE nodemand = '$nodemand' ");
+// $row_cocok_warna_dye = mysqli_fetch_assoc($q_cocok_warna_dye);
+$row_cocok_warna_dye = sqlsrv_fetch_array($q_cocok_warna_dye, SQLSRV_FETCH_ASSOC);
 ?>
 <form class="form-horizontal" action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
 	<div class="box box-info">
@@ -650,12 +649,21 @@ $row_cocok_warna_dye = mysqli_fetch_assoc($q_cocok_warna_dye);
 						<div class="input-group">
 							<select name="no_ncp" class="form-control" id="no_ncp" placeholder="No NCP" onChange="rd();">
 								<option value=""></option>
-								<?php $qCek = mysqli_query($cond, "SELECT no_ncp_gabungan,masalah FROM tbl_ncp_qcf_now WHERE nodemand='$_GET[nodemand]' ORDER BY id DESC");
-								while ($dCek = mysqli_fetch_array($qCek)) { ?>
-									<option value="<?php echo $dCek['no_ncp_gabungan']; ?>" <?php if ($dCek['no_ncp_gabungan'] == $NCPNO) {
-																								echo "SELECTED";
-																							} ?>><?php echo $dCek['no_ncp_gabungan']; ?></option>
-								<?php } ?>
+								<?php
+								$qCek = sqlsrv_query($cond, "SELECT no_ncp_gabungan, masalah FROM db_qc.tbl_ncp_qcf_now WHERE nodemand='$_GET[nodemand]' ORDER BY id DESC");
+
+								if ($qCek === false) {
+									echo "<pre>";
+									print_r(sqlsrv_errors());
+									echo "</pre>";
+								} else {
+									while ($dCek = sqlsrv_fetch_array($qCek, SQLSRV_FETCH_ASSOC)) { ?>
+										<option value="<?php echo $dCek['no_ncp_gabungan']; ?>" <?php if ($dCek['no_ncp_gabungan'] == $NCPNO) { echo "SELECTED"; } ?>>
+											<?php echo $dCek['no_ncp_gabungan']; ?>
+										</option>
+								<?php }
+								}
+								?>
 							</select>
 							<span class="input-group-btn"><button type="submit" class="btn btn-default" name="cek" id="cek" value="cek"> <span class="fa fa-search"></span></button></span>
 						</div>
@@ -787,13 +795,22 @@ $row_cocok_warna_dye = mysqli_fetch_assoc($q_cocok_warna_dye);
 							<select class="form-control select2" name="masalah_dominan" id="masalah_dominan">
 								<option value="">Pilih</option>
 								<?php
-								$qrym = mysqli_query($cond, "SELECT masalah FROM tbl_masalahutama_ncp ORDER BY masalah ASC");
-								while ($rm = mysqli_fetch_array($qrym)) {
+								$qrym = sqlsrv_query($cond, "SELECT masalah FROM db_qc.tbl_masalahutama_ncp ORDER BY masalah ASC");
+
+								if ($qrym === false) {
+									echo "<pre>";
+									print_r(sqlsrv_errors());
+									echo "</pre>";
+								} else {
+									while ($rm = sqlsrv_fetch_array($qrym, SQLSRV_FETCH_ASSOC)) {
 								?>
-									<option value="<?php echo $rm['masalah']; ?>" <?php if ($rcek['masalah_dominan'] == $rm['masalah']) {
-																						echo "SELECTED";
-																					} ?>><?php echo $rm['masalah']; ?></option>
-								<?php } ?>
+										<option value="<?php echo $rm['masalah']; ?>" <?php if ($rcek['masalah_dominan'] == $rm['masalah']) { echo "SELECTED"; } ?>>
+										<?php echo $rm['masalah']; ?>
+										</option>
+								<?php
+									}
+								}
+								?>
 							</select>
 							<!-- <span class="input-group-btn"><button type="button" class="btn btn-default" data-toggle="modal" data-target="#DataMasalahDominan"> ...</button></span> -->
 						</div>
@@ -833,9 +850,9 @@ $row_cocok_warna_dye = mysqli_fetch_assoc($q_cocok_warna_dye);
 								<?php
 								$dtArr = $rcek['masalah'];
 								$data = explode(",", $dtArr);
-								$qCek1 = mysqli_query($cond, "SELECT nama FROM tbl_masalah_ncp WHERE jenis='Masalah' ORDER BY nama ASC");
+								$qCek1 = sqlsrv_query($cond, "SELECT nama FROM db_qc.tbl_masalah_ncp WHERE jenis='Masalah' ORDER BY nama ASC");
 								$i = 0;
-								while ($dCek1 = mysqli_fetch_array($qCek1)) { ?>
+								while ($dCek1 = sqlsrv_fetch_array($qCek1, SQLSRV_FETCH_ASSOC)) { ?>
 									<option value="<?php echo $dCek1['nama']; ?>" <?php if ($dCek1['nama'] == $data[0] or $dCek1['nama'] == $data[1] or $dCek1['nama'] == $data[2] or $dCek1['nama'] == $data[3] or $dCek1['nama'] == $data[4] or $dCek1['nama'] == $data[5]) {
 																						echo "SELECTED";
 																					} ?>><?php echo $dCek1['nama']; ?></option>
@@ -997,28 +1014,42 @@ $row_cocok_warna_dye = mysqli_fetch_assoc($q_cocok_warna_dye);
 <?php
 function no_urut()
 {
-	include "koneksi.php";
-	date_default_timezone_set("Asia/Jakarta");
-	$format = date("y/m/");
-	$sql = mysqli_query($cond, "SELECT no_ncp FROM tbl_ncp_qcf_now WHERE substr(no_ncp,1,6) like '" . $format . "%' ORDER BY round(substr(no_ncp,7,4)) DESC LIMIT 1 ") or die(mysqli_error());
-	$d = mysqli_num_rows($sql);
-	if ($d > 0) {
-		$r = mysqli_fetch_array($sql);
-		$d = $r['no_ncp'];
-		$str = substr($d, 6, 4);
-		$Urut = (int)$str;
-	} else {
-		$Urut = 0;
-	}
-	$Urut = $Urut + 1;
-	$Nol = "";
-	$nilai = 4 - strlen($Urut);
-	for ($i = 1; $i <= $nilai; $i++) {
-		$Nol = $Nol . "0";
-	}
-	$nipbr = $format . $Nol . $Urut;
-	return $nipbr;
+    include "koneksi.php";
+    date_default_timezone_set("Asia/Jakarta");
+
+    $format = date("y/m/");
+
+    $sql = sqlsrv_query($cond, "SELECT TOP 1 no_ncp
+        FROM db_qc.tbl_ncp_qcf_now
+        WHERE SUBSTRING(CAST(no_ncp AS varchar(50)),1,6) LIKE '" . $format . "%'
+        ORDER BY CAST(SUBSTRING(CAST(no_ncp AS varchar(50)),7,4) AS int) DESC");
+
+    if ($sql === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    $r = sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC);
+
+    if ($r) {
+        $d = $r['no_ncp'];
+        $str = substr($d, 6, 4);
+        $Urut = (int)$str;
+    } else {
+        $Urut = 0;
+    }
+
+    $Urut = $Urut + 1;
+
+    $Nol = "";
+    $nilai = 4 - strlen($Urut);
+    for ($i = 1; $i <= $nilai; $i++) {
+        $Nol = $Nol . "0";
+    }
+
+    $nipbr = $format . $Nol . $Urut;
+    return $nipbr;
 }
+
 $nou = no_urut();
 function autono_reg()
 {
@@ -1026,16 +1057,22 @@ function autono_reg()
 	date_default_timezone_set('Asia/Jakarta');
 	$bln = date("ym");
 	$today = date("ymd");
-	$sqlnotes = mysqli_query($cond, "SELECT reg_no FROM tbl_ncp_qcf_now WHERE substr(reg_no,1,6) like '%" . $today . "%' ORDER BY reg_no DESC LIMIT 1") or die(mysqli_error());
-	$dt = mysqli_num_rows($sqlnotes);
-	if ($dt > 0) {
-		$rd = mysqli_fetch_array($sqlnotes);
+
+	$sqlnotes = sqlsrv_query($cond, "SELECT TOP 1 reg_no
+		FROM db_qc.tbl_ncp_qcf_now
+		WHERE SUBSTRING(CAST(reg_no AS varchar(50)),1,6) LIKE '%" . $today . "%'
+		ORDER BY CAST(reg_no AS varchar(50)) DESC") or die(print_r(sqlsrv_errors(), true));
+
+	$rd = sqlsrv_fetch_array($sqlnotes, SQLSRV_FETCH_ASSOC);
+
+	if ($rd !== false && $rd != null) {
 		$dt = $rd['reg_no'];
 		$strd = substr($dt, 6, 2);
 		$Urutd = (int)$strd;
 	} else {
 		$Urutd = 0;
 	}
+
 	$Urutd = $Urutd + 1;
 	$Nold = "";
 	$nilaid = 2 - strlen($Urutd);
@@ -1043,9 +1080,9 @@ function autono_reg()
 		$Nold = $Nold . "0";
 	}
 	$no2 = $today . $Nold . $Urutd;
-	//$no2 =$today.str_pad($Urutd, 4, "0",  STR_PAD_LEFT);
 	return $no2;
 }
+
 if ($_POST['save'] == "Simpan") {
 	$warna = str_replace("'", "''", $_POST['warna']);
 	$nowarna = str_replace("'", "''", $_POST['no_warna']);
@@ -1074,92 +1111,77 @@ if ($_POST['save'] == "Simpan") {
 		$kaingerobak = "tidak";
 	}
 
-	$sqlCk = mysqli_query($cond, "SELECT no_ncp FROM tbl_ncp_qcf_now WHERE reg_no='$REGNO' ORDER BY id DESC LIMIT 1");
-	$rck = mysqli_fetch_array($sqlCk);
-	$sqlCk1 = mysqli_query($cond, "SELECT revisi, no_ncp, dept FROM tbl_ncp_qcf_now WHERE reg_no='$REGNO' and dept='$_POST[dept]' ORDER BY revisi DESC LIMIT 1");
-	$rck1 = mysqli_fetch_array($sqlCk1);	
+	$sqlCk = sqlsrv_query($cond, "SELECT TOP 1 no_ncp FROM db_qc.tbl_ncp_qcf_now WHERE reg_no='$REGNO' ORDER BY id DESC");
+	$rck = sqlsrv_fetch_array($sqlCk, SQLSRV_FETCH_ASSOC);
+	$sqlCk1 = sqlsrv_query($cond, "SELECT TOP 1 revisi, no_ncp, dept FROM db_qc.tbl_ncp_qcf_now WHERE reg_no='$REGNO' and dept='$_POST[dept]' ORDER BY revisi DESC");
+	$rck1 = sqlsrv_fetch_array($sqlCk1, SQLSRV_FETCH_ASSOC);	
 	$rev1 = (int) $rck1['revisi'] + 1;
 	if ($rck1['no_ncp'] != "" and $rck1['dept'] != "") {
 		$ncp = $rck1['no_ncp'];
 	} else if ($rck['no_ncp'] != "") {
 		$ncp = $rck['no_ncp'];
-		$sqlCk2 = mysqli_query($cond, "SELECT revisi, no_ncp, dept FROM tbl_ncp_qcf_now WHERE no_ncp='$ncp' and dept='$_POST[dept]' ORDER BY revisi DESC LIMIT 1");
-		$rck2 = mysqli_fetch_array($sqlCk2);
+		$sqlCk2 = sqlsrv_query($cond, "SELECT TOP 1 revisi, no_ncp, dept FROM db_qc.tbl_ncp_qcf_now WHERE no_ncp='$ncp' and dept='$_POST[dept]' ORDER BY revisi DESC");
+		$rck2 = sqlsrv_fetch_array($sqlCk2, SQLSRV_FETCH_ASSOC);
 		$rev1 = (int) $rck2['revisi'] + 1;
 	} else {
 		$ncp = $nou;
 	}
 	$ncpgabung = $ncp . " " . $_POST['dept'] . "" . $rev1;
 
-
 	if ($_POST['regno'] != "") {
 		$rgno = $_POST['regno'];
 	} else {
 		$rgno = autono_reg();
 	}
-	$sqlData = mysqli_query($cond, "INSERT INTO tbl_ncp_qcf_now SET 
-												reg_no='$rgno',
-												nodemand='$_POST[nodemand]',
-												nokk='$_POST[nokk]',
-												no_ncp='$ncp',
-												langganan='$_POST[pelanggan]',
-												buyer='$_POST[buyer]',
-												no_order='$_POST[no_order]',
-												no_hanger='$_POST[no_hanger]',
-												no_item='$_POST[no_item]',
-												prod_order='$_POST[lot]',
-												po='$po',
-												po_rajut='$_POST[po_rajut]',
-												supp_rajut='$_POST[supp_rajut]',
-												jenis_kain='$jns',
-												lebar='$_POST[lebar]',
-												gramasi='$_POST[grms]',
-												lot='$_POST[lot]',
-												rol='$_POST[rol]',
-												warna='$warna',
-												no_warna='$nowarna',
-												masalah='$kt1',
-												berat='$_POST[berat]',
-												dept='$_POST[dept]',
-												nsp='$_POST[nsp1]',
-												nsp1='$_POST[nsp2]',
-												nsp2='$_POST[nsp3]',
-												peninjau_awal='$_POST[peninjau_awal1]',
-												ket='$ket',
-												tempat='$_POST[tempat]',
-												masalah_tambahan='$_POST[masalah_tambahan]',
-												masalah_dominan='$_POST[masalah_dominan]',
-												dibuat_oleh='$_POST[dibuat_oleh]',
-												revisi='$rev1',
-												no_ncp_gabungan='$ncpgabung',
-												ncp_hitung='$hitung',
-												kain_gerobak='$kaingerobak',
-												m_proses='$_POST[m_proses]',
-												tgl_delivery='$_POST[tgl_delivery]',
-												tgl_rencana='$_POST[tgl_target]',
-												tgl_buat=now(),
-												tgl_update=now(),
-												status_warna = '$_POST[status_warna]',
-												disposisi = '$_POST[disposisi]'");
+	$sqlData = sqlsrv_query($cond, "
+		INSERT INTO db_qc.tbl_ncp_qcf_now (
+			reg_no, nodemand, nokk, no_ncp, langganan, buyer, no_order, no_hanger, no_item,
+			prod_order, po, po_rajut, supp_rajut, jenis_kain, lebar, gramasi, lot, rol,
+			warna, no_warna, masalah, berat, dept, nsp, nsp1, nsp2, peninjau_awal, ket,
+			tempat, masalah_tambahan, masalah_dominan, dibuat_oleh, revisi, no_ncp_gabungan,
+			ncp_hitung, kain_gerobak, m_proses, tgl_delivery, tgl_rencana,
+			tgl_buat, tgl_update, status_warna, disposisi
+		) VALUES (
+			'$rgno', '$_POST[nodemand]', '$_POST[nokk]', '$ncp', '$_POST[pelanggan]', '$_POST[buyer]',
+			'$_POST[no_order]', '$_POST[no_hanger]', '$_POST[no_item]',
+			'$_POST[lot]', '$po', '$_POST[po_rajut]', '$_POST[supp_rajut]',
+			'$jns', '$_POST[lebar]', '$_POST[grms]', '$_POST[lot]', '$_POST[rol]',
+			'$warna', '$nowarna', '$kt1', '$_POST[berat]', '$_POST[dept]',
+			'$_POST[nsp1]', '$_POST[nsp2]', '$_POST[nsp3]',
+			'$_POST[peninjau_awal1]', '$ket', '$_POST[tempat]',
+			'$_POST[masalah_tambahan]', '$_POST[masalah_dominan]',
+			'$_POST[dibuat_oleh]', '$rev1', '$ncpgabung',
+			'$hitung', '$kaingerobak', '$_POST[m_proses]',
+			'$_POST[tgl_delivery]', '$_POST[tgl_target]',
+			GETDATE(), GETDATE(), '$_POST[status_warna]', '$_POST[disposisi]'
+		)
+	");
 
+
+if ($sqlData === false) {
+    echo "<pre>";
+    print_r(sqlsrv_errors());
+    echo "</pre>";
+    exit;
+}
 	if ($sqlData) {
 
 		echo "<script>swal({
-  title: 'Data Tersimpan',   
-  text: 'Klik Ok untuk input data kembali',
-  type: 'success',
-  }).then((result) => {
-  if (result.value) {
-      window.open('pages/cetak/cetak_ncp_now.php?no_ncp_gabungan=$ncpgabung','_blank');
-      window.location.href='?p=Input-NCP-New&nodemand=$_GET[nodemand]';
-	 
-  }
-});</script>";
+		title: 'Data Tersimpan',   
+		text: 'Klik Ok untuk input data kembali',
+		type: 'success',
+		}).then((result) => {
+		if (result.value) {
+			window.open('pages/cetak/cetak_ncp_now.php?no_ncp_gabungan=$ncpgabung','_blank');
+			window.location.href='?p=Input-NCP-New&nodemand=$_GET[nodemand]';
+			
+		}
+		});</script>";
 	}
 }
 if ($_POST['save'] == "Ubah") {
-	$sqlCk = mysqli_query($cond, "SELECT revisi,dept,no_ncp FROM tbl_ncp_qcf_now WHERE id='$_POST[idncp]' ORDER BY id DESC LIMIT 1");
-	$rck = mysqli_fetch_array($sqlCk);
+	$sqlCk = sqlsrv_query($cond, "SELECT TOP 1 revisi,dept,no_ncp FROM db_qc.tbl_ncp_qcf_now WHERE id='$_POST[idncp]' ORDER BY id DESC");
+	$rck = sqlsrv_fetch_array($sqlCk, SQLSRV_FETCH_ASSOC);
 	$ket = str_replace("'", "''", $_POST['ket']);
 	$po = str_replace("'", "''", $_POST['no_po']);
 	$lot = trim($_POST['lot']);
@@ -1188,12 +1210,12 @@ if ($_POST['save'] == "Ubah") {
 
 		$ncpgabung = $rck['no_ncp'] . " " . $_POST['dept'] . "" . $rev1;
 	} else {
-		$sqlCk1 = mysqli_query($cond, "SELECT revisi, no_ncp FROM tbl_ncp_qcf_now WHERE nodemand='$nodemand' and dept='$_POST[dept]' ORDER BY id DESC LIMIT 1");
-		$rck1 = mysqli_fetch_array($sqlCk1);
+		$sqlCk1 = sqlsrv_query($cond, "SELECT TOP 1 revisi, no_ncp FROM db_qc.tbl_ncp_qcf_now WHERE nodemand='$nodemand' and dept='$_POST[dept]' ORDER BY id DESC");
+		$rck1 = sqlsrv_fetch_array($sqlCk1, SQLSRV_FETCH_ASSOC);
 		$rev1 = $rck1['revisi'] + 1;
 		$ncpgabung = $rck['no_ncp'] . " " . $_POST['dept'] . "" . $rev1;
 	}
-	$sqlData = mysqli_query($cond, "UPDATE tbl_ncp_qcf_now SET 
+	$sqlData = sqlsrv_query($cond, "UPDATE db_qc.tbl_ncp_qcf_now SET 
 		  rol='$_POST[rol]',
 		  masalah='$kt1',
 		  berat='$_POST[berat]',
@@ -1213,7 +1235,7 @@ if ($_POST['save'] == "Ubah") {
 		  masalah_dominan='$_POST[masalah_dominan]',
 		  dibuat_oleh='$_POST[dibuat_oleh]',
 		  m_proses='$_POST[m_proses]',
-		  tgl_update=now()
+		  tgl_update=GETDATE()
 		  WHERE id='$_POST[idncp]' ");
 
 	if ($sqlData) {
@@ -1284,7 +1306,7 @@ if ($_POST['save'] == "Ubah") {
 </div>
 <?php
 if ($_POST['simpan_kerusakan'] == "Simpan") {
-	$sqlData1 = mysqli_query($cond, "INSERT INTO tbl_masalah_ncp SET 
+	$sqlData1 = sqlsrv_query($cond, "INSERT INTO db_qc.tbl_masalah_ncp SET 
 		  nama='$_POST[kerusakan]'");
 	if ($sqlData1) {
 		echo "<script>swal({
@@ -1334,7 +1356,7 @@ if ($_POST['simpan_kerusakan'] == "Simpan") {
 <?php
 if ($_POST['simpan_masalah'] == "Simpan") {
 	$masalah = strtoupper($_POST['masalah_dominan']);
-	$sqlData1 = mysqli_query($cond, "INSERT INTO tbl_masalahutama_ncp SET 
+	$sqlData1 = sqlsrv_query($cond, "INSERT INTO db_qc.tbl_masalahutama_ncp SET 
 		  masalah='$masalah'");
 	if ($sqlData1) {
 		echo "<script>swal({

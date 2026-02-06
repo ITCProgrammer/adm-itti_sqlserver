@@ -1,56 +1,71 @@
 <script type="text/javascript">
-    function proses_nodemand(){
+    function proses_nodemand() {
         var nodemand = document.getElementById("nodemand").value;
 
         if (nodemand == 0) {
-            window.location.href='?p=Input-Lap-Shading';
-        }else{
-            window.location.href='?p=Input-Lap-Shading&nodemand='+nodemand;
+            window.location.href = '?p=Input-Lap-Shading';
+        } else {
+            window.location.href = '?p=Input-Lap-Shading&nodemand=' + nodemand;
         }
     }
 
     function proses_shift() {
-        var nodemand    = document.getElementById("nodemand").value;
+        var nodemand = document.getElementById("nodemand").value;
         var shift = document.getElementById("shift").value;
 
         if (nodemand == "") {
             swal({
-                title: 'Nomor Demand tidak boleh kosong',   
+                title: 'Nomor Demand tidak boleh kosong',
                 text: 'Klik Ok untuk input data kembali',
                 type: 'error'
-                });
-        }else if (shift == 0){
+            });
+        } else if (shift == 0) {
             swal({
-                title: 'Shift tidak boleh kosong',   
+                title: 'Shift tidak boleh kosong',
                 text: 'Klik Ok untuk input data kembali',
                 type: 'error'
-                });
+            });
         } else {
-            window.location.href='?p=Input-Lap-Shading&nodemand='+nodemand+'&shift='+shift;
+            window.location.href = '?p=Input-Lap-Shading&nodemand=' + nodemand + '&shift=' + shift;
         }
     }
 </script>
 <?Php
-if($_GET['nodemand']!=""){$nodemand=$_GET['nodemand'];}else{$nodemand=" ";}
-if($_GET['shift']!=""){$shift=$_GET['shift'];}else{$shift=" ";}
+if ($_GET['nodemand'] != "") {
+    $nodemand = $_GET['nodemand'];
+} else {
+    $nodemand = " ";
+}
+if ($_GET['shift'] != "") {
+    $shift = $_GET['shift'];
+} else {
+    $shift = " ";
+}
 
-//Data sudah disimpan di database mysqli
-$msql=mysqli_query($cond,"SELECT * FROM `tbl_lap_shading` WHERE `nodemand`='$nodemand' and `shift`='$_GET[shift]' AND DATE_FORMAT(tgl_update, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d')");
-$row=mysqli_fetch_array($msql);
-$crow=mysqli_num_rows($msql);
+//Data sudah disimpan di database (SQLSRV)
+$msql = sqlsrv_query($cond, "SELECT * FROM db_qc.tbl_lap_shading
+WHERE nodemand='$nodemand'
+  AND shift='$shift'
+  AND CAST(tgl_update AS date) = CAST(GETDATE() AS date)");
+$row = sqlsrv_fetch_array($msql, SQLSRV_FETCH_ASSOC);
+$crow = sqlsrv_num_rows($msql);
 
-//Data sudah disimpan di database mysqli
-$msql1=mysqli_query($cond,"SELECT * FROM `tbl_lap_shading` WHERE `nodemand`='$nodemand' and `shift`='$_GET[shift]' ");
-$row1=mysqli_fetch_array($msql1);
-$crow1=mysqli_num_rows($msql1);
+//Data sudah disimpan di database (SQLSRV)
+$msql1 = sqlsrv_query($cond, "SELECT * FROM db_qc.tbl_lap_shading
+WHERE nodemand='$nodemand'
+  AND shift='$shift'");
+$row1 = sqlsrv_fetch_array($msql1, SQLSRV_FETCH_ASSOC);
+$crow1 = sqlsrv_num_rows($msql1);
 
-//Data sudah disimpan di database mysqli
-$qryfin=mysqli_query($cond,"SELECT * FROM `tbl_lap_shading` WHERE `nodemand`='$nodemand' ORDER BY id DESC");
-$rfin=mysqli_fetch_array($qryfin);
-$cekfin=mysqli_num_rows($qryfin);
+//Data sudah disimpan di database (SQLSRV)
+$qryfin = sqlsrv_query($cond, "SELECT TOP 1 * FROM db_qc.tbl_lap_shading
+WHERE nodemand='$nodemand'
+ORDER BY id DESC");
+$rfin = sqlsrv_fetch_array($qryfin, SQLSRV_FETCH_ASSOC);
+$cekfin = sqlsrv_num_rows($qryfin);
 
 
-$sqlDB2="SELECT A.CODE AS DEMANDNO, TRIM(B.PRODUCTIONORDERCODE) AS PRODUCTIONORDERCODE, TRIM(E.LEGALNAME1) AS LEGALNAME1, TRIM(C.ORDERPARTNERBRANDCODE) AS ORDERPARTNERBRANDCODE, TRIM(C.BUYER) AS BUYER,
+$sqlDB2 = "SELECT A.CODE AS DEMANDNO, TRIM(B.PRODUCTIONORDERCODE) AS PRODUCTIONORDERCODE, TRIM(E.LEGALNAME1) AS LEGALNAME1, TRIM(C.ORDERPARTNERBRANDCODE) AS ORDERPARTNERBRANDCODE, TRIM(C.BUYER) AS BUYER,
 TRIM(C.SALESORDERCODE) AS SALESORDERCODE, TRIM(C.ITEMDESCRIPTION) AS ITEMDESCRIPTION, TRIM(A.SUBCODE05) AS NO_WARNA, TRIM(F.WARNA) AS WARNA,
 TRIM(A.SUBCODE02) AS SUBCODE02, TRIM(A.SUBCODE03) AS SUBCODE03, TRIM(C.LONGDESCRIPTION) AS NO_ITEM,TRIM(C.PO_NUMBER) AS PO_NUMBER, TRIM(C.INTERNALREFERENCE) AS INTERNALREFERENCE, A.BASEPRIMARYQUANTITY AS QTY_NETTO, TRIM(A.BASEPRIMARYUOMCODE) AS BASEPRIMARYUOMCODE,
 A.BASESECONDARYQUANTITY AS QTY_NETTO_YARD, TRIM(A.BASESECONDARYUOMCODE) AS BASESECONDARYUOMCODE, C.QTY_ORDER, TRIM(C.QTY_ORDER_UOM) AS QTY_ORDER_UOM, C.QTY_PANJANG_ORDER,
@@ -123,26 +138,36 @@ LEFT JOIN
 	PRODUCTIONRESERVATION WHERE PRODUCTIONRESERVATION.ITEMTYPEAFICODE='KGF' GROUP BY PRODUCTIONRESERVATION.PRODUCTIONORDERCODE, PRODUCTIONRESERVATION.ITEMTYPEAFICODE) G
 ON B.PRODUCTIONORDERCODE = G.PRODUCTIONORDERCODE
 WHERE A.CODE='$nodemand'";
-$stmt=db2_exec($conn2,$sqlDB2, array('cursor'=>DB2_SCROLLABLE));
+$stmt = db2_exec($conn2, $sqlDB2, array('cursor' => DB2_SCROLLABLE));
 $rowdb2 = db2_fetch_assoc($stmt);
-$ww=explode(",",$rowdb2['NAMENAME']);
-$valueww=explode(",",$rowdb2['VALUEDECIMAL']);
+$ww = explode(",", $rowdb2['NAMENAME']);
+$valueww = explode(",", $rowdb2['VALUEDECIMAL']);
 //GRAMASI
-if($ww[0]=="GSM"){ $gramasi=$valueww[0];}
-else if($ww[1]=="GSM"){ $gramasi=$valueww[1];}
-else if($ww[2]=="GSM"){ $gramasi=$valueww[2];}
-else if($ww[3]=="GSM"){ $gramasi=$valueww[3];}
-$posg=strpos($gramasi,".");
-$valgramasi=substr($gramasi,0,$posg);
+if ($ww[0] == "GSM") {
+    $gramasi = $valueww[0];
+} else if ($ww[1] == "GSM") {
+    $gramasi = $valueww[1];
+} else if ($ww[2] == "GSM") {
+    $gramasi = $valueww[2];
+} else if ($ww[3] == "GSM") {
+    $gramasi = $valueww[3];
+}
+$posg = strpos($gramasi, ".");
+$valgramasi = substr($gramasi, 0, $posg);
 //WIDTH
-if($ww[0]=="Width"){ $lebar=$valueww[0];}
-else if($ww[1]=="Width"){ $lebar=$valueww[1];}
-else if($ww[2]=="Width"){ $lebar=$valueww[2];}
-else if($ww[3]=="Width"){ $lebar=$valueww[3];}
-$posl=strpos($lebar,".");
-$vallebar=substr($lebar,0,$posl);
+if ($ww[0] == "Width") {
+    $lebar = $valueww[0];
+} else if ($ww[1] == "Width") {
+    $lebar = $valueww[1];
+} else if ($ww[2] == "Width") {
+    $lebar = $valueww[2];
+} else if ($ww[3] == "Width") {
+    $lebar = $valueww[3];
+}
+$posl = strpos($lebar, ".");
+$vallebar = substr($lebar, 0, $posl);
 
-$sqlroll="SELECT 
+$sqlroll = "SELECT 
 STOCKTRANSACTION.ORDERCODE,
 COUNT(STOCKTRANSACTION.ITEMELEMENTCODE) AS JML_ROLL
 FROM STOCKTRANSACTION STOCKTRANSACTION
@@ -150,466 +175,593 @@ WHERE STOCKTRANSACTION.ORDERCODE ='$rowdb2[PRODUCTIONORDERCODE]' AND STOCKTRANSA
 AND STOCKTRANSACTION.ITEMTYPECODE ='KGF'
 GROUP BY 
 STOCKTRANSACTION.ORDERCODE";
-$stmt1=db2_exec($conn2,$sqlroll, array('cursor'=>DB2_SCROLLABLE));
+$stmt1 = db2_exec($conn2, $sqlroll, array('cursor' => DB2_SCROLLABLE));
 $rowr = db2_fetch_assoc($stmt1);
 ?>
 <form class="form-horizontal" action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
-<div class="row">
-    <div class="col-xs-6">
-        <div class="box box-info">
-            <div class="box-header with-border">
-                <h3 class="box-title">Input Data</h3>
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Input Data</h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
-            </div>
-            <div class="box-body">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label for="nodemand" class="col-sm-3 control-label">No Demand</label>
-                        <div class="col-sm-4">
-                            <input name="nokk" type="hidden" class="form-control" id="nokk" 
-                            value="<?php echo $rowdb2['PRODUCTIONORDERCODE'];?>" >
-                            <input name="nodemand" type="text" class="form-control" id="nodemand" 
-                            onchange="proses_nodemand()" value="<?php echo $_GET['nodemand'];?>" placeholder="No Demand" required >
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="nodemand" class="col-sm-3 control-label">No Demand</label>
+                            <div class="col-sm-4">
+                                <input name="nokk" type="hidden" class="form-control" id="nokk"
+                                    value="<?php echo $rowdb2['PRODUCTIONORDERCODE']; ?>">
+                                <input name="nodemand" type="text" class="form-control" id="nodemand"
+                                    onchange="proses_nodemand()" value="<?php echo $_GET['nodemand']; ?>" placeholder="No Demand" required>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                    <label for="shift" class="col-sm-3 control-label">Shift</label>
+                        <div class="form-group">
+                            <label for="shift" class="col-sm-3 control-label">Shift</label>
                             <div class="col-sm-2">
                                 <select class="form-control chosen-select" name="shift" required id="shift" onchange="proses_shift()">
                                     <option value="0">Pilih</option>
-                                    <option value="1" <?php if($_GET['shift']=="1"){echo "SELECTED";}?>>1</option>
-                                    <option value="2" <?php if($_GET['shift']=="2"){echo "SELECTED";}?>>2</option>
-                                    <option value="3" <?php if($_GET['shift']=="3"){echo "SELECTED";}?>>3</option>
+                                    <option value="1" <?php if ($_GET['shift'] == "1") {
+                                                            echo "SELECTED";
+                                                        } ?>>1</option>
+                                    <option value="2" <?php if ($_GET['shift'] == "2") {
+                                                            echo "SELECTED";
+                                                        } ?>>2</option>
+                                    <option value="3" <?php if ($_GET['shift'] == "3") {
+                                                            echo "SELECTED";
+                                                        } ?>>3</option>
                                 </select>
                             </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="groupshift" class="col-sm-3 control-label">Group</label>
+                        </div>
+                        <div class="form-group">
+                            <label for="groupshift" class="col-sm-3 control-label">Group</label>
                             <div class="col-sm-3">
-                            <?php if($crow>0){$grup=$row['groupshift'];}?>
+                                <?php if ($crow > 0) {
+                                    $grup = $row['groupshift'];
+                                } ?>
                                 <select class="form-control select2" name="groupshift" required>
                                     <option value="">Pilih</option>
-                                    <option value="A" <?php if($grup=="A"){echo "SELECTED";}?>>A</option>
-                                    <option value="B" <?php if($grup=="B"){echo "SELECTED";}?>>B</option>
-                                    <option value="C" <?php if($grup=="C"){echo "SELECTED";}?>>C</option>
+                                    <option value="A" <?php if ($grup == "A") {
+                                                            echo "SELECTED";
+                                                        } ?>>A</option>
+                                    <option value="B" <?php if ($grup == "B") {
+                                                            echo "SELECTED";
+                                                        } ?>>B</option>
+                                    <option value="C" <?php if ($grup == "C") {
+                                                            echo "SELECTED";
+                                                        } ?>>C</option>
                                 </select>
                             </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="no_order" class="col-sm-3 control-label">No Order</label>
-                        <div class="col-sm-4">
-                            <input name="no_order" type="text" class="form-control" id="no_order" value="<?php if($crow>0){echo $row['no_order'];}else{echo $rowdb2['SALESORDERCODE'];} ?>" placeholder="No Order" required/>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="pelanggan" class="col-sm-3 control-label">Pelanggan</label>
-                        <div class="col-sm-8">
-                            <input name="pelanggan" type="text" class="form-control" id="pelanggan" 
-                            value="<?php if($crow>0){echo $row['pelanggan'];}else{if($_GET['nodemand']!="" and $rowdb2['LEGALNAME1']!=""){echo $rowdb2['LEGALNAME1']."/".$rowdb2['ORDERPARTNERBRANDCODE'];}}?>" placeholder="Pelanggan" >
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="no_po" class="col-sm-3 control-label">PO</label>
-                        <div class="col-sm-4">
-                            <input name="no_po" type="text" class="form-control" id="no_po" value="<?php if($crow>0){echo $row['no_po'];}else{echo $rowdb2['PO_NUMBER'];} ?>" placeholder="No Order" required/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="no_hanger" class="col-sm-3 control-label">No Hanger / No Item</label>
-                        <div class="col-sm-3">
-                            <input name="no_hanger" type="text" class="form-control" id="no_hanger" 
-                            value="<?php if($crow>0){echo $row['no_hanger'];}else{echo $rowdb2['SUBCODE02'].$rowdb2['SUBCODE03'];}?>" placeholder="No Hanger">  
-                        </div>
-                        <div class="col-sm-3">
-                        <input name="no_item" type="text" class="form-control" id="no_item" 
-                            value="<?php if($row['no_item']!=""){echo $row['no_item'];}else{echo $rowdb2['NO_ITEM'];}?>" placeholder="No Item">
-                        </div>	
-                    </div>
-                    <div class="form-group">
-                        <label for="jenis_kain" class="col-sm-3 control-label">Jenis Kain</label>
-                        <div class="col-sm-8">
-                            <textarea name="jenis_kain" class="form-control" id="jenis_kain" placeholder="Jenis Kain"><?php if($crow>0){echo $row['jenis_kain'];}else{echo stripslashes($rowdb2['ITEMDESCRIPTION']);}?></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="l_g" class="col-sm-3 control-label">Lebar X Gramasi</label>
-                        <div class="col-sm-2">
-                            <input name="lebar" type="text" class="form-control" id="lebar" 
-                            value="<?php if($crow>0){echo $row['lebar'];}else{echo $vallebar;} ?>" placeholder="0" required>
-                        </div>
-                        <div class="col-sm-2">
-                            <input name="gramasi" type="text" class="form-control" id="gramasi" 
-                            value="<?php if($crow>0){echo $row['gramasi'];}else{echo $valgramasi;} ?>" placeholder="0" required>
-                        </div>		
-                    </div>
-                    <div class="form-group">
-                        <label for="warna" class="col-sm-3 control-label">Warna</label>
-                        <div class="col-sm-8">
-                            <textarea name="warna" class="form-control" id="warna" placeholder="Warna"><?php if($crow>0){echo $row['warna'];}else{echo stripslashes($rowdb2['WARNA']);}?></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="no_warna" class="col-sm-3 control-label">No Warna</label>
-                        <div class="col-sm-8">
-                            <textarea name="no_warna" class="form-control" id="no_warna" placeholder="No Warna"><?php if($crow>0){echo $row['no_warna'];}else{echo stripslashes($rowdb2['NO_WARNA']);}?></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="lot" class="col-sm-3 control-label">Lot</label>
-                        <div class="col-sm-2">
-                            <input name="lot" class="form-control" type="text" id="lot" value="<?php if($cek>0){echo $rcek['lot'];}else{ echo $rowdb2['PRODUCTIONORDERCODE'];}?>" placeholder="Lot">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="qty_bruto" class="col-sm-3 control-label">Qty Bruto</label>
-                        <div class="col-sm-3">
-                            <div class="input-group">
-                                <input name="roll_bruto" type="text" class="form-control" id="roll_bruto" value="<?php if($crow > 0){echo $row['roll_bruto'];}else {if ($rowr['JML_ROLL'] != 0) {echo $rowr['JML_ROLL'];}}?>" placeholder="" required>
-                                <span class="input-group-addon">Roll</span>
+                        <div class="form-group">
+                            <label for="no_order" class="col-sm-3 control-label">No Order</label>
+                            <div class="col-sm-4">
+                                <input name="no_order" type="text" class="form-control" id="no_order" value="<?php if ($crow > 0) {
+                                                                                                                    echo $row['no_order'];
+                                                                                                                } else {
+                                                                                                                    echo $rowdb2['SALESORDERCODE'];
+                                                                                                                } ?>" placeholder="No Order" required />
                             </div>
                         </div>
-                        <div class="col-sm-3">
-                            <div class="input-group">
-                                <input name="bruto" type="text" class="form-control" id="bruto" value="<?php if($crow>0){echo $row['bruto'];}else{echo round($rowdb2['QTY_BAGI_KAIN'],2);} ?>" placeholder="0.00" required>
-                                <span class="input-group-addon">KGs</span>
+                        <div class="form-group">
+                            <label for="pelanggan" class="col-sm-3 control-label">Pelanggan</label>
+                            <div class="col-sm-8">
+                                <input name="pelanggan" type="text" class="form-control" id="pelanggan"
+                                    value="<?php if ($crow > 0) {
+                                                echo $row['pelanggan'];
+                                            } else {
+                                                if ($_GET['nodemand'] != "" and $rowdb2['LEGALNAME1'] != "") {
+                                                    echo $rowdb2['LEGALNAME1'] . "/" . $rowdb2['ORDERPARTNERBRANDCODE'];
+                                                }
+                                            } ?>" placeholder="Pelanggan">
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="roll_inspek" class="col-sm-3 control-label">Roll Cek Shading</label>
-                        <div class="col-sm-3">
-                            <div class="input-group">
-                                <input name="roll_inspek" type="text" class="form-control" id="roll_inspek" value="<?php if($crow>0){echo $row['roll_inspek'];}?>" placeholder="" required>
-                                <span class="input-group-addon">Roll</span>
+                        <div class="form-group">
+                            <label for="no_po" class="col-sm-3 control-label">PO</label>
+                            <div class="col-sm-4">
+                                <input name="no_po" type="text" class="form-control" id="no_po" value="<?php if ($crow > 0) {
+                                                                                                            echo $row['no_po'];
+                                                                                                        } else {
+                                                                                                            echo $rowdb2['PO_NUMBER'];
+                                                                                                        } ?>" placeholder="No Order" required />
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="operator" class="col-sm-3 control-label">Operator</label>
+                        <div class="form-group">
+                            <label for="no_hanger" class="col-sm-3 control-label">No Hanger / No Item</label>
+                            <div class="col-sm-3">
+                                <input name="no_hanger" type="text" class="form-control" id="no_hanger"
+                                    value="<?php if ($crow > 0) {
+                                                echo $row['no_hanger'];
+                                            } else {
+                                                echo $rowdb2['SUBCODE02'] . $rowdb2['SUBCODE03'];
+                                            } ?>" placeholder="No Hanger">
+                            </div>
+                            <div class="col-sm-3">
+                                <input name="no_item" type="text" class="form-control" id="no_item"
+                                    value="<?php if ($row['no_item'] != "") {
+                                                echo $row['no_item'];
+                                            } else {
+                                                echo $rowdb2['NO_ITEM'];
+                                            } ?>" placeholder="No Item">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="jenis_kain" class="col-sm-3 control-label">Jenis Kain</label>
+                            <div class="col-sm-8">
+                                <textarea name="jenis_kain" class="form-control" id="jenis_kain" placeholder="Jenis Kain"><?php if ($crow > 0) {
+                                                                                                                                echo $row['jenis_kain'];
+                                                                                                                            } else {
+                                                                                                                                echo stripslashes($rowdb2['ITEMDESCRIPTION']);
+                                                                                                                            } ?></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="l_g" class="col-sm-3 control-label">Lebar X Gramasi</label>
+                            <div class="col-sm-2">
+                                <input name="lebar" type="text" class="form-control" id="lebar"
+                                    value="<?php if ($crow > 0) {
+                                                echo $row['lebar'];
+                                            } else {
+                                                echo $vallebar;
+                                            } ?>" placeholder="0" required>
+                            </div>
+                            <div class="col-sm-2">
+                                <input name="gramasi" type="text" class="form-control" id="gramasi"
+                                    value="<?php if ($crow > 0) {
+                                                echo $row['gramasi'];
+                                            } else {
+                                                echo $valgramasi;
+                                            } ?>" placeholder="0" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="warna" class="col-sm-3 control-label">Warna</label>
+                            <div class="col-sm-8">
+                                <textarea name="warna" class="form-control" id="warna" placeholder="Warna"><?php if ($crow > 0) {
+                                                                                                                echo $row['warna'];
+                                                                                                            } else {
+                                                                                                                echo stripslashes($rowdb2['WARNA']);
+                                                                                                            } ?></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="no_warna" class="col-sm-3 control-label">No Warna</label>
+                            <div class="col-sm-8">
+                                <textarea name="no_warna" class="form-control" id="no_warna" placeholder="No Warna"><?php if ($crow > 0) {
+                                                                                                                        echo $row['no_warna'];
+                                                                                                                    } else {
+                                                                                                                        echo stripslashes($rowdb2['NO_WARNA']);
+                                                                                                                    } ?></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lot" class="col-sm-3 control-label">Lot</label>
+                            <div class="col-sm-2">
+                                <input name="lot" class="form-control" type="text" id="lot" value="<?php if ($cek > 0) {
+                                                                                                        echo $rcek['lot'];
+                                                                                                    } else {
+                                                                                                        echo $rowdb2['PRODUCTIONORDERCODE'];
+                                                                                                    } ?>" placeholder="Lot">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="qty_bruto" class="col-sm-3 control-label">Qty Bruto</label>
+                            <div class="col-sm-3">
+                                <div class="input-group">
+                                    <input name="roll_bruto" type="text" class="form-control" id="roll_bruto" value="<?php if ($crow > 0) {
+                                                                                                                            echo $row['roll_bruto'];
+                                                                                                                        } else {
+                                                                                                                            if ($rowr['JML_ROLL'] != 0) {
+                                                                                                                                echo $rowr['JML_ROLL'];
+                                                                                                                            }
+                                                                                                                        } ?>" placeholder="" required>
+                                    <span class="input-group-addon">Roll</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="input-group">
+                                    <input name="bruto" type="text" class="form-control" id="bruto" value="<?php if ($crow > 0) {
+                                                                                                                echo $row['bruto'];
+                                                                                                            } else {
+                                                                                                                echo round($rowdb2['QTY_BAGI_KAIN'], 2);
+                                                                                                            } ?>" placeholder="0.00" required>
+                                    <span class="input-group-addon">KGs</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="roll_inspek" class="col-sm-3 control-label">Roll Cek Shading</label>
+                            <div class="col-sm-3">
+                                <div class="input-group">
+                                    <input name="roll_inspek" type="text" class="form-control" id="roll_inspek" value="<?php if ($crow > 0) {
+                                                                                                                            echo $row['roll_inspek'];
+                                                                                                                        } ?>" placeholder="" required>
+                                    <span class="input-group-addon">Roll</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="operator" class="col-sm-3 control-label">Operator</label>
                             <div class="col-sm-4">
                                 <div class="input-group">
                                     <select class="form-control select2" name="operator" id="operator">
                                         <option value="">Pilih</option>
-                                        <?php 
-                                        $qryo=mysqli_query($cond,"SELECT nama FROM tbl_operator ORDER BY nama ASC");
-                                        while($ro=mysqli_fetch_array($qryo)){
+                                        <?php
+                                        $qryo = sqlsrv_query($cond, "SELECT nama FROM db_qc.tbl_operator ORDER BY nama ASC");
+                                        while ($ro = sqlsrv_fetch_array($qryo, SQLSRV_FETCH_ASSOC)) {
                                         ?>
-                                        <option value="<?php echo $ro['nama'];?>" <?php if($row['operator']==$ro['nama']){echo "SELECTED";}?>><?php echo $ro['nama'];?></option>	
-                                        <?php }?>
+                                            <option value="<?php echo $ro['nama']; ?>" <?php if ($row['operator'] == $ro['nama']) {
+                                                                                            echo "SELECTED";
+                                                                                        } ?>><?php echo $ro['nama']; ?></option>
+                                        <?php } ?>
                                     </select>
                                     <span class="input-group-btn"><button type="button" class="btn btn-default" data-toggle="modal" data-target="#DataOperator"> ...</button></span>
                                 </div>
                             </div>
-                        <div class="col-sm-4">
-                            <input name="pengarsipan" type="text" class="form-control" id="pengarsipan" value="<?php if($crow>0){echo $row['pengarsipan'];} ?>" placeholder="Tempat Pengarsipan" />
+                            <div class="col-sm-4">
+                                <input name="pengarsipan" type="text" class="form-control" id="pengarsipan" value="<?php if ($crow > 0) {
+                                                                                                                        echo $row['pengarsipan'];
+                                                                                                                    } ?>" placeholder="Tempat Pengarsipan" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="kk_legacy" class="col-sm-3 control-label">No KK Legacy</label>
-                        <div class="col-sm-4">
-                            <input name="kk_legacy" type="text" class="form-control" id="kk_legacy" value="<?php if($crow>0){echo $row['kk_legacy'];} ?>" placeholder="No KK Legacy" />
+                        <div class="form-group">
+                            <label for="kk_legacy" class="col-sm-3 control-label">No KK Legacy</label>
+                            <div class="col-sm-4">
+                                <input name="kk_legacy" type="text" class="form-control" id="kk_legacy" value="<?php if ($crow > 0) {
+                                                                                                                    echo $row['kk_legacy'];
+                                                                                                                } ?>" placeholder="No KK Legacy" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="lot_legacy" class="col-sm-3 control-label">Lot Legacy</label>
-                        <div class="col-sm-4">
-                            <input name="lot_legacy" type="text" class="form-control" id="lot_legacy" value="<?php if($crow>0){echo $row['lot_legacy'];} ?>" placeholder="Lot Legacy"/>
+                        <div class="form-group">
+                            <label for="lot_legacy" class="col-sm-3 control-label">Lot Legacy</label>
+                            <div class="col-sm-4">
+                                <input name="lot_legacy" type="text" class="form-control" id="lot_legacy" value="<?php if ($crow > 0) {
+                                                                                                                        echo $row['lot_legacy'];
+                                                                                                                    } ?>" placeholder="Lot Legacy" />
+                            </div>
+                            <div class="col-sm-4">
+                                <input name="bs" type="text" class="form-control" id="bs" value="<?php if ($crow > 0) {
+                                                                                                        echo $row['bs'];
+                                                                                                    } ?>" placeholder="BS" />
+                            </div>
                         </div>
-                        <div class="col-sm-4">
-                            <input name="bs" type="text" class="form-control" id="bs" value="<?php if($crow>0){echo $row['bs'];} ?>" placeholder="BS"/>
+                        <div class="form-group">
+                            <label for="comment" class="col-sm-3 control-label">Comments</label>
+                            <div class="col-sm-8">
+                                <textarea name="comment" class="form-control" id="comment" placeholder="Comments"><?php echo $row['comment']; ?></textarea>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="comment" class="col-sm-3 control-label">Comments</label>
-                        <div class="col-sm-8">
-                            <textarea name="comment" class="form-control" id="comment" placeholder="Comments"><?php echo $row['comment'];?></textarea>  
-                        </div>				   
                     </div>
                 </div>
-            </div>
-            <div class="box-footer">
-                    <?php if($_GET['nodemand']!="" and $_GET['shift']!="" and $cek==0){ ?>
-                    <button type="submit" class="btn btn-primary pull-right" name="simpan" value="simpan"><i class="fa fa-save"></i> Simpan</button> 
-                    <?php }else if($_GET['nodemand']!="" and $_GET['shift']!="" and $cek>0){?>
-                    <button type="submit" class="btn btn-primary pull-right" name="ubah" value="ubah"><i class="fa fa-edit"></i> Ubah</button>
+                <div class="box-footer">
+                    <?php if ($_GET['nodemand'] != "" and $_GET['shift'] != "" and $cek == 0) { ?>
+                        <button type="submit" class="btn btn-primary pull-right" name="simpan" value="simpan"><i class="fa fa-save"></i> Simpan</button>
+                    <?php } else if ($_GET['nodemand'] != "" and $_GET['shift'] != "" and $cek > 0) { ?>
+                        <button type="submit" class="btn btn-primary pull-right" name="ubah" value="ubah"><i class="fa fa-edit"></i> Ubah</button>
                     <?php } ?>
-                    <button type="button" class="btn btn-warning pull-left" name="lihat" value="lihat" onClick="window.location.href='?p=Lihat-Data-Shading'"><i class="fa fa-search"></i> Lihat Data</button> 	   
+                    <button type="button" class="btn btn-warning pull-left" name="lihat" value="lihat" onClick="window.location.href='?p=Lihat-Data-Shading'"><i class="fa fa-search"></i> Lihat Data</button>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-xs-6">
+        <div class="col-xs-6">
             <div class="box box-info">
                 <div class="box-header with-border">
                     <h3 class="box-title">Data Detail Inspeksi</h3>
-                        <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                        </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
                 </div>
                 <div class="box-body">
                     <table class="table table-bordered table-striped" style="width: 100%;">
                         <thead class="bg-blue">
                             <tr>
-                                <th width="5%"><div align="center">No</div></th>
-                                <th width="10%"><div align="center">Roll Inspect</div></th>
-                                <th width="5%"><div align="center">Grade 4.5</div></th>
-                                <th width="5%"><div align="center">Grade 4.0</div></th>
-                                <th width="5%"><div align="center">Grade 3.5</div></th>
-                                <th width="5%"><div align="center">Disposisi</div></th>
+                                <th width="5%">
+                                    <div align="center">No</div>
+                                </th>
+                                <th width="10%">
+                                    <div align="center">Roll Inspect</div>
+                                </th>
+                                <th width="5%">
+                                    <div align="center">Grade 4.5</div>
+                                </th>
+                                <th width="5%">
+                                    <div align="center">Grade 4.0</div>
+                                </th>
+                                <th width="5%">
+                                    <div align="center">Grade 3.5</div>
+                                </th>
+                                <th width="5%">
+                                    <div align="center">Disposisi</div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php 
-                                $sqlInspek="SELECT ELEMENTSINSPECTION.ELEMENTCODE
+                            <?php
+                            $sqlInspek = "SELECT ELEMENTSINSPECTION.ELEMENTCODE
                                 FROM ELEMENTSINSPECTION ELEMENTSINSPECTION
                                 WHERE ELEMENTSINSPECTION.DEMANDCODE = '$nodemand' AND LENGTH(TRIM(ELEMENTSINSPECTION.ELEMENTCODE))= 11 ORDER BY ELEMENTSINSPECTION.ELEMENTCODE ASC";
-                                $stmt=db2_exec($conn2,$sqlInspek, array('cursor'=>DB2_SCROLLABLE));
-                                $no=1;
-                                while($row1 = db2_fetch_assoc($stmt)){
+                            $stmt = db2_exec($conn2, $sqlInspek, array('cursor' => DB2_SCROLLABLE));
+                            $no = 1;
+                            while ($row1 = db2_fetch_assoc($stmt)) {
                             ?>
-                            <tr bgcolor="<?php echo $bgcolor; ?>">
-                                <td align="center"><?php echo $no; ?></td>
-                                <td align="center"><?php echo $row1['ELEMENTCODE'];?></td>
-                                <td align="center"><input type="checkbox" name="cek1[<?php echo $no; ?>]" value="1"/></td>
-                                <td align="center"><input type="checkbox" name="cek2[<?php echo $no; ?>]" value="1"/></td>
-                                <td align="center"><input type="checkbox" name="cek3[<?php echo $no; ?>]" value="1"/></td>
-                                <td align="center"><input type="checkbox" name="cek4[<?php echo $no; ?>]" value="1"/></td>
-                            </tr>
-                            <?php $no++;} ?>
+                                <tr bgcolor="<?php echo $bgcolor; ?>">
+                                    <td align="center"><?php echo $no; ?></td>
+                                    <td align="center"><?php echo $row1['ELEMENTCODE']; ?></td>
+                                    <td align="center"><input type="checkbox" name="cek1[<?php echo $no; ?>]" value="1" /></td>
+                                    <td align="center"><input type="checkbox" name="cek2[<?php echo $no; ?>]" value="1" /></td>
+                                    <td align="center"><input type="checkbox" name="cek3[<?php echo $no; ?>]" value="1" /></td>
+                                    <td align="center"><input type="checkbox" name="cek4[<?php echo $no; ?>]" value="1" /></td>
+                                </tr>
+                            <?php $no++;
+                            } ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-</div>
+    </div>
 </form>
 <?php
-include"koneksi.php";
+include "koneksi.php";
 ini_set("error_reporting", 1);
-if(isset($_POST['simpan']))
-{
-	$ceksql=mysqli_query($cond,"SELECT * FROM `tbl_lap_shading` WHERE `nodemand`='$_GET[nodemand]' and `shift`='$_POST[shift]' AND DATE_FORMAT(tgl_update, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d') LIMIT 1");
-    $cek=mysqli_num_rows($ceksql);
-	if($cek>0){
-    $pelanggan=str_replace("'","''",$_POST['pelanggan']);
-    $order=str_replace("'","''",$_POST['no_order']);
-    $jns=str_replace("'","''",$_POST['jenis_kain']);
-    $warna=str_replace("'","''",$_POST['warna']);
-    $no_warna=str_replace("'","''",$_POST['no_warna']);
-    $comment=str_replace("'","''",$_POST['comment']);
-    $pengarsipan=str_replace("'","''",$_POST['pengarsipan']);
-	$sql1=mysqli_query($cond,"UPDATE`tbl_lap_shading` SET
-	`no_order`='$order',
-    `no_item`='$_POST[no_item]',
-    `no_hanger`='$_POST[no_hanger]',
-    `no_po`='$_POST[no_po]',
-	`pelanggan`='$pelanggan',
-	`jenis_kain`='$jns',
-	`warna`='$warna',
-    `no_warna`='$no_warna',
-	`lot`='$_POST[lot]',
-	`groupshift`='$_POST[groupshift]',
-	`roll_bruto`='$_POST[roll_bruto]',
-	`bruto`='$_POST[bruto]',
-	`roll_reject`='$_POST[roll_reject]',
-	`roll_inspek`='$_POST[roll_inspek]',
-	`roll_ok`='$_POST[roll_ok]',
-	`ket_roll_reject`='$_POST[ket_roll_reject]',
-    `roll_gs3`='$_POST[roll_gs3]',
-    `roll_gs3_5`='$_POST[roll_gs3_5]',
-    `roll_gs4`='$_POST[roll_gs4]',
-    `roll_gs4_5`='$_POST[roll_gs4_5]',
-    `ket_roll_gs3`='$_POST[ket_roll_gs3]',
-    `ket_roll_gs3_5`='$_POST[ket_roll_gs3_5]',
-    `ket_roll_gs4`='$_POST[ket_roll_gs4]',
-    `ket_roll_gs4_5`='$_POST[ket_roll_gs4_5]',
-    `operator`='$_POST[operator]',
-    `lebar`='$_POST[lebar]',
-    `gramasi`='$_POST[gramasi]',
-    `tgl_update`=now(),
-    `ip`='$_SERVER[REMOTE_ADDR]',
-    `comment`='$_POST[comment]',
-    `pengarsipan`='$pengarsipan',
-    `lot_legacy`='$_POST[lot_legacy]',
-    `bs`='$_POST[bs]',
-    `kk_legacy`='$_POST[kk_legacy]'
-	WHERE `nodemand`='$_POST[nodemand]' and  `shift`='$_POST[shift]'");
-	if($sql1){
-        //echo " <script>alert('Data has been updated!');</script>";
-        echo "<script>swal({
-            title: 'Data has been updated!',   
-            text: 'Klik Ok untuk input data kembali',
-            type: 'success',
-            }).then((result) => {
-            if (result.value) {
-                window.location.href='?p=Input-Lap-Shading&nodemand=$_POST[nodemand]';
-               
-            }
-          });</script>";
-		}
-		}
-    else{
-    $pelanggan=str_replace("'","''",$_POST['pelanggan']);
-    $order=str_replace("'","''",$_POST['no_order']);
-    $jns=str_replace("'","''",$_POST['jenis_kain']);
-    $po=str_replace("'","''",$_POST['no_po']);
-    $warna=str_replace("'","''",$_POST['warna']);
-    $no_warna=str_replace("'","''",$_POST['no_warna']);
-    $catatan=str_replace("'","''",$_POST['catatan']);
-    $pengarsipan=str_replace("'","''",$_POST['pengarsipan']);
-	$sql=mysqli_query($cond,"INSERT INTO `tbl_lap_shading` SET
-	`nokk`='$_POST[nokk]',
-    `nodemand`='$_POST[nodemand]',
-	`no_order`='$order',
-    `no_item`='$_POST[no_item]',
-    `no_hanger`='$_POST[no_hanger]',
-    `no_po`='$po',
-	`pelanggan`='$pelanggan',
-	`jenis_kain`='$jns',
-	`warna`='$warna',
-    `no_warna`='$no_warna',
-	`lot`='$_POST[lot]',
-    `shift`='$_POST[shift]',
-	`groupshift`='$_POST[groupshift]',
-	`roll_bruto`='$_POST[roll_bruto]',
-	`bruto`='$_POST[bruto]',
-	`roll_reject`='$_POST[roll_reject]',
-	`roll_inspek`='$_POST[roll_inspek]',
-	`roll_ok`='$_POST[roll_ok]',
-	`ket_roll_reject`='$_POST[ket_roll_reject]',
-    `roll_gs3`='$_POST[roll_gs3]',
-    `roll_gs3_5`='$_POST[roll_gs3_5]',
-    `roll_gs4`='$_POST[roll_gs4]',
-    `roll_gs4_5`='$_POST[roll_gs4_5]',
-    `ket_roll_gs3`='$_POST[ket_roll_gs3]',
-    `ket_roll_gs3_5`='$_POST[ket_roll_gs3_5]',
-    `ket_roll_gs4`='$_POST[ket_roll_gs4]',
-    `ket_roll_gs4_5`='$_POST[ket_roll_gs4_5]',
-    `operator`='$_POST[operator]',
-    `lebar`='$_POST[lebar]',
-    `gramasi`='$_POST[gramasi]',
-    `comment`='$_POST[comment]',
-    `pengarsipan`='$pengarsipan',
-    `lot_legacy`='$_POST[lot_legacy]',
-    `bs`='$_POST[bs]',
-    `kk_legacy`='$_POST[kk_legacy]',
-    `tgl_update`=now(),
-    `tgl_buat`=now(),
-    `ip`='$_SERVER[REMOTE_ADDR]'");
 
-        $sqlIn="SELECT ELEMENTSINSPECTION.ELEMENTCODE
-        FROM ELEMENTSINSPECTION ELEMENTSINSPECTION
-        WHERE ELEMENTSINSPECTION.DEMANDCODE = '$nodemand' AND LENGTH(TRIM(ELEMENTSINSPECTION.ELEMENTCODE))= 11 ORDER BY ELEMENTSINSPECTION.ELEMENTCODE ASC";
-        $stmt2=db2_exec($conn2,$sqlIn, array('cursor'=>DB2_SCROLLABLE));
-        $no=1;
-        while($rI = db2_fetch_assoc($stmt2)){
-            $idcek1	= $_POST['cek1'][$no];
-            $idcek2	= $_POST['cek2'][$no];
-            $idcek3	= $_POST['cek3'][$no];
-            $idcek4 = $_POST['cek4'][$no];
-            if($idcek1!=""){	
-                $element	= trim($rI['ELEMENTCODE']);
-                $nodemand	= $_POST['nodemand'];
-                $sqlInsert=mysqli_query($cond,"INSERT INTO tbl_detail_roll_shading SET
-                `element`='$element',
-                `nodemand`='$nodemand',
-                `grade_4_5`='1',
-                `grade_4`='0',
-                `grade_3_5`='0',
-                `disposisi`='0',
-                `tgl_buat`=now()");
-                }
-            if($idcek2!=""){	
-                    $element	= trim($rI['ELEMENTCODE']);
-                    $nodemand	= $_POST['nodemand'];
-                    $sqlInsert=mysqli_query($cond,"INSERT INTO tbl_detail_roll_shading SET
-                    `element`='$element',
-                    `nodemand`='$nodemand',
-                    `grade_4_5`='0',
-                    `grade_4`='1',
-                    `grade_3_5`='0',
-                    `disposisi`='0',
-                    `tgl_buat`=now()");
-                }
-            if($idcek3!=""){	
-                    $element	= trim($rI['ELEMENTCODE']);
-                    $nodemand	= $_POST['nodemand'];
-                    $sqlInsert=mysqli_query($cond,"INSERT INTO tbl_detail_roll_shading SET
-                    `element`='$element',
-                    `nodemand`='$nodemand',
-                    `grade_4_5`='0',
-                    `grade_4`='0',
-                    `grade_3_5`='1',
-                    `disposisi`='0',
-                    `tgl_buat`=now()");
-                }
-            if($idcek4!=""){	
-                    $element	= trim($rI['ELEMENTCODE']);
-                    $nodemand	= $_POST['nodemand'];
-                    $sqlInsert=mysqli_query($cond,"INSERT INTO tbl_detail_roll_shading SET
-                    `element`='$element',
-                    `nodemand`='$nodemand',
-                    `grade_4_5`='0',
-                    `grade_4`='0',
-                    `grade_3_5`='0',
-                    `disposisi`='1',
-                    `tgl_buat`=now()");
-                }
-            $no++;
-        }
-	if($sql){
+if (isset($_POST['simpan'])) {
+
+    // =========================================================
+    // NORMALISASI ANGKA (sesuai desain tabel: bruto/bs numeric, roll_* int)
+    // Pola IF/ELSE & query tetap sama, cuma menyiapkan $_POST supaya gak error 8114 lagi
+    // =========================================================
+
+    // bruto (numeric(12,2))
+    $_POST['bruto'] = str_replace(' ', '', $_POST['bruto'] ?? '');
+    $_POST['bruto'] = str_replace(',', '.', $_POST['bruto']);
+    if ($_POST['bruto'] === '' || !is_numeric($_POST['bruto'])) { $_POST['bruto'] = 0; }
+
+    // bs (numeric(12,2)) - di tabel numeric, jadi harus aman
+    $_POST['bs'] = str_replace(' ', '', $_POST['bs'] ?? '');
+    $_POST['bs'] = str_replace(',', '.', $_POST['bs']);
+    if ($_POST['bs'] === '' || !is_numeric($_POST['bs'])) { $_POST['bs'] = 0; }
+
+    // int fields (di tabel int) -> kalau kosong/null/aneh, jadi 0
+    $intFields = [
+        'roll_bruto','roll_inspek','roll_ok','roll_reject',
+        'roll_gs2','roll_gs2_5','roll_gs3','roll_gs3_5','roll_gs4','roll_gs4_5'
+    ];
+    foreach($intFields as $f){
+        if (!isset($_POST[$f]) || $_POST[$f] === '' || $_POST[$f] === null) { $_POST[$f] = 0; }
+        $_POST[$f] = str_replace(' ', '', (string)$_POST[$f]);
+        if (!is_numeric($_POST[$f])) { $_POST[$f] = 0; }
+        $_POST[$f] = (int)$_POST[$f];
+    }
+
+    $ceksql = sqlsrv_query($cond, "SELECT TOP 1 * FROM db_qc.tbl_lap_shading
+        WHERE nodemand='$_GET[nodemand]'
+          AND shift='$_POST[shift]'
+          AND CAST(tgl_update AS date) = CAST(GETDATE() AS date)
+    ");
+    $cek = sqlsrv_num_rows($ceksql);
+
+    if ($cek > 0) {
+        $pelanggan = str_replace("'", "''", $_POST['pelanggan']);
+        $order = str_replace("'", "''", $_POST['no_order']);
+        $jns = str_replace("'", "''", $_POST['jenis_kain']);
+        $warna = str_replace("'", "''", $_POST['warna']);
+        $no_warna = str_replace("'", "''", $_POST['no_warna']);
+        $comment = str_replace("'", "''", $_POST['comment']);
+        $pengarsipan = str_replace("'", "''", $_POST['pengarsipan']);
+
+        $sql1 = sqlsrv_query($cond, "UPDATE db_qc.tbl_lap_shading SET
+            no_order='$order',
+            no_item='$_POST[no_item]',
+            no_hanger='$_POST[no_hanger]',
+            no_po='$_POST[no_po]',
+            pelanggan='$pelanggan',
+            jenis_kain='$jns',
+            warna='$warna',
+            no_warna='$no_warna',
+            lot='$_POST[lot]',
+            groupshift='$_POST[groupshift]',
+            roll_bruto='$_POST[roll_bruto]',
+            bruto='$_POST[bruto]',
+            roll_reject='$_POST[roll_reject]',
+            roll_inspek='$_POST[roll_inspek]',
+            roll_ok='$_POST[roll_ok]',
+            ket_roll_reject='$_POST[ket_roll_reject]',
+            roll_gs3='$_POST[roll_gs3]',
+            roll_gs3_5='$_POST[roll_gs3_5]',
+            roll_gs4='$_POST[roll_gs4]',
+            roll_gs4_5='$_POST[roll_gs4_5]',
+            ket_roll_gs3='$_POST[ket_roll_gs3]',
+            ket_roll_gs3_5='$_POST[ket_roll_gs3_5]',
+            ket_roll_gs4='$_POST[ket_roll_gs4]',
+            ket_roll_gs4_5='$_POST[ket_roll_gs4_5]',
+            operator='$_POST[operator]',
+            lebar='$_POST[lebar]',
+            gramasi='$_POST[gramasi]',
+            tgl_update=GETDATE(),
+            ip='$_SERVER[REMOTE_ADDR]',
+            comment='$_POST[comment]',
+            pengarsipan='$pengarsipan',
+            lot_legacy='$_POST[lot_legacy]',
+            bs='$_POST[bs]',
+            kk_legacy='$_POST[kk_legacy]'
+            WHERE nodemand='$_POST[nodemand]' and shift='$_POST[shift]'
+        ");
+
+        if ($sql1) {
             echo "<script>swal({
-                title: 'Data has been saved!',   
+                title: 'Data has been updated!',
                 text: 'Klik Ok untuk input data kembali',
                 type: 'success',
                 }).then((result) => {
                 if (result.value) {
                     window.location.href='?p=Input-Lap-Shading&nodemand=$_POST[nodemand]';
-                
                 }
             });</script>";
-            
         }
-	}
+    } else {
+        $pelanggan = str_replace("'", "''", $_POST['pelanggan']);
+        $order = str_replace("'", "''", $_POST['no_order']);
+        $jns = str_replace("'", "''", $_POST['jenis_kain']);
+        $po = str_replace("'", "''", $_POST['no_po']);
+        $warna = str_replace("'", "''", $_POST['warna']);
+        $no_warna = str_replace("'", "''", $_POST['no_warna']);
+        $catatan = str_replace("'", "''", $_POST['catatan']);
+        $pengarsipan = str_replace("'", "''", $_POST['pengarsipan']);
+
+        $sql = sqlsrv_query($cond, "INSERT INTO db_qc.tbl_lap_shading (
+            nokk, nodemand, no_order, no_item, no_hanger, no_po, pelanggan, jenis_kain, warna, no_warna,
+            lot, shift, groupshift, roll_bruto, bruto, roll_reject, roll_inspek, roll_ok, ket_roll_reject,
+            roll_gs3, roll_gs3_5, roll_gs4, roll_gs4_5, ket_roll_gs3, ket_roll_gs3_5, ket_roll_gs4, ket_roll_gs4_5,
+            operator, lebar, gramasi, comment, pengarsipan, lot_legacy, bs, kk_legacy, tgl_update, tgl_buat, ip
+        ) VALUES (
+            '$_POST[nokk]',
+            '$_POST[nodemand]',
+            '$order',
+            '$_POST[no_item]',
+            '$_POST[no_hanger]',
+            '$po',
+            '$pelanggan',
+            '$jns',
+            '$warna',
+            '$no_warna',
+            '$_POST[lot]',
+            '$_POST[shift]',
+            '$_POST[groupshift]',
+            '$_POST[roll_bruto]',
+            '$_POST[bruto]',
+            '$_POST[roll_reject]',
+            '$_POST[roll_inspek]',
+            '$_POST[roll_ok]',
+            '$_POST[ket_roll_reject]',
+            '$_POST[roll_gs3]',
+            '$_POST[roll_gs3_5]',
+            '$_POST[roll_gs4]',
+            '$_POST[roll_gs4_5]',
+            '$_POST[ket_roll_gs3]',
+            '$_POST[ket_roll_gs3_5]',
+            '$_POST[ket_roll_gs4]',
+            '$_POST[ket_roll_gs4_5]',
+            '$_POST[operator]',
+            '$_POST[lebar]',
+            '$_POST[gramasi]',
+            '$_POST[comment]',
+            '$pengarsipan',
+            '$_POST[lot_legacy]',
+            '$_POST[bs]',
+            '$_POST[kk_legacy]',
+            GETDATE(),
+            GETDATE(),
+            '$_SERVER[REMOTE_ADDR]'
+        )");
+
+        $nodemand = $_POST['nodemand'];
+
+        $sqlIn = "SELECT ELEMENTSINSPECTION.ELEMENTCODE
+        FROM ELEMENTSINSPECTION ELEMENTSINSPECTION
+        WHERE ELEMENTSINSPECTION.DEMANDCODE = '$nodemand' AND LENGTH(TRIM(ELEMENTSINSPECTION.ELEMENTCODE))= 11 ORDER BY ELEMENTSINSPECTION.ELEMENTCODE ASC";
+        $stmt2 = db2_exec($conn2, $sqlIn, array('cursor' => DB2_SCROLLABLE));
+        $no = 1;
+        while ($rI = db2_fetch_assoc($stmt2)) {
+            $idcek1 = $_POST['cek1'][$no];
+            $idcek2 = $_POST['cek2'][$no];
+            $idcek3 = $_POST['cek3'][$no];
+            $idcek4 = $_POST['cek4'][$no];
+
+            if ($idcek1 != "") {
+                $element = trim($rI['ELEMENTCODE']);
+                $nodemand = $_POST['nodemand'];
+                $sqlInsert = sqlsrv_query($cond, "INSERT INTO db_qc.tbl_detail_roll_shading (
+                    element, nodemand, grade_4_5, grade_4, grade_3_5, disposisi, tgl_buat
+                ) VALUES (
+                    '$element', '$nodemand', '1', '0', '0', '0', GETDATE()
+                )");
+            }
+            if ($idcek2 != "") {
+                $element = trim($rI['ELEMENTCODE']);
+                $nodemand = $_POST['nodemand'];
+                $sqlInsert = sqlsrv_query($cond, "INSERT INTO db_qc.tbl_detail_roll_shading (
+                    element, nodemand, grade_4_5, grade_4, grade_3_5, disposisi, tgl_buat
+                ) VALUES (
+                    '$element', '$nodemand', '0', '1', '0', '0', GETDATE()
+                )");
+            }
+            if ($idcek3 != "") {
+                $element = trim($rI['ELEMENTCODE']);
+                $nodemand = $_POST['nodemand'];
+                $sqlInsert = sqlsrv_query($cond, "INSERT INTO db_qc.tbl_detail_roll_shading (
+                    element, nodemand, grade_4_5, grade_4, grade_3_5, disposisi, tgl_buat
+                ) VALUES (
+                    '$element', '$nodemand', '0', '0', '1', '0', GETDATE()
+                )");
+            }
+            if ($idcek4 != "") {
+                $element = trim($rI['ELEMENTCODE']);
+                $nodemand = $_POST['nodemand'];
+                $sqlInsert = sqlsrv_query($cond, "INSERT INTO db_qc.tbl_detail_roll_shading (
+                    element, nodemand, grade_4_5, grade_4, grade_3_5, disposisi, tgl_buat
+                ) VALUES (
+                    '$element', '$nodemand', '0', '0', '0', '1', GETDATE()
+                )");
+            }
+            $no++;
+        }
+        if ($sql) {
+            echo "<script>swal({
+                title: 'Data has been saved!',
+                text: 'Klik Ok untuk input data kembali',
+                type: 'success',
+                }).then((result) => {
+                if (result.value) {
+                    window.location.href='?p=Input-Lap-Shading&nodemand=$_POST[nodemand]';
+                }
+            });</script>";
+        }
+    }
 }
 ?>
+
+
+
 <div class="modal fade" id="DataOperator">
-          <div class="modal-dialog ">
-            <div class="modal-content">
+    <div class="modal-dialog ">
+        <div class="modal-content">
             <form class="form-horizontal" name="modal_popup" data-toggle="validator" method="post" action="" enctype="multipart/form-data">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Operator</h4>
-              </div>
-              <div class="modal-body">
-                  <input type="hidden" id="id" name="id">
-                  <div class="form-group">
-                  <label for="operator" class="col-md-3 control-label">Nama Operator</label>
-                  <div class="col-md-6">
-                  <input type="text" class="form-control" id="operator" name="operator" required>
-                  <span class="help-block with-errors"></span>
-                  </div>
-                  </div>		    
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-				<input type="submit" value="Simpan" name="simpan_operator" id="simpan_operator" class="btn btn-primary pull-right" >  
-              </div>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Operator</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="id" name="id">
+                    <div class="form-group">
+                        <label for="operator" class="col-md-3 control-label">Nama Operator</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="operator" name="operator" required>
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                    <input type="submit" value="Simpan" name="simpan_operator" id="simpan_operator" class="btn btn-primary pull-right">
+                </div>
             </form>
-            </div>
-            <!-- /.modal-content -->
-  </div>
-          <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
 </div>
-<?php 
-if($_POST['simpan_operator']=="Simpan"){
-	$nama=strtoupper($_POST['operator']);
-	$sqlData1=mysqli_query($cond,"INSERT INTO tbl_operator SET 
+<?php
+if ($_POST['simpan_operator'] == "Simpan") {
+    $nama = strtoupper($_POST['operator']);
+    $sqlData1 = sqlsrv_query($cond, "INSERT INTO db_qc.tbl_operator SET 
 		  nama='$nama'");
-	if($sqlData1){	
-	echo "<script>swal({
+    if ($sqlData1) {
+        echo "<script>swal({
   title: 'Data Telah Tersimpan',   
   text: 'Klik Ok untuk input data kembali',
   type: 'success',
@@ -619,6 +771,6 @@ if($_POST['simpan_operator']=="Simpan"){
 	 
   }
 });</script>";
-		}
+    }
 }
 ?>

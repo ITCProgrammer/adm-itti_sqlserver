@@ -15,19 +15,19 @@ session_start();
 $id = $_GET['id'];
 $TindakLanjut   = isset($_POST['tindak_lanjut']) ? $_POST['tindak_lanjut'] : '';
 $SolusiPanjang  = isset($_POST['hasil_tindak_lanjut']) ? $_POST['hasil_tindak_lanjut'] : '';
-$sqlCek = mysqli_query($cond, "SELECT 
+$sqlCek = sqlsrv_query($cond, "SELECT TOP 1
 									* 
 								FROM 
-									tbl_cocok_warna_dye t
-								LEFT JOIN penyelesaian_tolakbasah p ON p.id_cocok_warna = t.id
+									db_qc.tbl_cocok_warna_dye t
+								LEFT JOIN db_qc.penyelesaian_tolakbasah p ON p.id_cocok_warna = t.id
 									WHERE t.id='$id' 
 								ORDER BY 
 									t.id 
-								DESC LIMIT 1");
-$cek = mysqli_num_rows($sqlCek);
-$rcek = mysqli_fetch_array($sqlCek);
-$qcek_data = mysqli_query($cond, "SELECT * FROM penyelesaian_tolakbasah WHERE id_cocok_warna='$id' ORDER BY id DESC LIMIT 1");
-$cek_data = mysqli_num_rows($qcek_data);
+								DESC");
+$cek = sqlsrv_num_rows($sqlCek);
+$rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
+$qcek_data = sqlsrv_query($cond, "SELECT TOP 1 * FROM db_qc.penyelesaian_tolakbasah WHERE id_cocok_warna='$id' ORDER BY id DESC");
+$cek_data = sqlsrv_num_rows($qcek_data);
 ?>
 <form class="form-horizontal" action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
 	<div class="box box-info">
@@ -54,9 +54,9 @@ $cek_data = mysqli_num_rows($qcek_data);
 						<select class="form-control select2" name="pemberi_instruksi" id="pemberi_instruksi" required>
 							<option value="">Pilih</option>
 							<?php 
-							$list_nama = "SELECT id, nama FROM tbl_user_tindaklanjut t WHERE t.status_active = '1'";
-							$q_nama = mysqli_query($cona, $list_nama);
-							while ($r_nama = mysqli_fetch_array($q_nama)) { 
+							$list_nama = "SELECT id, nama FROM db_adm.tbl_user_tindaklanjut t WHERE t.status_active = '1'";
+							$q_nama = sqlsrv_query($cona, $list_nama);
+							while ($r_nama = sqlsrv_fetch_array($q_nama, SQLSRV_FETCH_ASSOC)) { 
 								$selected = ($rcek['pemberi_instruksi'] == $r_nama['id']) ? 'selected' : '';
 							?>
 								<option value="<?php echo $r_nama['id']; ?>" <?php echo $selected; ?>>
@@ -138,7 +138,7 @@ if ($_POST['save'] == "Simpan" && $cek_data<1) {
 	$tindak_lanjut = sanitize_input_sql($_POST['tindak_lanjut']);
 	$pemberi_instruksi = sanitize_input_sql($_POST['pemberi_instruksi']);
 	$tindakan = sanitize_input_sql($_POST['tindakan']);
-	$sqlData = mysqli_query($cond, "INSERT INTO 
+	$sqlData = sqlsrv_query($cond, "INSERT INTO 
 										penyelesaian_tolakbasah 
 									SET 
 										id_cocok_warna='$id',
@@ -171,7 +171,7 @@ if ($_POST['save'] == "Simpan" && $cek_data<1) {
 	$tindak_lanjut = sanitize_input_sql($_POST['tindak_lanjut']);
 	$pemberi_instruksi = sanitize_input_sql($_POST['pemberi_instruksi']);
 	$tindakan = sanitize_input_sql($_POST['tindakan']);
-	$sqlData = mysqli_query($cond, "UPDATE penyelesaian_tolakbasah SET 
+	$sqlData = sqlsrv_query($cond, "UPDATE penyelesaian_tolakbasah SET 
 										keterangan='$ket',
 										hasil_tindak_lanjut='$hasil_lanjut',
 										tindak_lanjut='$tindak_lanjut',

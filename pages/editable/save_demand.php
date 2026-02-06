@@ -2,65 +2,102 @@
 include '../../koneksi.php';
 session_start();
 
-// data dari X-Editable
-$pk     = $_POST['pk'] ?? '';     // contoh: "SO123|10"
-$demand = $_POST['value'] ?? '';  // demand terpilih
-
-// data tambahan (dikirim lewat data-params)
-$buyer        = $_POST['buyer'] ?? '';
-$salesorder   = $_POST['salesorder'] ?? '';
-$style        = $_POST['garment_style'] ?? '';
-$no_po        = $_POST['no_po'] ?? '';
-$item         = $_POST['item'] ?? '';
-$warna        = $_POST['warna'] ?? '';
-$season       = $_POST['season'] ?? '';
-
-// cek apakah record sudah ada
-$qCheck = "SELECT 1 FROM tbl_firstlot WHERE buyer = '$buyer' 
-                                        AND `order` = '$salesorder'
-                                        AND style  = '$style'
-                                        AND po     = '$no_po'
-                                        AND item   = '$item'
-                                        AND warna  = '$warna'
-                                        AND season = '$season'";
-$res = mysqli_query($cona, $qCheck);
-
-if (mysqli_fetch_assoc($res)) {
-    // update demand + identitas
-    $q = "UPDATE tbl_firstlot SET 
-                demand  ='".addslashes($demand)."',
-                buyer   ='".addslashes($buyer)."',
-                `order` ='".addslashes($salesorder)."',
-                style   ='".addslashes($style)."',
-                po      ='".addslashes($no_po)."',
-                item    ='".addslashes($item)."',
-                warna   ='".addslashes($warna)."',
-                season  ='".addslashes($season)."'
-            WHERE buyer = '$buyer' 
-                AND `order`  = '$salesorder'
-                AND style  = '$style'
-                AND po     = '$no_po'
-                AND item   = '$item'
-                AND warna  = '$warna'
-                AND season = '$season'";
-} else {
-    // insert baru
-    $q = "INSERT INTO tbl_firstlot 
-          (demand,buyer,`order`,style,po,item,warna,season,creationuser) VALUES (
-          '".addslashes($demand)."',
-          '".addslashes($buyer)."',
-          '".addslashes($salesorder)."',
-          '".addslashes($style)."',
-          '".addslashes($no_po)."',
-          '".addslashes($item)."',
-          '".addslashes($warna)."',
-          '".addslashes($season)."',
-          '".addslashes($_SESSION['nama10'])."')";
-}
-
-if (mysqli_query($cona, $q)) {
-    echo "OK"; // respon sukses
-} else {
+if (!isset($cona) || $cona === false) {
     http_response_code(500);
-    echo "Database Error";
+    exit("Koneksi SQL Server (db_adm) gagal");
 }
+
+// =====================
+// Ambil payload X-Editable
+// =====================
+$pk     = isset($_POST['pk']) ? trim((string)$_POST['pk']) : '';
+$demand = isset($_POST['value']) ? trim((string)$_POST['value']) : ''; // X-Editable -> value
+
+$buyer      = isset($_POST['buyer']) ? trim((string)$_POST['buyer']) : '';
+$salesorder = isset($_POST['salesorder']) ? trim((string)$_POST['salesorder']) : '';
+$style      = isset($_POST['garment_style']) ? trim((string)$_POST['garment_style']) : '';
+$no_po      = isset($_POST['no_po']) ? trim((string)$_POST['no_po']) : '';
+$item       = isset($_POST['item']) ? trim((string)$_POST['item']) : '';
+$warna      = isset($_POST['warna']) ? trim((string)$_POST['warna']) : '';
+$seasonRaw  = isset($_POST['season']) ? trim((string)$_POST['season']) : '';
+$season     = ($seasonRaw === '') ? null : $seasonRaw;
+
+$creationUser = isset($_SESSION['nama10']) ? trim((string)$_SESSION['nama10']) : '';
+
+
+if ($demand === '' || $buyer === '' || $salesorder === '' || $style === '' || $no_po === '' || $item === '' || $warna === '') {
+    http_response_code(400);
+    exit("Parameter tidak lengkap");
+}
+
+// =====================
+// CHECK EXIST
+// (pakai ISNULL supaya NULL dan '' dianggap sama)
+// =====================
+$qCheck = "
+    SELECT TOP 1 1 AS ok
+    FROM db_adm.tbl_firstlot
+    WHERE buyer      = ?
+      AND [order]    = ?
+      AND style      = ?
+      AND po         = ?
+      AND item       = ?
+      AND warna      = ?
+      AND ISNULL(season,'') = ISNULL(?, '')
+";
+$paramsCheck = [$buyer, $salesorder, $style, $no_po, $item, $warna, $season];
+
+$stmtCheck = sqlsrv_query($cona, $qCheck, $paramsCheck);
+if ($stmtCheck === false) {
+    http_response_code(500);
+    exit("Database Error (check): " . print_r(sqlsrv_errors(), true));
+}
+
+$exists = (sqlsrv_fetch_array($stmtCheck, SQLSRV_FETCH_ASSOC) !== null);
+
+// =====================
+// UPDATE / INSERT
+// =====================
+if ($exists) {
+    $q = "
+        UPDATE db_adm.tbl_firstlot
+        SET demand         = ?,
+            buyer          = ?,
+            [order]        = ?,
+            style          = ?,
+            po             = ?,
+            item           = ?,
+            warna          = ?,
+            season         = ?,
+            lastupdatetime = GETDATE(),
+            lastupdateuser = ?
+        WHERE buyer      = ?
+          AND [order]    = ?
+          AND style      = ?
+          AND po         = ?
+          AND item       = ?
+          AND warna      = ?
+          AND ISNULL(season,'') = ISNULL(?, '')
+    ";
+    $params = [
+        $demand, $buyer, $salesorder, $style, $no_po, $item, $warna, $season,
+        $creationUser,
+        $buyer, $salesorder, $style, $no_po, $item, $warna, $season
+    ];
+} else {
+    $q = "
+        INSERT INTO db_adm.tbl_firstlot
+            (demand, buyer, [order], style, po, item, warna, season, creationuser)
+        VALUES
+            (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ";
+    $params = [$demand, $buyer, $salesorder, $style, $no_po, $item, $warna, $season, $creationUser];
+}
+
+$stmt = sqlsrv_query($cona, $q, $params);
+if ($stmt === false) {
+    http_response_code(500);
+    exit("Database Error (save): " . print_r(sqlsrv_errors(), true));
+}
+
+echo "OK";

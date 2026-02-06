@@ -3,13 +3,20 @@ ini_set("error_reporting", 1);
 session_start();
 include "koneksi.php";
 $id = $_GET['id'];
-
-$sqlCek = mysqli_query($cond, "SELECT * FROM tbl_ncp_qcf_now WHERE id='$id' ORDER BY id DESC LIMIT 1");
-$cek = mysqli_num_rows($sqlCek);
-$r = mysqli_fetch_array($sqlCek);
-//$pos=posisi($r['nokk']);
-//$selesai=selesai($r['nokk']);
+$opt = array("Scrollable" => SQLSRV_CURSOR_KEYSET);
+$sqlCek = sqlsrv_query(
+    $cond,
+    "SELECT TOP 1 *
+     FROM db_qc.tbl_ncp_qcf_now
+     WHERE id = ?
+     ORDER BY id DESC",
+    array($id),
+    $opt
+);
+$cek = sqlsrv_num_rows($sqlCek);
+$r   = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
 ?>
+
 <form class="form-horizontal" action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
 	<div class="box box-info">
 		<div class="box-header with-border">
@@ -29,20 +36,37 @@ $r = mysqli_fetch_array($sqlCek);
 					<label for="tgl_kembali" class="col-sm-2 control-label">Tgl. Kembali</label>
 					<div class="col-sm-2">
 						<div class="input-group date">
-							<div class="input-group-addon"> <i class="fa fa-calendar"></i> </div>
+							<div class="input-group-addon">
+								<i class="fa fa-calendar"></i>
+							</div>
 							<input name="tgl_kembali" type="text" class="form-control pull-right" id="datepicker"
-								placeholder="0000-00-00" value="<?php if ($r['tgl_kembali'] != NULL) {
-									echo $r['tgl_kembali'];
-								} else {
-									echo $r['tgl_kembali_qcf'];
-								} ?>" <?php if ($r['sts_kembali'] == "Y") {
-									 echo "disabled";
-								 } ?> />
-							<input name="tgl_kembali1" type="hidden" class="form-control pull-right" placeholder=""
-								value="<?php echo $r['tgl_kembali']; ?>" />
-							<input name="tgl_selesai" type="hidden" class="form-control pull-right" placeholder=""
-								value="<?php echo $r['tgl_selesai']; ?>" />
-							<input name="tgl_selesai1" type="hidden" class="form-control pull-right" placeholder=""
+								placeholder="0000-00-00"
+								value="<?php
+									if (!empty($r['tgl_kembali'])) {
+										echo ($r['tgl_kembali'] instanceof DateTime)
+											? $r['tgl_kembali']->format('Y-m-d')
+											: $r['tgl_kembali'];
+									} elseif (!empty($r['tgl_kembali_qcf'])) {
+										echo ($r['tgl_kembali_qcf'] instanceof DateTime)
+											? $r['tgl_kembali_qcf']->format('Y-m-d')
+											: $r['tgl_kembali_qcf'];
+									}
+								?>"
+								<?php if ($r['sts_kembali'] == "Y") echo "disabled"; ?>
+							/>
+							<input name="tgl_kembali1" type="hidden" class="form-control pull-right"
+								value="<?php
+									echo (!empty($r['tgl_kembali']) && $r['tgl_kembali'] instanceof DateTime)
+										? $r['tgl_kembali']->format('Y-m-d')
+										: $r['tgl_kembali'];
+								?>" />
+							<input name="tgl_selesai" type="hidden" class="form-control pull-right"
+								value="<?php
+									echo (!empty($r['tgl_selesai']) && $r['tgl_selesai'] instanceof DateTime)
+										? $r['tgl_selesai']->format('Y-m-d')
+										: $r['tgl_selesai'];
+								?>" />
+							<input name="tgl_selesai1" type="hidden" class="form-control pull-right"
 								value="<?php echo $selesai; ?>" />
 						</div>
 					</div>
@@ -59,11 +83,17 @@ $r = mysqli_fetch_array($sqlCek);
 							value="<?php echo $r['sts_kembali']; ?>" />
 					</div>
 					<div class="col-sm-2">
-						<?php if ($r['tgl_kembali'] != "") {
-							echo "<span class='label label-warning'>Tgl Kembali Ke QCF : $r[tgl_kembali_qcf]</span>";
-						} else {
-							echo "<span class='label label-warning blink_me'>Tgl Kembali Ke QCF : $r[tgl_kembali_qcf]</span>";
-						} ?>
+						<?php
+							$tgl_qcf = '';
+							if (!empty($r['tgl_kembali_qcf'])) {
+								$tgl_qcf = ($r['tgl_kembali_qcf'] instanceof DateTime) ? $r['tgl_kembali_qcf']->format('Y-m-d') : $r['tgl_kembali_qcf'];
+							}
+							if ($r['tgl_kembali'] != "") {
+								echo "<span class='label label-warning'>Tgl Kembali Ke QCF : $tgl_qcf</span>";
+							} else {
+								echo "<span class='label label-warning blink_me'>Tgl Kembali Ke QCF : $tgl_qcf</span>";
+							}
+						?>
 					</div>
 				</div>
 				<div class="form-group">
@@ -273,77 +303,95 @@ $r = mysqli_fetch_array($sqlCek);
 </div>
 <?php
 if ($_POST['save'] == "Simpan") {
-	if ($_POST) {
-		extract($_POST);
-		$idt = mysqli_real_escape_string($cond, $_POST['id']);
-		$sts = mysqli_real_escape_string($cond, $_POST['sts']);
-		$peninjau = mysqli_real_escape_string($cond, $_POST['disposisi']);
-		$catat = mysqli_real_escape_string($cond, $_POST['catat']);
-		$ck1 = mysqli_real_escape_string($cond, $_POST['ck1']);
-		$ck2 = mysqli_real_escape_string($cond, $_POST['ck2']);
-		$ck3 = mysqli_real_escape_string($cond, $_POST['ck3']);
-		$ck4 = mysqli_real_escape_string($cond, $_POST['ck4']);
-		if ($_POST['tgl_kembali'] != "") {
-			$tkembali = " `tgl_kembali`='$_POST[tgl_kembali]', ";
-		} else {
-			$tkembali = " `tgl_kembali`='$_POST[tgl_kembali1]',";
-		}
-		if ($_POST['tgl_serah'] != "") {
-			$tserah = " `tgl_serah`='$_POST[tgl_serah]', ";
-		} else {
-			$tserah = " `tgl_serah`=null, ";
-		}
-		//if($_POST[tgl_selesai]!=""){$tselesai=" `tgl_selesai`='$_POST[tgl_selesai]', ";}else{ $tselesai=" `tgl_selesai`=null,";}
-		if ($_POST['tgl_selesai1'] != NULL) {
-			$tselesai = " `tgl_selesai`='$_POST[tgl_selesai1]', ";
-		} else if ($_POST['tgl_selesai'] == NULL and ($_POST['sts'] == "OK" or $_POST['sts'] == "BS" or $_POST['sts'] == "Cancel" or $_POST['sts'] == "Disposisi")) {
-			$tselesai = " `tgl_selesai`=now(), ";
-		}
-		if ($_POST['ck1av'] != "") {
-			$sts_kembali = " `sts_kembali`='$_POST[ck1av]', ";
-		} else {
-			$sts_kembali = " `sts_kembali`='$_POST[ck1av1]',";
-		}
-		$sqlupdate = mysqli_query($cond, "UPDATE `tbl_ncp_qcf_now` SET
-					`status`='$sts',
-					`peninjau_akhir`='$peninjau',
-					`catat_verify`='$catat',
-					`ck1`='$ck1',
-					`ck2`='$ck2',
-					`ck3`='$ck3',
-					`ck4`='$ck4',
-					`disposisiqc`='$_POST[disposisiqc]',
-					$tkembali
-					$tserah
-					$tselesai
-					$sts_kembali
-					`tgl_update`=now()
-					WHERE `id`='$idt' LIMIT 1");
-		//echo " <script>window.location='?p=Batas-Produksi';</script>";
-		echo "<script>swal({
-	  title: 'Data Telah diUbah',
-	  text: 'Klik Ok untuk melanjutkan',
-	  type: 'success',
-	  }).then((result) => {
-	  if (result.value) {
-		window.location='?p=StatusncpNew_Ubah&id=$idt';
-	  }
-	});</script>";
-	}
+    if ($_POST) {
+        extract($_POST);
+        $idt      = $_POST['id'] ?? '';
+        $sts      = $_POST['sts'] ?? '';
+        $peninjau = $_POST['disposisi'] ?? '';
+        $catat    = $_POST['catat'] ?? '';
+        $ck1      = $_POST['ck1'] ?? '';
+        $ck2      = $_POST['ck2'] ?? '';
+        $ck3      = $_POST['ck3'] ?? '';
+        $ck4      = $_POST['ck4'] ?? '';
+        $disposisiqc = $_POST['disposisiqc'] ?? '';
+        $tgl_kembali_val = (!empty($_POST['tgl_kembali'])) ? $_POST['tgl_kembali'] : ($_POST['tgl_kembali1'] ?? null);
+        $tgl_serah_val   = (!empty($_POST['tgl_serah']))   ? $_POST['tgl_serah']   : null;
+
+        $set_tgl_selesai = "";   // potongan SQL
+        $param_tgl_selesai = []; // param untuk potongan ini
+
+        if (!empty($_POST['tgl_selesai1'])) {
+            $set_tgl_selesai = "tgl_selesai = ?,";
+            $param_tgl_selesai[] = $_POST['tgl_selesai1'];
+        } else if (empty($_POST['tgl_selesai']) && ($sts == "OK" || $sts == "BS" || $sts == "Cancel" || $sts == "Disposisi")) {
+            $set_tgl_selesai = "tgl_selesai = GETDATE(),";
+        }
+
+        $sts_kembali_val = (!empty($_POST['ck1av'])) ? $_POST['ck1av'] : ($_POST['ck1av1'] ?? '');
+
+        $sql = "
+            UPDATE tbl_ncp_qcf_now
+            SET
+                status = ?,
+                peninjau_akhir = ?,
+                catat_verify = ?,
+                ck1 = ?,
+                ck2 = ?,
+                ck3 = ?,
+                ck4 = ?,
+                disposisiqc = ?,
+                tgl_kembali = ?,
+                tgl_serah = ?,
+                $set_tgl_selesai
+                sts_kembali = ?,
+                tgl_update = GETDATE()
+            WHERE id = ?
+        ";
+
+        $params = array(
+            $sts,
+            $peninjau,
+            $catat,
+            $ck1,
+            $ck2,
+            $ck3,
+            $ck4,
+            $disposisiqc,
+            $tgl_kembali_val,
+            $tgl_serah_val,
+        );
+
+        if (!empty($param_tgl_selesai)) {
+            $params = array_merge($params, $param_tgl_selesai);
+        }
+
+        $params[] = $sts_kembali_val;
+        $params[] = $idt;
+
+        $sqlupdate = sqlsrv_query($cond, $sql, $params);
+
+        echo "<script>swal({
+          title: 'Data Telah diUbah',
+          text: 'Klik Ok untuk melanjutkan',
+          type: 'success',
+          }).then((result) => {
+          if (result.value) {
+            window.location='?p=StatusncpNew_Ubah&id=$idt';
+          }
+        });</script>";
+    }
 }
 ?>
+
 <div class="modal fade modal-3d-slit" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 	aria-hidden="true">
 	<?php
-	//$con=mysqli_connect("10.0.0.10","dit","4dm1n");
-//$db=mysqli_select_db("db_qc",$con)or die("Gagal Koneksi");
-//include "../tgl_indo.php";
-	if ($_GET['id'] != "") {
-		$qry = mysqli_query($cond, "SELECT * FROM tbl_ncp_qcf_now WHERE id='$_GET[id]'");
-	} else {
-		$qry = mysqli_query($cond, "SELECT * FROM tbl_ncp_qcf_now WHERE no_ncp='$_GET[no_ncp]'");
-	}
-	$d = mysqli_fetch_array($qry);
+		if ($_GET['id'] != "") {
+			$qry = sqlsrv_query($cond, "SELECT * FROM db_qc.tbl_ncp_qcf_now WHERE id='{$_GET['id']}'");
+		} else {
+			$qry = sqlsrv_query($cond, "SELECT * FROM db_qc.tbl_ncp_qcf_now WHERE no_ncp='{$_GET['no_ncp']}'");
+		}
+		$d = sqlsrv_fetch_array($qry, SQLSRV_FETCH_ASSOC);
 	?>
 	<div class="modal-dialog" style="width: 85%;">
 		<form action="" method="post" enctype="multipart/form-data" name="form2" id="form2">
@@ -821,17 +869,16 @@ if ($_POST['send'] == "send") {
 		echo 'Pesan tidak dapat dikirim.';
 		echo 'Mailer Error: ' . $mail->ErrorInfo;
 	} else {
-		// echo 'Pesan telah terkirim';
-		$isi = str_replace("'", "''", $_POST['editor1']);
-		$kirim = $_POST['untuk'];
-		$ncpNew = $d['no_ncp'] . " " . $d['dept'] . "" . $d['revisi'] . " " . $d['salinan'];
-		$sqlmail = mysqli_query($cond, "INSERT INTO tbl_email_ncp SET
-	no_ncp='$ncpNew',
-	isi='$isi',
-	kirim_ke='$kirim',
-	tgl_kirim=now(),
-	jam_kirim=now()");
-	}
+    $isi = str_replace("'", "''", $_POST['editor1']);
+    $kirim = $_POST['untuk'];
+    $ncpNew = $d['no_ncp'] . " " . $d['dept'] . "" . $d['revisi'] . " " . $d['salinan'];
+
+    $sqlmail = sqlsrv_query($cond, "INSERT INTO db_qc.tbl_email_ncp
+        (no_ncp, isi, kirim_ke, tgl_kirim, jam_kirim)
+        VALUES
+        ('$ncpNew', '$isi', '$kirim', GETDATE(), GETDATE())");
+}
+
 }
 ?>
 <script>

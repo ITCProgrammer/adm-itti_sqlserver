@@ -2,29 +2,34 @@
 ini_set("error_reporting", 1);
 session_start();
 include "../../koneksi.php";
-  $Awal=$_GET['awal'];
-  $Akhir=$_GET['akhir'];
-  $qTgl=mysqli_query($cond,"SELECT DATE_FORMAT(now(),'%Y-%m-%d') as tgl_skrg,DATE_FORMAT(now(),'%H:%i:%s') as jam_skrg");
-  $rTgl=mysqli_fetch_array($qTgl);
-  if($Awal!=""){
-	  $tgl=substr($Awal,0,10); 
-	  $jam=$Awal;
-  }else{
-	  $tgl=$rTgl['tgl_skrg']; 
-	  $jam=$rTgl['jam_skrg'];
-  }
-  $jamA = isset($_GET['jam_awal']) ? $_GET['jam_awal'] : '';
-  $jamAr = isset($_GET['jam_akhir']) ? $_GET['jam_akhir'] : '';
-  if (strlen($jamA) == 5) {
-    $start_date = $Awal . " " . $jamA;
-  } else {
-    $start_date = $Awal . " 0" . $jamA;
-  }
-  if (strlen($jamAr) == 5) {
-    $stop_date = $Akhir . " " . $jamAr;
-  } else {
-    $stop_date = $Akhir . " 0" . $jamAr;
-  }
+
+$Awal  = $_GET['awal'];
+$Akhir = $_GET['akhir'];
+
+$qTgl = sqlsrv_query($cond, "SELECT CONVERT(varchar(10), GETDATE(), 120) as tgl_skrg, CONVERT(varchar(8), GETDATE(), 108) as jam_skrg");
+$rTgl = sqlsrv_fetch_array($qTgl, SQLSRV_FETCH_ASSOC);
+
+if($Awal!=""){
+  $tgl = substr($Awal,0,10); 
+  $jam = $Awal;
+}else{
+  $tgl = $rTgl['tgl_skrg']; 
+  $jam = $rTgl['jam_skrg'];
+}
+
+$jamA  = isset($_GET['jam_awal']) ? $_GET['jam_awal'] : '';
+$jamAr = isset($_GET['jam_akhir']) ? $_GET['jam_akhir'] : '';
+
+if (strlen($jamA) == 5) {
+  $start_date = $Awal . " " . $jamA;
+} else {
+  $start_date = $Awal . " 0" . $jamA;
+}
+if (strlen($jamAr) == 5) {
+  $stop_date = $Akhir . " " . $jamAr;
+} else {
+  $stop_date = $Akhir . " 0" . $jamAr;
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -178,8 +183,20 @@ border:hidden;
       $no=1;
       $Awal=$_GET['awal'];
       $Akhir=$_GET['akhir'];
-      if($_GET['shift']!="ALL"){$shft=" AND `shift`='$_GET[shift]' "; }else{$shft=" ";}		
-      $qry1=mysqli_query($cond,"SELECT * FROM tbl_lap_inspeksi WHERE DATE_FORMAT( CONCAT(tgl_update,' ',jam_update), '%Y-%m-%d %H:%i') BETWEEN '$start_date' AND '$stop_date' AND `dept`='QCF' $shft ORDER BY id ASC");
+
+      if($_GET['shift']!="ALL"){$shft=" AND [shift]='$_GET[shift]' "; }else{$shft=" ";}
+
+      $qry1 = sqlsrv_query(
+        $cond,
+        "SELECT * 
+         FROM db_qc.tbl_lap_inspeksi 
+         WHERE CONVERT(varchar(16), tgl_update, 120) BETWEEN '$start_date' AND '$stop_date' 
+           AND dept='QCF' $shft 
+         ORDER BY id ASC",
+        [],
+        ["Scrollable" => SQLSRV_CURSOR_KEYSET]
+      );
+
       $lotOK=0;$lotBWA=0;$lotBWB=0;$lotBWC=0;$lotTBD=0;$lot=0;
       $lotFin=0;$lotFin1x=0;$lotPdr=0;$lotOven=0;$lotComp=0;
       $lotSt=0;$lotAP=0;$lotPB=0;
@@ -189,11 +206,22 @@ border:hidden;
       $brutoOK=0;$brutoBWA=0;$brutoBWB=0;$brutoBWC=0;$brutoTBD=0;$bruto=0;
       $brutoFin=0;$brutoFin1x=0;$brutoPdr=0;$brutoOven=0;$brutoComp=0;
       $brutoSt=0;$brutoAP=0;$brutoPB=0;$bruto=0;
-          while($row=mysqli_fetch_array($qry1)){
+
+      $rollAgung=0;$brutoAgung=0;$lotAgung=0;
+      $rollAgus=0;$brutoAgus=0;$lotAgus=0;
+      $rollDewi=0;$brutoDewi=0;$lotDewi=0;
+      $rollAndi=0;$brutoAndi=0;$lotAndi=0;
+      $rollRudi=0;$brutoRudi=0;$lotRudi=0;
+      $rollFerry=0;$brutoFerry=0;$lotFerry=0;
+      $rollUjuk=0;$brutoUjuk=0;$lotUjuk=0;
+      $rollTri=0;$brutoTri=0;$lotTri=0;
+      $rollWawan=0;$brutoWawan=0;$lotWawan=0;
+
+      while($row = sqlsrv_fetch_array($qry1, SQLSRV_FETCH_ASSOC)){
         ?>
           <tr valign="top">
           <td align="center"><font size="-2"><?php echo $no;?></font></td>
-          <td align="center"><font size="-2"><?php echo $row['tgl_update'];?></font></td>
+          <td align="center"><font size="-2"><?php echo is_object($row['tgl_update']) ? $row['tgl_update']->format('Y-m-d H:i:s') : $row['tgl_update'];?></font></td>
           <td align="center"><font size="-2"><?php echo $row['nodemand'];?></font></td>
           <td><font size="-2"><?php echo substr($row['pelanggan'],0,7)." ".substr($row['pelanggan'],7,40);?></font></td>
           <td><font size="-2"><?php echo substr($row['no_po'],0,10)." ".substr($row['no_po'],10,20)." ".substr($row['no_po'],20,40);?></font></td>
@@ -557,50 +585,9 @@ border:hidden;
     </tr>
  
   </table> <br>
-   <!-- <table width="100%" border="0" class="table-list1"> 
-  <tr align="center">
-    <td colspan="3">&nbsp;</td>
-    <td colspan="15">Departemen QCF</td>
-    </tr>
-  <tr align="center">
-    <td colspan="3">&nbsp;</td>
-    <td>Diserahkan Oleh :</td>
-    <td colspan="3">Diketahui Oleh :</td>
-    <td colspan="4">Mengetahui Oleh :</td>
-  </tr>
-  <tr>
-    <td colspan="3">Nama</td>
-    <td align="center"><input type=text name=nama placeholder="Ketik disini"></td>
-    <td colspan="3" align="center"><input type=text name=nama1 placeholder="Ketik disini"></td>
-    <td colspan="4" align="center"><input type=text name=nama4 placeholder="Ketik disini"></td>
-  </tr>
-  <tr>
-    <td colspan="3">Jabatan</td>
-    <td align="center"><input type=text name=nama2 placeholder="Ketik disini"></td>
-    <td colspan="3" align="center"><input type=text name=nama3 placeholder="Ketik disini"></td>
-    <td colspan="4" align="center"><input type=text name=nama5 placeholder="Ketik disini"></td>
-  </tr>
-  <tr>
-    <td colspan="3">Tanggal</td>
-    <td align="center"><b><?php echo date("d-m-Y",strtotime($_GET['awal']));?></b></td>
-    <td colspan="3" align="center"><b><?php echo date("d-m-Y",strtotime($_GET['awal']));?></b></td>
-    <td colspan="4" align="center"><b><?php echo date("d-m-Y",strtotime($_GET['awal']));?></b></td>
-  </tr>
-  <tr>
-    <td colspan="3" height="60" valign="top">Tanda Tangan</td>
-    <td><p>&nbsp;</p>
-    <p>&nbsp;</p>
-    <p>&nbsp;</p>
-    <p>&nbsp;</p></td>
-    <td colspan="3">&nbsp;</td>
-    <td colspan="4">&nbsp;</td>
-  </tr>
-</table> -->
 <script>
 //alert('cetak');window.print();
 </script>                          
 
 </body>
-                            
-                            
-      
+</html>
