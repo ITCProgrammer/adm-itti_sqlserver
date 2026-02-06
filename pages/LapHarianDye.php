@@ -29,30 +29,88 @@
   $jamA   = isset($_POST['jam_awal']) ? $_POST['jam_awal'] : '';
   $jamAr  = isset($_POST['jam_akhir']) ? $_POST['jam_akhir'] : '';
   $GShift = isset($_POST['gshift']) ? $_POST['gshift'] : '';
-  if (strlen($jamA) == 5) {
-      $start_date = $Awal . ' ' . $jamA;
-  } else {
-      $start_date = $Awal . ' 0' . $jamA;
+
+  // =========================
+  // NORMALISASI JAM (biar ga jadi " 0" doang)
+  // =========================
+  $jamA  = trim((string)$jamA);
+  $jamAr = trim((string)$jamAr);
+
+  $normJam = function($j) {
+      if ($j === '') return '';
+
+      $j = trim($j);
+
+      // kasus input "0000"
+      if ($j === '0000') return '00:00';
+
+      // kasus input "0", "2", "23"
+      if (preg_match('/^\d{1,2}$/', $j)) {
+          return str_pad($j, 2, '0', STR_PAD_LEFT) . ':00';
+      }
+
+      // kasus input "2300" -> 23:00
+      if (preg_match('/^\d{3,4}$/', $j)) {
+          $j = str_pad($j, 4, '0', STR_PAD_LEFT);
+          return substr($j, 0, 2) . ':' . substr($j, 2, 2);
+      }
+
+      // kasus input "2:00" / "23:15"
+      if (preg_match('/^\d{1,2}:\d{2}$/', $j)) {
+          $parts = explode(':', $j);
+          return str_pad($parts[0], 2, '0', STR_PAD_LEFT) . ':' . $parts[1];
+      }
+
+      // kasus input "23:15:00"
+      if (preg_match('/^\d{1,2}:\d{2}:\d{2}$/', $j)) {
+          $parts = explode(':', $j);
+          return str_pad($parts[0], 2, '0', STR_PAD_LEFT) . ':' . $parts[1] . ':' . $parts[2];
+      }
+
+      // kalau format aneh, kosongkan biar aman
+      return '';
+  };
+
+  $jamA  = $normJam($jamA);
+  $jamAr = $normJam($jamAr);
+
+  // =========================
+  // BENTUK DATETIME
+  // =========================
+  $start_date = '';
+  $stop_date  = '';
+
+  if ($Awal !== '' && $jamA !== '') {
+      $start_date = $Awal . ' ' . $jamA; // contoh: 2026-02-02 00:00
+  } else if ($Awal !== '') {
+      $start_date = $Awal . ' 00:00';
   }
-  if (strlen($jamAr) == 5) {
-      $stop_date  = $Akhir . ' ' . $jamAr;
-  } else {
-      $stop_date  = $Akhir . ' 0' . $jamAr;
+
+  if ($Akhir !== '' && $jamAr !== '') {
+      $stop_date = $Akhir . ' ' . $jamAr; // contoh: 2026-02-04 00:00
+  } else if ($Akhir !== '') {
+      $stop_date = $Akhir . ' 23:59';
   }
-  if ($jamA & $jamAr) {
+
+  // FIX: pakai && bukan &
+  if ($jamA !== '' && $jamAr !== '') {
       $where_jam  = "createdatetime BETWEEN '$start_date' AND '$stop_date'";
   } else {
-      $where_jam  = "DATE(createdatetime) BETWEEN '$Awal' AND '$Akhir'";
+      $where_jam  = "CONVERT(date, createdatetime) BETWEEN '$Awal' AND '$Akhir'";
   }
-    
-  if($Awal!="" && $Akhir!=""){
-    $Tgl = substr($start_date, 0, 10);
+
+  if($Awal != "" && $Akhir != ""){
+    // kalau mode tanpa jam, pakai Awal saja (lebih aman dari start_date yg mungkin berubah)
+    $Tgl = $Awal;
+
     if ($start_date != $stop_date) {
-      $Where = " c.tgl_update BETWEEN '$start_date' AND '$stop_date' ";
+      // Pakai CONVERT biar SQL ga bingung format string
+      $Where = " c.tgl_update BETWEEN CONVERT(datetime, '$start_date', 120) AND CONVERT(datetime, '$stop_date', 120) ";
     } else {
-      $Where = " CONVERT(date, c.tgl_update) = CONVERT(date, '$Tgl') ";
+      $Where = " CONVERT(date, c.tgl_update) = CONVERT(date, '$Tgl', 23) ";
     }
-    if ($GShift == "ALL") {
+
+    if ($GShift == "ALL" || $GShift == "") {
       $shft = " ";
     } else {
       $shft = " ISNULL(a.g_shift, c.g_shift)='$GShift' AND ";
@@ -116,7 +174,15 @@
           ) x ON a.no_mesin = x.no_mesin
           ORDER BY a.no_mesin";
 
+    // PARAMS tetap dipakai kalau ada, tapi ga maksa
     $sql = sqlsrv_query($con, $query, $params ?? []);
+    if ($sql === false) {
+      echo "<pre>QUERY ERROR:\n$query\n\n";
+      print_r(sqlsrv_errors());
+      echo "</pre>";
+      die();
+    }
+
     $no = 1;
     $c = 0;
     $totrol = 0;
@@ -124,25 +190,27 @@
     $data=array();
     $mc_all=array();
     $nokk_all=array();
+
     while ($rowd = sqlsrv_fetch_array($sql, SQLSRV_FETCH_ASSOC)) {
       $rl ="";
-      if (strlen($rowd['rol']) > 5) {
+      if (isset($rowd['rol']) && strlen($rowd['rol']) > 5) {
         $jk = strlen($rowd['rol']) - 5;
         $rl = substr($rowd['rol'], 0, $jk);
       } else {
-        $rl = $rowd['rol'];
+        $rl = $rowd['rol'] ?? '';
       }
       $rowd['rl']=$rl;
-      
+
       $data[]=$rowd;
       $mc_all[]=$rowd['mc'];
-      if($rowd['nokk']!=""){
+      if(($rowd['nokk'] ?? '')!=""){
         $nokk_all[]=$rowd['nokk'];
       }
     }
+
     $mesin_join = join("','", $mc_all);
 
-    if ($GShift == "ALL") {
+    if ($GShift == "ALL" || $GShift == "") {
       $shftSM = " ";
     } else {
       $shftSM = " g_shift='$GShift' AND ";
@@ -153,47 +221,51 @@
     $sqlSM = sqlsrv_query($con, "
       SELECT *, kapasitas as kapSM, g_shift as shiftSM
       FROM db_dying.tbl_stopmesin
-      WHERE $shftSM tgl_update BETWEEN '$start_date' AND '$stop_date'
+      WHERE $shftSM tgl_update BETWEEN CONVERT(datetime, '$start_date', 120) AND CONVERT(datetime, '$stop_date', 120)
         AND no_mesin IN ('$mesin_join')
     ");
 
     if ($sqlSM === false) {
-      die(print_r(sqlsrv_errors(), true));
+      echo "<pre>";
+      print_r(sqlsrv_errors());
+      echo "</pre>";
+      die();
     }
 
     while ($rowSM = sqlsrv_fetch_array($sqlSM, SQLSRV_FETCH_ASSOC)) {
       $mesin[$rowSM['no_mesin']] = $rowSM;
     }
-                
+
     $subcode_all=array();
     $nokk_join= join("','",$nokk_all);
-                
+
     $q_itxviewkk = db2_exec($conn2, "SELECT TRIM(PRODUCTIONORDERCODE) AS PRODUCTIONORDERCODE,
                                         LISTAGG(DISTINCT TRIM(LOT), ', ') AS LOT,
-                                        LISTAGG(DISTINCT TRIM(SUBCODE01), ', ') AS SUBCODE01 
-                                      FROM 
-                                        ITXVIEWKK 
+                                        LISTAGG(DISTINCT TRIM(SUBCODE01), ', ') AS SUBCODE01
+                                      FROM
+                                        ITXVIEWKK
                                         WHERE PRODUCTIONORDERCODE IN ('$nokk_join')
                                   GROUP BY PRODUCTIONORDERCODE; ");
     while ($rowCode = db2_fetch_assoc($q_itxviewkk)) {
       $subcode_all[$rowCode['PRODUCTIONORDERCODE']]=$rowCode;
     }
+
     $lama_proses_all=array();
     $qryLama = sqlsrv_query($con, "SELECT b.nokk,
-                                      DATEDIFF(MINUTE, b.tgl_buat, GETDATE()) AS lama 
+                                      DATEDIFF(MINUTE, b.tgl_buat, GETDATE()) AS lama
                                     FROM
                                       db_dying.tbl_schedule a
-                                    LEFT JOIN db_dying.tbl_montemp b ON a.id = b.id_schedule 
+                                    LEFT JOIN db_dying.tbl_montemp b ON a.id = b.id_schedule
                                     WHERE
                                        b.nokk IN ('$nokk_join')
-                                    AND b.STATUS = 'sedang jalan' 
+                                    AND b.STATUS = 'sedang jalan'
                                       ORDER BY
                                     a.no_urut ASC");
     while ($rLama = sqlsrv_fetch_array($qryLama, SQLSRV_FETCH_ASSOC)) {
       $lama_proses_all[$rLama['nokk']]=$rLama;
     }
-  }  
-  ?>
+  }
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 

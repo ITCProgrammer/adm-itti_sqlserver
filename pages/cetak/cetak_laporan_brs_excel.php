@@ -313,12 +313,12 @@ border:hidden;
       </tr>
 	  <?php
                 // Query tetap (kalau kamu perlu datanya juga)
-				$query = "SELECT DISTINCT CAST(tgl_buat AS DATE) AS tgl_cutoff
-							FROM db_brushing.tbl_produksi
-							WHERE tgl_buat >= '{$startDate->format("Y-m-d")} 23:00:00'
-							AND tgl_buat <= '{$endDate->format("Y-m-d")} 23:00:00'
-							ORDER BY tgl_cutoff ASC
-						";
+				 $query = "SELECT DISTINCT CAST(tgl_buat AS DATE) AS tgl_cutoff
+								FROM db_brushing.tbl_produksi
+								WHERE tgl_buat >= '{$startDate->format("Y-m-d")} 23:00:00'
+								AND tgl_buat <= '{$endDate->format("Y-m-d")} 23:00:00'
+								ORDER BY tgl_cutoff ASC
+							";
 				$result = sqlsrv_query($conb, $query);
 
 				// Array tanggal yang punya data
