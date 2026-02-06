@@ -781,11 +781,11 @@ desired effect
           </ul>
         </li>
         <?php if($_SESSION['dept10']=="CQA" || $_SESSION['dept10']=="QCF" || $_SESSION['dept10']=="DIT" || $_SESSION['dept10']=="MKT" || strtolower(substr($_SESSION['user_id10'], 0, 3)) == 'adm'):?>
-          <li <?php if ($_GET['p'] == "FirstLot") { echo "active"; } ?>">
+          <!-- <li <?php if ($_GET['p'] == "FirstLot") { echo "active"; } ?>">
             <li class="<?php if ($_GET['p'] == "FirstLot") { echo "active"; } ?>">
               <a href="?p=FirstLot"><i class="fa fa-file text-red"></i> <span>Laporan Summary First Lot</span></a>
             </li>
-          </li>
+          </li> -->
         <?php endif;?>
       </ul>
         <!-- /.sidebar-menu -->
