@@ -12,22 +12,36 @@ function sanitize_input_sql($input) {
 
 ini_set("error_reporting", 1);
 session_start();
-$id = $_GET['id'];
+include_once __DIR__ . "/../koneksi.php";
+
+$id = $_GET['id'] ?? '';
 $TindakLanjut   = isset($_POST['tindak_lanjut']) ? $_POST['tindak_lanjut'] : '';
 $SolusiPanjang  = isset($_POST['hasil_tindak_lanjut']) ? $_POST['hasil_tindak_lanjut'] : '';
-$sqlCek = sqlsrv_query($cond, "SELECT TOP 1
+$opt = array("Scrollable" => SQLSRV_CURSOR_KEYSET);
+$sqlCekText = "SELECT TOP 1
 									* 
 								FROM 
 									db_qc.tbl_cocok_warna_dye t
 								LEFT JOIN db_qc.penyelesaian_tolakbasah p ON p.id_cocok_warna = t.id
-									WHERE t.id='$id' 
+									WHERE t.id = ?
 								ORDER BY 
 									t.id 
-								DESC");
-$cek = sqlsrv_num_rows($sqlCek);
+								DESC";
+$sqlCek = sqlsrv_query($cond, $sqlCekText, [$id], $opt);
+if ($sqlCek === false) {
+	die(print_r(sqlsrv_errors(), true));
+}
 $rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
-$qcek_data = sqlsrv_query($cond, "SELECT TOP 1 * FROM db_qc.penyelesaian_tolakbasah WHERE id_cocok_warna='$id' ORDER BY id DESC");
-$cek_data = sqlsrv_num_rows($qcek_data);
+$cek = $rcek ? 1 : 0;
+sqlsrv_free_stmt($sqlCek);
+
+$qcek_data = sqlsrv_query($cond, "SELECT TOP 1 * FROM db_qc.penyelesaian_tolakbasah WHERE id_cocok_warna = ? ORDER BY id DESC", [$id], $opt);
+if ($qcek_data === false) {
+	die(print_r(sqlsrv_errors(), true));
+}
+$row_cek_data = sqlsrv_fetch_array($qcek_data, SQLSRV_FETCH_ASSOC);
+$cek_data = $row_cek_data ? 1 : 0;
+sqlsrv_free_stmt($qcek_data);
 ?>
 <form class="form-horizontal" action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
 	<div class="box box-info">
@@ -131,27 +145,30 @@ $cek_data = sqlsrv_num_rows($qcek_data);
 </div>
 </div>
 <?php
-if ($_POST['save'] == "Simpan" && $cek_data<1) {
+if (isset($_POST['save']) && $_POST['save'] == "Simpan" && $cek_data < 1) {
 	$user_insert = $_SESSION['id10'];
-	$ket = sanitize_input_sql($_POST['keterangan']);
+	$ket = sanitize_input_sql($_POST['keterangan'] ?? '');
 	$hasil_lanjut = sanitize_input_sql($_POST['hasil_tindak_lanjut']);
 	$tindak_lanjut = sanitize_input_sql($_POST['tindak_lanjut']);
 	$pemberi_instruksi = sanitize_input_sql($_POST['pemberi_instruksi']);
 	$tindakan = sanitize_input_sql($_POST['tindakan']);
-	$sqlData = sqlsrv_query($cond, "INSERT INTO 
-										penyelesaian_tolakbasah 
-									SET 
-										id_cocok_warna='$id',
-										keterangan='$ket',
-										hasil_tindak_lanjut='$hasil_lanjut',
-										tindak_lanjut='$tindak_lanjut',
-										pemberi_instruksi='$pemberi_instruksi',
-										tindakan='$tindakan',
-										tanggal_insert=now(),
-										tanggal_update=now(),
-										user_insert=$user_insert,
-										user_update=$user_insert
-										");
+	$sqlInsert = "INSERT INTO db_qc.penyelesaian_tolakbasah
+					(id_cocok_warna, keterangan, hasil_tindak_lanjut, tindak_lanjut, pemberi_instruksi, tindakan, tanggal_insert, tanggal_update, user_insert, user_update)
+				  VALUES (?, ?, ?, ?, ?, ?, GETDATE(), GETDATE(), ?, ?)";
+	$paramsInsert = [
+		$id,
+		$ket,
+		$hasil_lanjut,
+		$tindak_lanjut,
+		$pemberi_instruksi,
+		$tindakan,
+		$user_insert,
+		$user_insert
+	];
+	$sqlData = sqlsrv_query($cond, $sqlInsert, $paramsInsert);
+	if ($sqlData === false) {
+		die(print_r(sqlsrv_errors(), true));
+	}
 	if ($sqlData) {
 		echo "<script>swal({
 				title: 'Data Telah Tersimpan',   
@@ -164,23 +181,35 @@ if ($_POST['save'] == "Simpan" && $cek_data<1) {
 				}
 				});</script>";
 	}
-}else if ($_POST['save'] == "Simpan" && $cek_data>0) {
+} else if (isset($_POST['save']) && $_POST['save'] == "Simpan" && $cek_data > 0) {
 	$user_insert = $_SESSION['id10'];
-	$ket = sanitize_input_sql($_POST['keterangan']);
+	$ket = sanitize_input_sql($_POST['keterangan'] ?? '');
 	$hasil_lanjut = sanitize_input_sql($_POST['hasil_tindak_lanjut']);
 	$tindak_lanjut = sanitize_input_sql($_POST['tindak_lanjut']);
 	$pemberi_instruksi = sanitize_input_sql($_POST['pemberi_instruksi']);
 	$tindakan = sanitize_input_sql($_POST['tindakan']);
-	$sqlData = sqlsrv_query($cond, "UPDATE penyelesaian_tolakbasah SET 
-										keterangan='$ket',
-										hasil_tindak_lanjut='$hasil_lanjut',
-										tindak_lanjut='$tindak_lanjut',
-										pemberi_instruksi='$pemberi_instruksi',
-										tindakan='$tindakan',
-										tanggal_update=now(),
-										user_update=$user_insert
-										WHERE id_cocok_warna = '$id'
-										");
+	$sqlUpdate = "UPDATE db_qc.penyelesaian_tolakbasah SET 
+					keterangan = ?,
+					hasil_tindak_lanjut = ?,
+					tindak_lanjut = ?,
+					pemberi_instruksi = ?,
+					tindakan = ?,
+					tanggal_update = GETDATE(),
+					user_update = ?
+				  WHERE id_cocok_warna = ?";
+	$paramsUpdate = [
+		$ket,
+		$hasil_lanjut,
+		$tindak_lanjut,
+		$pemberi_instruksi,
+		$tindakan,
+		$user_insert,
+		$id
+	];
+	$sqlData = sqlsrv_query($cond, $sqlUpdate, $paramsUpdate);
+	if ($sqlData === false) {
+		die(print_r(sqlsrv_errors(), true));
+	}
 	if ($sqlData) {
 		echo "<script>swal({
 				title: 'Data Telah Terupdate',   
