@@ -342,19 +342,17 @@ include "koneksi.php";
                       <a href="#" class="btn btn-danger btn-xs <?php if ($_SESSION['akses10'] == 'biasa' and ($_SESSION['lvl_id10'] != '2' or $_SESSION['lvl_id'] != 'NCP')) {
                                                                   echo "disabled";
                                                                 } ?>" onclick="confirm_delete('./HapusDataShading-<?php echo $row1['id'] ?>');"><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Hapus"></i> </a>
-                      <a href="pages/cetak/cetak-detail-roll-shading.php?id=<?php echo $row1['id']; ?>&demand=<?php echo $row1['nodemand']; ?>&tgl=<?= date('Y-m-d', strtotime($row1['tgl_buat'])) ?>" class="btn btn-success btn-xs <?php if ($row1['nodemand'] == "") {
+                      <a href="pages/cetak/cetak-detail-roll-shading.php?id=<?php echo $row1['id']; ?>&demand=<?php echo $row1['nodemand']; ?>&tgl=<?= ($row1['tgl_buat'] instanceof DateTime) ? $row1['tgl_buat']->format('Y-m-d') : date('Y-m-d', strtotime($row1['tgl_buat'])) ?>" class="btn btn-success btn-xs <?php if ($row1['nodemand'] == "") {
                                                                                                                                                                                                                                         echo "disabled";
                                                                                                                                                                                                                                       } ?>" target="_blank"><i class="fa fa-file-o"></i></a>
                     </div>
                   </td>
                   <td align="center">
                     <div class="btn-group">
-                      <a href="?p=Edit-Detail-Roll-Shading&nodemand=<?php echo $row1['nodemand']; ?>-<?= date('Y-m-d', strtotime($row1['tgl_buat'])) ?>" class="btn btn-primary btn-xs <?php if ($_SESSION['akses10'] == 'biasa' and ($_SESSION['lvl_id'] != 'PACKING' or $_SESSION['lvl_id'] != 'NCP')) {
-                                                                                                                                                                                        echo "disabled";
-                                                                                                                                                                                      } ?>"><i class="fa fa-edit" data-toggle="tooltip" data-placement="top" title="Edit"></i> </a>
+                      <a href="?p=Edit-Detail-Roll-Shading&nodemand=<?php echo $row1['nodemand']; ?>-<?= ($row1['tgl_buat'] instanceof DateTime) ? $row1['tgl_buat']->format('Y-m-d') : date('Y-m-d', strtotime($row1['tgl_buat'])) ?>" class="btn btn-primary btn-xs <?php if ($_SESSION['akses10'] == 'biasa' and ($_SESSION['lvl_id'] != 'PACKING' or $_SESSION['lvl_id'] != 'NCP')) { echo "disabled"; } ?>"><i class="fa fa-edit" data-toggle="tooltip" data-placement="top" title="Edit"></i> </a>
                     </div>
                   </td>
-                  <td align="center"><?php echo $row1['tgl_update']; ?></td>
+                  <td align="center"><?php echo ($row1['tgl_update'] instanceof DateTime) ? $row1['tgl_update']->format('Y-m-d H:i:s') : $row1['tgl_update']; ?></td>
                   <td align="center"><?php echo $row1['shift']; ?></td>
                   <td align="center"><?php echo $row1['groupshift']; ?></td>
                   <td align="center"><?php echo $row1['nokk']; ?></td>
