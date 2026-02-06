@@ -1096,22 +1096,36 @@ desired effect
           });
           $('.acc-recipe-gproses-editable').editable({
                 source: 'pages/ajax/get_acc_recipe.php',
-                showbuttons: false, 
+                showbuttons: false,
+                params: function (params) {
+                    const $el = $(this);
+                    params.montemp    = $el.data('montemp');
+                    params.hasilcelup = $el.data('hasilcelup');
+                    params.schedule   = $el.data('schedule');
+                    return params;
+                },
                 success: function(response, newValue) {
                     console.log('Update berhasil. Nilai baru:', newValue);
                 },
                 error: function(response, newValue) {
-                    console.error('Update gagal.');
+                    console.error('Update gagal.', response.responseText);
                 }
             });
           $('.acc-recipe2-gproses-editable').editable({
                 source: 'pages/ajax/get_acc_recipe.php',
-                showbuttons: false, 
+                showbuttons: false,
+                params: function (params) {
+                    const $el = $(this);
+                    params.montemp    = $el.data('montemp');
+                    params.hasilcelup = $el.data('hasilcelup');
+                    params.schedule   = $el.data('schedule');
+                    return params;
+                },
                 success: function(response, newValue) {
                     console.log('Update berhasil. Nilai baru:', newValue);
                 },
                 error: function(response, newValue) {
-                    console.error('Update gagal.');
+                    console.error('Update gagal.', response.responseText);
                 }
             });
 
