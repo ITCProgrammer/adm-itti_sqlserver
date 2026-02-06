@@ -2084,7 +2084,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S01,	
 
@@ -2110,7 +2115,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S02,	
 
@@ -2136,7 +2146,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S03,	
 
@@ -2162,7 +2177,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S04,	
 
@@ -2188,7 +2208,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S05,
 
@@ -2214,7 +2239,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S06,	
 
@@ -2240,7 +2270,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S07,	
 
@@ -2266,7 +2301,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S08,	
 
@@ -2292,7 +2332,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S09,	
 
@@ -2317,7 +2362,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_Ov01,
 				
@@ -2342,7 +2392,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP01,
 				
@@ -2367,11 +2422,21 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP02
 
 			FROM db_finishing.tbl_produksi a
+			CROSS APPLY (
+				SELECT
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_in))  = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_in))  END) AS t_in,
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_out)) = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_out)) END) AS t_out
+			) x
 			LEFT JOIN db_finishing.tbl_no_mesin b 
 				ON a.no_mesin = b.no_mesin
 			WHERE YEAR(a.tgl_update) = '$tahunSebelumnya'");
@@ -2399,11 +2464,16 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S01,	
 
-				 SUM(CASE 
+				SUM(CASE 
 						WHEN a.no_mesin = 'P3ST302' 
 						  AND a.kondisi_kain IN ('BASAH', 'KERING') 
 						  AND a.shift IN ('A', 'B', 'C') 
@@ -2425,11 +2495,16 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S02,	
 
-				 SUM(CASE 
+				SUM(CASE 
 						WHEN a.no_mesin = 'P3ST103' 
 						  AND a.kondisi_kain IN ('BASAH', 'KERING') 
 						  AND a.shift IN ('A', 'B', 'C') 
@@ -2451,11 +2526,16 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S03,	
 
-				 SUM(CASE 
+				SUM(CASE 
 						WHEN a.no_mesin = 'P3ST304' 
 						  AND a.kondisi_kain IN ('BASAH', 'KERING') 
 						  AND a.shift IN ('A', 'B', 'C') 
@@ -2477,11 +2557,16 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S04,	
 
-				 SUM(CASE 
+				SUM(CASE 
 						WHEN a.no_mesin = 'P3ST205' 
 						  AND a.kondisi_kain IN ('BASAH', 'KERING') 
 						  AND a.shift IN ('A', 'B', 'C') 
@@ -2503,7 +2588,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S05,
 
@@ -2529,7 +2619,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S06,	
 
@@ -2555,7 +2650,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S07,	
 
@@ -2581,7 +2681,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S08,	
 
@@ -2607,7 +2712,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S09,	
 
@@ -2632,7 +2742,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_Ov01,
 				
@@ -2658,7 +2773,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP01,
 				
@@ -2683,11 +2803,21 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP02   
 
 			FROM db_finishing.tbl_produksi a
+			CROSS APPLY (
+				SELECT
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_in))  = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_in))  END) AS t_in,
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_out)) = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_out)) END) AS t_out
+			) x
 			LEFT JOIN db_finishing.tbl_no_mesin b 
 				ON a.no_mesin = b.no_mesin
 			WHERE MONTH(a.tgl_update) = '1' AND YEAR(a.tgl_update) = '$tahun'");
@@ -2715,7 +2845,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S01,	
 
@@ -2741,7 +2876,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S02,	
 
@@ -2767,7 +2907,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S03,	
 
@@ -2793,7 +2938,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S04,	
 
@@ -2819,7 +2969,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S05,
 
@@ -2845,7 +3000,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S06,	
 
@@ -2871,7 +3031,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S07,	
 
@@ -2897,7 +3062,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S08,	
 
@@ -2923,7 +3093,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S09,	
 
@@ -2948,7 +3123,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_Ov01,
 				
@@ -2973,7 +3153,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP01,
 				
@@ -2998,11 +3183,21 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP02	    
 
 			FROM db_finishing.tbl_produksi a
+			CROSS APPLY (
+				SELECT
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_in))  = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_in))  END) AS t_in,
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_out)) = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_out)) END) AS t_out
+			) x
 			LEFT JOIN db_finishing.tbl_no_mesin b 
 				ON a.no_mesin = b.no_mesin
 			WHERE MONTH(a.tgl_update) = '2' AND YEAR(a.tgl_update) = '$tahun'");
@@ -3030,7 +3225,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S01,	
 
@@ -3056,7 +3256,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S02,	
 
@@ -3082,7 +3287,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S03,	
 
@@ -3108,7 +3318,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S04,	
 
@@ -3134,7 +3349,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S05,
 
@@ -3160,7 +3380,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S06,	
 
@@ -3186,7 +3411,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S07,	
 
@@ -3212,7 +3442,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S08,	
 
@@ -3238,7 +3473,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S09,	
 
@@ -3263,7 +3503,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_Ov01,
 				
@@ -3288,7 +3533,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP01,
 				
@@ -3313,11 +3563,21 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP02   
 
 			FROM db_finishing.tbl_produksi a
+			CROSS APPLY (
+				SELECT
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_in))  = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_in))  END) AS t_in,
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_out)) = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_out)) END) AS t_out
+			) x
 			LEFT JOIN db_finishing.tbl_no_mesin b 
 				ON a.no_mesin = b.no_mesin
 			WHERE MONTH(a.tgl_update) = '3' AND YEAR(a.tgl_update) = '$tahun'");
@@ -3345,7 +3605,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S01,	
 
@@ -3371,7 +3636,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S02,	
 
@@ -3397,7 +3667,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S03,	
 
@@ -3423,7 +3698,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S04,	
 
@@ -3449,7 +3729,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S05,
 
@@ -3475,7 +3760,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S06,	
 
@@ -3501,7 +3791,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S07,	
 
@@ -3527,7 +3822,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S08,	
 
@@ -3553,7 +3853,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S09,	
 
@@ -3578,7 +3883,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_Ov01,
 				
@@ -3603,7 +3913,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP01,
 				
@@ -3628,11 +3943,21 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP02    
 
 			FROM db_finishing.tbl_produksi a
+			CROSS APPLY (
+				SELECT
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_in))  = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_in))  END) AS t_in,
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_out)) = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_out)) END) AS t_out
+			) x
 			LEFT JOIN db_finishing.tbl_no_mesin b 
 				ON a.no_mesin = b.no_mesin
 			WHERE MONTH(a.tgl_update) = '4' AND YEAR(a.tgl_update) = '$tahun'");
@@ -3660,7 +3985,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S01,	
 
@@ -3686,7 +4016,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S02,	
 
@@ -3712,7 +4047,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S03,	
 
@@ -3738,7 +4078,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S04,	
 
@@ -3764,7 +4109,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S05,
 
@@ -3790,7 +4140,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S06,	
 
@@ -3816,7 +4171,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S07,	
 
@@ -3842,7 +4202,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S08,	
 
@@ -3868,7 +4233,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S09,	
 
@@ -3893,7 +4263,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_Ov01,
 				
@@ -3918,7 +4293,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP01,
 				
@@ -3943,11 +4323,21 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP02
 
 			FROM db_finishing.tbl_produksi a
+			CROSS APPLY (
+				SELECT
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_in))  = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_in))  END) AS t_in,
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_out)) = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_out)) END) AS t_out
+			) x
 			LEFT JOIN db_finishing.tbl_no_mesin b 
 				ON a.no_mesin = b.no_mesin
 			WHERE MONTH(a.tgl_update) = '5' AND YEAR(a.tgl_update) = '$tahun'");
@@ -3975,7 +4365,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S01,	
 
@@ -4001,7 +4396,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S02,	
 
@@ -4027,7 +4427,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S03,	
 
@@ -4053,7 +4458,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S04,	
 
@@ -4079,7 +4489,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S05,
 
@@ -4105,7 +4520,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S06,	
 
@@ -4131,7 +4551,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S07,	
 
@@ -4157,7 +4582,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S08,	
 
@@ -4183,7 +4613,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S09,	
 
@@ -4208,7 +4643,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_Ov01,
 				
@@ -4233,7 +4673,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP01,
 				
@@ -4258,11 +4703,21 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP02
 
 			FROM db_finishing.tbl_produksi a
+			CROSS APPLY (
+				SELECT
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_in))  = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_in))  END) AS t_in,
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_out)) = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_out)) END) AS t_out
+			) x
 			LEFT JOIN db_finishing.tbl_no_mesin b 
 				ON a.no_mesin = b.no_mesin
 			WHERE MONTH(a.tgl_update) = '6' AND YEAR(a.tgl_update) = '$tahun'");
@@ -4290,7 +4745,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S01,	
 
@@ -4316,7 +4776,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S02,	
 
@@ -4342,7 +4807,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S03,	
 
@@ -4368,7 +4838,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S04,	
 
@@ -4394,7 +4869,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S05,
 
@@ -4420,7 +4900,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S06,	
 
@@ -4446,7 +4931,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S07,	
 
@@ -4472,7 +4962,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S08,	
 
@@ -4498,7 +4993,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S09,	
 
@@ -4523,7 +5023,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_Ov01,
 				
@@ -4548,7 +5053,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP01,
 				
@@ -4573,11 +5083,21 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP02
 
 			FROM db_finishing.tbl_produksi a
+			CROSS APPLY (
+				SELECT
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_in))  = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_in))  END) AS t_in,
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_out)) = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_out)) END) AS t_out
+			) x
 			LEFT JOIN db_finishing.tbl_no_mesin b 
 				ON a.no_mesin = b.no_mesin
 			WHERE MONTH(a.tgl_update) = '7' AND YEAR(a.tgl_update) = '$tahun'");
@@ -4605,7 +5125,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S01,	
 
@@ -4631,7 +5156,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S02,	
 
@@ -4657,7 +5187,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S03,	
 
@@ -4683,7 +5218,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S04,	
 
@@ -4709,7 +5249,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S05,
 
@@ -4735,7 +5280,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S06,	
 
@@ -4761,7 +5311,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S07,	
 
@@ -4787,7 +5342,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S08,	
 
@@ -4813,7 +5373,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S09,	
 
@@ -4838,7 +5403,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_Ov01,
 				
@@ -4863,7 +5433,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP01,
 				
@@ -4888,11 +5463,21 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP02
 
 			FROM db_finishing.tbl_produksi a
+			CROSS APPLY (
+				SELECT
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_in))  = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_in))  END) AS t_in,
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_out)) = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_out)) END) AS t_out
+			) x
 			LEFT JOIN db_finishing.tbl_no_mesin b 
 				ON a.no_mesin = b.no_mesin
 			WHERE MONTH(a.tgl_update) = '8' AND YEAR(a.tgl_update) = '$tahun'");
@@ -4920,7 +5505,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S01,	
 
@@ -4946,7 +5536,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S02,	
 
@@ -4972,7 +5567,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S03,	
 
@@ -4998,7 +5598,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S04,	
 
@@ -5024,7 +5629,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S05,
 
@@ -5050,7 +5660,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S06,	
 
@@ -5076,7 +5691,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S07,	
 
@@ -5102,7 +5722,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S08,	
 
@@ -5128,7 +5753,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S09,	
 
@@ -5153,7 +5783,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_Ov01,
 				
@@ -5178,7 +5813,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP01,
 				
@@ -5203,11 +5843,21 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP02
 
 			FROM db_finishing.tbl_produksi a
+			CROSS APPLY (
+				SELECT
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_in))  = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_in))  END) AS t_in,
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_out)) = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_out)) END) AS t_out
+			) x
 			LEFT JOIN db_finishing.tbl_no_mesin b 
 				ON a.no_mesin = b.no_mesin
 			WHERE MONTH(a.tgl_update) = '9' AND YEAR(a.tgl_update) = '$tahun'");
@@ -5235,7 +5885,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S01,	
 
@@ -5261,7 +5916,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S02,	
 
@@ -5287,7 +5947,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S03,	
 
@@ -5313,7 +5978,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S04,	
 
@@ -5339,7 +6009,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S05,
 
@@ -5365,7 +6040,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S06,	
 
@@ -5391,7 +6071,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S07,	
 
@@ -5417,7 +6102,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S08,	
 
@@ -5443,7 +6133,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S09,	
 
@@ -5468,7 +6163,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_Ov01,
 				
@@ -5493,7 +6193,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP01,
 				
@@ -5518,11 +6223,21 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP02
 
 			FROM db_finishing.tbl_produksi a
+			CROSS APPLY (
+				SELECT
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_in))  = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_in))  END) AS t_in,
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_out)) = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_out)) END) AS t_out
+			) x
 			LEFT JOIN db_finishing.tbl_no_mesin b 
 				ON a.no_mesin = b.no_mesin
 			WHERE MONTH(a.tgl_update) = '10' AND YEAR(a.tgl_update) = '$tahun'");
@@ -5550,7 +6265,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S01,	
 
@@ -5576,7 +6296,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S02,	
 
@@ -5602,7 +6327,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S03,	
 
@@ -5628,7 +6358,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S04,	
 
@@ -5654,7 +6389,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S05,
 
@@ -5681,7 +6421,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S06,	
 
@@ -5707,7 +6452,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S07,	
 
@@ -5733,7 +6483,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S08,	
 
@@ -5759,7 +6514,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S09,	
 
@@ -5784,7 +6544,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_Ov01,
 				
@@ -5809,7 +6574,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP01,
 				
@@ -5834,11 +6604,21 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP02
 
 			FROM db_finishing.tbl_produksi a
+			CROSS APPLY (
+				SELECT
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_in))  = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_in))  END) AS t_in,
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_out)) = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_out)) END) AS t_out
+			) x
 			LEFT JOIN db_finishing.tbl_no_mesin b 
 				ON a.no_mesin = b.no_mesin
 			WHERE MONTH(a.tgl_update) = '$bln1' AND YEAR(a.tgl_update) = '$tahun'");
@@ -5866,7 +6646,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S01,	
 
@@ -5892,7 +6677,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S02,	
 
@@ -5918,7 +6708,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S03,	
 
@@ -5944,7 +6739,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S04,	
 
@@ -5970,7 +6770,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S05,
 
@@ -5996,7 +6801,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S06,	
 
@@ -6022,7 +6832,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S07,	
 
@@ -6048,7 +6863,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S08,	
 
@@ -6074,7 +6894,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_S09,	
 
@@ -6099,7 +6924,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_Ov01,
 				
@@ -6124,7 +6954,12 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP01,
 				
@@ -6149,11 +6984,21 @@ function formatJamMenit($decimalHours) {
 		              AND a.shift IN ('A', 'B', 'C') 
 		              AND a.jam_in IS NOT NULL AND a.jam_out IS NOT NULL
 					  AND a.jam_in NOT LIKE '24:%' AND a.jam_out NOT LIKE '24:%'
-		            THEN DATEDIFF(MINUTE, a.jam_in, CASE WHEN a.jam_out < a.jam_in THEN DATEADD(DAY, 1, a.jam_out) ELSE a.jam_out END)
+		            THEN
+						CASE 
+							WHEN x.t_out < x.t_in
+								THEN DATEDIFF(MINUTE, x.t_in, DATEADD(DAY, 1, CAST(x.t_out AS datetime)))
+							ELSE DATEDIFF(MINUTE, x.t_in, CAST(x.t_out AS datetime))
+						END
 		            ELSE 0 
 		        END) AS time_CP02
 
 			FROM db_finishing.tbl_produksi a
+			CROSS APPLY (
+				SELECT
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_in))  = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_in))  END) AS t_in,
+					TRY_CONVERT(time(0), CASE WHEN LTRIM(RTRIM(a.jam_out)) = '0000' THEN '00:00' ELSE LTRIM(RTRIM(a.jam_out)) END) AS t_out
+			) x
 			LEFT JOIN db_finishing.tbl_no_mesin b 
 				ON a.no_mesin = b.no_mesin
 			WHERE MONTH(a.tgl_update) = '12' AND YEAR(a.tgl_update) = '$tahun'");
