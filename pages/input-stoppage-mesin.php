@@ -1101,6 +1101,28 @@ $(document).ready(function() {
 
 <?php
 if (isset($_POST['btnStart']) && $_POST['btnStart'] === "Start") {
+	function normalize_numeric($value) {
+		if ($value === null) {
+			return null;
+		}
+		$value = trim((string)$value);
+		if ($value === '') {
+			return null;
+		}
+		$value = str_replace(' ', '', $value);
+		if (strpos($value, ',') !== false) {
+			if (strpos($value, '.') !== false) {
+				$value = str_replace(',', '', $value);
+			} else {
+				$value = str_replace(',', '.', $value);
+			}
+		}
+		if (!is_numeric($value)) {
+			return null;
+		}
+		return $value;
+	}
+
 	function nourut(){
 		include "koneksi.php";
 
@@ -1137,6 +1159,10 @@ if (isset($_POST['btnStart']) && $_POST['btnStart'] === "Start") {
     $jns = $_POST['jns_kain'];
     $po =$_POST['no_po'];
     $lot = trim($_POST['lot']);
+	$lebar = normalize_numeric($_POST['lebar']);
+	$gramasi = normalize_numeric($_POST['grms']);
+	$qty_order = normalize_numeric($_POST['qty_order']);
+	$durasi_jam = normalize_numeric($_POST['durasi']);
 	if(!empty($_POST['non_kk'])){
 		$nonkk = $_POST['non_kk'];
 	}else{
@@ -1228,11 +1254,11 @@ if (isset($_POST['btnStart']) && $_POST['btnStart'] === "Start") {
 	$stmt = sqlsrv_prepare($cona, $sql, [
 		$nokk1, $_POST['demand'], $_POST['pelanggan'], $_POST['buyer'],
 		$_POST['no_order'], $_POST['no_hanger'], $_POST['no_item'], $po,
-		$jns, $_POST['lebar'], $_POST['grms'], $_POST['qty_order'],
+		$jns, $lebar, $gramasi, $qty_order,
 		$lot, $_POST['tgl_delivery'], $warna, $nowarna,
 		$_SESSION['dept10'], $_POST['operation'], $_POST['mulai_jam'], $_POST['mulai_tgl'],
 		$_POST['selesai_jam'], $_POST['selesai_tgl'], $mesin, $_POST['mesin_stop'], $_POST['kode_stop'],
-		$_POST['operator1'], $_POST['durasi'], $_POST['durasijammenit'], $nonkk, $_POST['stop_mulai_jam1'], $_POST['stop_mulai_tgl1']
+		$_POST['operator1'], $durasi_jam, $_POST['durasijammenit'], $nonkk, $_POST['stop_mulai_jam1'], $_POST['stop_mulai_tgl1']
 	]);
 
 	if ($stmt) {
@@ -1288,9 +1314,9 @@ if (isset($_POST['btnStart']) && $_POST['btnStart'] === "Start") {
 		$_POST['no_item'],
 		$po,
 		$jns,
-		$_POST['lebar'],
-		$_POST['grms'],
-		$_POST['qty_order'],
+		$lebar,
+		$gramasi,
+		$qty_order,
 		$lot,
 		$_POST['tgl_delivery'],
 		$warna,
@@ -1305,7 +1331,7 @@ if (isset($_POST['btnStart']) && $_POST['btnStart'] === "Start") {
 		$_POST['mesin_stop'],
 		$_POST['kode_stop'],
 		$_POST['operator1'],
-		$_POST['durasi'],
+		$durasi_jam,
 		$_POST['durasijammenit'],
 		$nonkk
 	]);
