@@ -484,7 +484,7 @@ $(document).ready(function() {
 					<div class="col-sm-3">						
 					<div class="input-group date" id="tgl_d">
 						<div class="input-group-addon"> <i class="fa fa-calendar"></i> </div>
-<!--						<input name="tgl_delivery" type="text" class="form-control" id="datepicker" placeholder="Tanggal Delivery" value="<?= ($cek > 0) ? $rcek['tgl_delivery'] : $dt_ITXVIEWKK['DELIVERYDATE']; ?>" autocomplete="off"/>-->
+<!--						<input name="tgl_delivery" type="text" class="form-control" id="datepicker" placeholder="Tanggal Delivery" value="<?= ($cek > 0) ? ($rcek['tgl_delivery'] ? date_format($rcek['tgl_delivery'], 'Y-m-d') : '') : $dt_ITXVIEWKK['DELIVERYDATE']; ?>" autocomplete="off"/>-->
 						<input name="tgl_delivery" type="text" class="form-control" id="datepicker" placeholder="Tanggal Delivery" value="<?= $dt_ITXVIEWKK['DELIVERYDATE']; ?>" autocomplete="off"/>
 					</div>
 					</div>
