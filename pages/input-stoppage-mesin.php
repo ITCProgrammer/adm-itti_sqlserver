@@ -1266,7 +1266,9 @@ if (isset($_POST['btnStart']) && $_POST['btnStart'] === "Start") {
 		?,?,?,?,?,?,?,?,
 		?,?,?,?,?,?,
 		?,?,?,?,?,?,
-		?,?,
+		?,
+		CONVERT(varchar(8), GETDATE(), 108),
+		CONVERT(varchar(10), GETDATE(), 23),
 		GETDATE(), GETDATE()
 	)";
 
