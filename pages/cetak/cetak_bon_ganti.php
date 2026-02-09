@@ -381,7 +381,7 @@ $nmBln = array(1 => "JANUARI", "FEBUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI
 							<td style="border-top:0px #000000 solid; 
   border-bottom:0px #000000 solid;
   border-left:0px #000000 solid; 
-  border-right:0px #000000 solid;">: <?php echo $r['tgl_delivery']; ?></td>
+  border-right:0px #000000 solid;">: <?php echo ($r['tgl_delivery'] ? date_format($r['tgl_delivery'], 'Y-m-d') : ''); ?></td>
 							<td style="border-top:0px #000000 solid; 
   border-bottom:0px #000000 solid;
   border-left:0px #000000 solid; 
