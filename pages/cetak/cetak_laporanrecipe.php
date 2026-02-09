@@ -556,40 +556,41 @@
         <td><?= $rowd['dept_penyebab2'] ?></td>
         <td><?= $rowd['akar_penyebab'] ?></td>
         <td align="left"><?php 
-                                $nomor_array = explode(',', $rowd['nodemand']);
-                                $quoted_nomor_array = [];
-                                foreach ($nomor_array as $nomor) {
-                                    $quoted_nomor_array[] = "'" . trim($nomor) . "'";
-                                }
-                                $in_clause_string = implode(',', $quoted_nomor_array);
-                                $qry_dye = mysqli_query($cond, "SELECT
-                                                                  GROUP_CONCAT(DISTINCT status_warna ORDER BY id ASC SEPARATOR ', ') AS status_warna
-                                                                FROM
-                                                                  tbl_cocok_warna_dye t
-                                                                WHERE
-                                                                  `dept` = 'QCF'
-                                                                  AND nodemand IN ({$in_clause_string})
-                                                        ");
-                                $sts_dye = mysqli_fetch_assoc($qry_dye);
-                                // echo $in_clause_string;
-                                echo $sts_dye['status_warna']; 
-                                ?></td>
-            <td align="left"><?php 
-                              $qry_fin = mysqli_query($cond, "SELECT DISTINCT 
-                                                                status 
-                                                              from
-                                                                tbl_lap_inspeksi
-                                                              where
-                                                                `dept` = 'QCF'
-                                                                and nokk ='$rowd[nokk]'
-                                                                and proses in ('Fin', 'Comp')
-                                                              order by
-                                                                id asc
-                                                      ");
-                              $sts_fin = mysqli_fetch_assoc($qry_fin);
-                              echo $sts_fin['status']; 
-                              ?>
-            </td>
+            $nomor_array = explode(',', $row1['nodemand']);
+            $quoted_nomor_array = [];
+            foreach ($nomor_array as $nomor) {
+              $quoted_nomor_array[] = "'" . trim($nomor) . "'";
+            }
+            $in_clause_string = implode(',', $quoted_nomor_array);
+            $qry_dye = sqlsrv_query($cond, "
+                SELECT
+                  STRING_AGG(x.status_warna, ', ') AS status_warna
+                FROM (
+                    SELECT DISTINCT t.status_warna
+                    FROM db_qc.tbl_cocok_warna_dye t
+                    WHERE
+                      t.dept = 'QCF'
+                      AND t.nodemand IN ($in_clause_string)
+                ) x
+            ");
+            $sts_dye = sqlsrv_fetch_array($qry_dye, SQLSRV_FETCH_ASSOC);
+            echo $sts_dye['status_warna']; 
+          ?>
+        </td>
+        <td align="left">
+            <?php 
+                $qry_fin = sqlsrv_query($cond, "
+                SELECT TOP 1 status
+                FROM db_qc.tbl_lap_inspeksi
+                WHERE dept = 'QCF'
+                  AND nokk = '".$row1['nokk']."'
+                  AND proses IN ('Fin', 'Comp')
+                ORDER BY id ASC
+                ");
+                $sts_fin = sqlsrv_fetch_array($qry_fin, SQLSRV_FETCH_ASSOC);
+                echo $sts_fin['status'] ?? '';
+              ?>
+        </td>
             <td>
               <?= $rowd['ket_hitung'] == 1 ? 'TIDAK HITUNG' : 'HITUNG' ?>
             </td>
