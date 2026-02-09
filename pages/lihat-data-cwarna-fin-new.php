@@ -784,7 +784,7 @@ include "koneksi.php";
                       <?php echo $row1['proses'] ?>
                     </a></td>
                   <td align="center">
-                    <?php echo $row1['tgl_pengiriman']; ?>
+                    <?php echo ($row1['tgl_pengiriman'] ? date_format($row1['tgl_pengiriman'], 'Y-m-d') : ''); ?>
                   </td>
                   <td align="center"><a data-pk="<?php echo $row1['id'] ?>" data-value="<?php echo $row1['review_qcf'] ?>"
                       class="review_qcf" href="javascipt:void(0)">
