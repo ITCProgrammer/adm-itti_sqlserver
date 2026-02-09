@@ -182,6 +182,11 @@
 										ORDER BY
 											PRODUCTIONRESERVATION.GROUPLINE DESC LIMIT 1");
 		$dt_bonresep2	= db2_fetch_assoc($sql_bonresep2);
+
+		$tgl_delivery = $dt_ITXVIEWKK['DELIVERYDATE'] ?? '';
+		if ($tgl_delivery instanceof DateTimeInterface) {
+			$tgl_delivery = $tgl_delivery->format('Y-m-d');
+		}
 	// NOW
 ?>
 <style>
@@ -485,7 +490,7 @@ $(document).ready(function() {
 					<div class="input-group date" id="tgl_d">
 						<div class="input-group-addon"> <i class="fa fa-calendar"></i> </div>
 <!--						<input name="tgl_delivery" type="text" class="form-control" id="datepicker" placeholder="Tanggal Delivery" value="<?= ($cek > 0) ? ($rcek['tgl_delivery'] ? date_format($rcek['tgl_delivery'], 'Y-m-d') : '') : $dt_ITXVIEWKK['DELIVERYDATE']; ?>" autocomplete="off"/>-->
-						<input name="tgl_delivery" type="text" class="form-control" id="datepicker" placeholder="Tanggal Delivery" value="<?= $dt_ITXVIEWKK['DELIVERYDATE']; ?>" autocomplete="off"/>
+						<input name="tgl_delivery" type="text" class="form-control" id="datepicker" placeholder="Tanggal Delivery" value="<?= $tgl_delivery; ?>" autocomplete="off"/>
 					</div>
 					</div>
 					<!-- /.input group -->
@@ -698,9 +703,9 @@ $(document).ready(function() {
 				</div>
 -->
 				<div class="form-group">
-					<label for="operator" class="col-sm-3 control-label">Opera
+					<label for="operator" class="col-sm-3 control-label">Operator
 					  <?php if($cek>0){ echo $rcek['mesin']; } ?>
-				    tor</label>
+				    </label>
 					<div class="col-sm-3">
 						<input name="operator" type="hidden" class="form-control" id="operator" value="" placeholder="operator">
 				  </div>
