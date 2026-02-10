@@ -13,7 +13,12 @@ if (isset($_POST['stopcode']) && isset($_POST['nokk'])) {
 
     $sqlCek = sqlsrv_query(
         $cona,
-        "SELECT TOP 1 * FROM db_adm.tbl_stoppage WHERE nokk = ? AND kode_stop = ? ORDER BY id DESC",
+        "SELECT TOP 1 *, 
+            CONVERT(VARCHAR(8),stop_mulai_jam) AS stop_mulai_jam,
+            CONVERT(VARCHAR(10),stop_mulai_tgl) AS stop_mulai_tgl,
+            CONVERT(VARCHAR(8),stop_selesai_jam) AS stop_selesai_jam,
+            CONVERT(VARCHAR(10),stop_selesai_tgl) AS stop_selesai_tgl
+         FROM db_adm.tbl_stoppage WHERE nokk = ? AND kode_stop = ? ORDER BY id DESC",
         [$nokk, $stopcode]
     );
 
