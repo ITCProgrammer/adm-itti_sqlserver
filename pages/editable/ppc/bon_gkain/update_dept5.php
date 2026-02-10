@@ -1,37 +1,55 @@
 <?php
 session_start();
 include "../../../../koneksi.php";
+
+header('Content-Type: text/plain; charset=utf-8');
+
 if (!isset($_SESSION['user_id10']) || !isset($_POST['pk']) || !isset($_POST['value'])) {
-    http_response_code(400); 
+    http_response_code(400);
     echo "Data tidak lengkap atau sesi tidak valid.";
     exit();
 }
-$user = $_SESSION['id10'];
-$pk = mysqli_real_escape_string($cona, $_POST['pk']);
-$newValue = mysqli_real_escape_string($cona, $_POST['value']);
+
+$user = $_SESSION['id10'] ?? null;
+
+$pk = $_POST['pk'];
+$newValue = $_POST['value'];
+
 $columnToUpdate = 't_jawab4';
 
-$today = date('Y-m-d H:i:s'); 
+$sqlCek = "SELECT 1 FROM db_adm.tbl_gantikain WHERE id = ?";
+$stmtCek = sqlsrv_query($cona, $sqlCek, [$pk]);
 
-$stmt_cek = $cona->prepare("SELECT id FROM tbl_gantikain WHERE id = ?");
-$stmt_cek->bind_param("s", $pk);
-$stmt_cek->execute();
-$stmt_cek->store_result();
+if ($stmtCek === false) {
+    http_response_code(500);
+    echo "Error saat cek data: " . print_r(sqlsrv_errors(), true);
+    exit();
+}
 
-if ($stmt_cek->num_rows > 0) {
-    $stmt_update = $cona->prepare("UPDATE tbl_gantikain SET {$columnToUpdate} = ?, tgl_update = ? WHERE id = ?");
-    $stmt_update->bind_param("sss", $newValue, $today, $pk);
-    if ($stmt_update->execute()) {
-        http_response_code(200);
-        echo "Update berhasil.";
-    } else {
+$exists = (sqlsrv_fetch($stmtCek) !== false);
+sqlsrv_free_stmt($stmtCek);
+
+if ($exists) {
+    $sqlUpdate = "UPDATE db_adm.tbl_gantikain
+                  SET {$columnToUpdate} = ?, tgl_update = SYSDATETIME()
+                  WHERE id = ?";
+
+    $stmtUpdate = sqlsrv_query($cona, $sqlUpdate, [$newValue, $pk]);
+
+    if ($stmtUpdate === false) {
         http_response_code(400);
-        echo "Error saat update: " . $stmt_update->error;
+        echo "Error saat update: " . print_r(sqlsrv_errors(), true);
+        exit();
     }
-    $stmt_update->close();
-} 
 
-$stmt_cek->close();
-$con->close();
+    sqlsrv_free_stmt($stmtUpdate);
 
+    http_response_code(200);
+    echo "Update berhasil.";
+} else {
+    http_response_code(404);
+    echo "Data tidak ditemukan.";
+}
+
+sqlsrv_close($cona);
 ?>

@@ -14,20 +14,45 @@ $idmutasi = $json->idmutasi;
 $qty = $json->qty;
 
 
-$query = mysqli_query($con, "SELECT * FROM mutasi_bs_krah_detail where id = '$id' and id_mutasi = '$idmutasi'");
-$num = mysqli_num_rows($query);
+$sql = "SELECT 1
+        FROM mutasi_bs_krah_detail
+        WHERE id = ? AND id_mutasi = ?";
+
+$params = [$id, $idmutasi];
+$stmt = sqlsrv_query($con, $sql, $params);
+
+if ($stmt === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
+
+$num = 0;
+while (sqlsrv_fetch($stmt)) {
+    $num++;
+}S
 
 if ($num > 0) {
-    mysqli_query($con, "UPDATE mutasi_bs_krah_detail SET qty = '$qty' where id = '$id'");
+    sqlsrv_query($con, "UPDATE mutasi_bs_krah_detail SET qty = '$qty' where id = '$id'");
     $response = array();
     $response['id'] = $id;
 
     echo json_encode($response);
 } else {
-    mysqli_query($con, "INSERT INTO mutasi_bs_krah_detail (id_mutasi, qty, tgl_update) VALUES ('$idmutasi', '$qty',now())");
+    $sql = "
+INSERT INTO mutasi_bs_krah_detail (id_mutasi, qty, tgl_update)
+OUTPUT INSERTED.id_detail AS id
+VALUES (?, ?, SYSDATETIME());
+";
 
-    $response = array();
-    $response['id'] = mysqli_insert_id($con);
+    $params = [$idmutasi, $qty];
 
-    echo json_encode($response);
+    $stmt = sqlsrv_query($con, $sql, $params);
+    if ($stmt === false) {
+        http_response_code(500);
+        echo json_encode(["error" => true, "details" => sqlsrv_errors()]);
+        exit;
+    }
+
+    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+
+    echo json_encode(["id" => (int) $row["id"]]);
 }
