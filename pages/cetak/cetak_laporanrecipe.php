@@ -556,7 +556,7 @@
         <td><?= $rowd['dept_penyebab2'] ?></td>
         <td><?= $rowd['akar_penyebab'] ?></td>
         <td align="left"><?php 
-            $nomor_array = explode(',', $row1['nodemand']);
+            $nomor_array = explode(',', $rowd['nodemand']);
             $quoted_nomor_array = [];
             foreach ($nomor_array as $nomor) {
               $quoted_nomor_array[] = "'" . trim($nomor) . "'";
@@ -578,18 +578,19 @@
           ?>
         </td>
         <td align="left">
-            <?php 
-                $qry_fin = sqlsrv_query($cond, "
-                SELECT TOP 1 status
-                FROM db_qc.tbl_lap_inspeksi
-                WHERE dept = 'QCF'
-                  AND nokk = '".$row1['nokk']."'
-                  AND proses IN ('Fin', 'Comp')
-                ORDER BY id ASC
-                ");
-                $sts_fin = sqlsrv_fetch_array($qry_fin, SQLSRV_FETCH_ASSOC);
-                echo $sts_fin['status'] ?? '';
-              ?>
+              <?php 
+                  $qry_fin = sqlsrv_query($cond, "
+                      SELECT TOP 1 status
+                      FROM db_qc.tbl_lap_inspeksi
+                      WHERE dept = 'QCF'
+                        AND nokk = '".$rowd['nokk']."'
+                        AND proses IN ('Fin', 'Comp')
+                      ORDER BY id ASC
+                  ");
+
+                  $sts_fin = sqlsrv_fetch_array($qry_fin, SQLSRV_FETCH_ASSOC);
+                  echo $sts_fin['status'] ?? '';
+                ?>
         </td>
             <td>
               <?= $rowd['ket_hitung'] == 1 ? 'TIDAK HITUNG' : 'HITUNG' ?>
