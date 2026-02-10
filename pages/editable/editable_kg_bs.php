@@ -15,7 +15,7 @@ $qty = $json->qty;
 
 
 $sql = "SELECT 1
-        FROM mutasi_bs_krah_detail
+        FROM db_dying.mutasi_bs_krah_detail
         WHERE id = ? AND id_mutasi = ?";
 
 $params = [$id, $idmutasi];
@@ -31,17 +31,17 @@ while (sqlsrv_fetch($stmt)) {
 }S
 
 if ($num > 0) {
-    sqlsrv_query($con, "UPDATE mutasi_bs_krah_detail SET qty = '$qty' where id = '$id'");
+    sqlsrv_query($con, "UPDATE db_dying.mutasi_bs_krah_detail SET qty = '$qty' where id = '$id'");
     $response = array();
     $response['id'] = $id;
 
     echo json_encode($response);
 } else {
     $sql = "
-INSERT INTO mutasi_bs_krah_detail (id_mutasi, qty, tgl_update)
-OUTPUT INSERTED.id_detail AS id
-VALUES (?, ?, SYSDATETIME());
-";
+            INSERT INTO db_dying.mutasi_bs_krah_detail (id_mutasi, qty, tgl_update)
+            OUTPUT INSERTED.id_detail AS id
+            VALUES (?, ?, SYSDATETIME());
+            ";
 
     $params = [$idmutasi, $qty];
 
