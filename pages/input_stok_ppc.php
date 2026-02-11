@@ -22,7 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (sqlsrv_query($cona, $sql)) {
             $message = '<div class="alert alert-success">Pilihan berhasil disimpan!</div>';
         } else {
-            $message = '<div class="alert alert-danger">Gagal menyimpan: ' . mysqli_error($cona) . '</div>';
+            $message = '<div class="alert alert-danger">Gagal menyimpan </div>';
+            // $message = '<div class="alert alert-danger">Gagal menyimpan: ' . sqlsrv_errors($cona) . '</div>';
         }
     }
 }
