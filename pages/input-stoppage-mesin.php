@@ -1431,8 +1431,8 @@ if (isset($_POST['btnStop']) && $_POST['btnStop'] === "Stop") {
         $sql1 = "UPDATE db_adm.tbl_stoppage
                  SET durasi_jam_stop =
                      DATEDIFF(SECOND,
-                         TRY_CONVERT(datetime, stop_mulai_tgl + ' ' + stop_mulai_jam, 120),
-                         TRY_CONVERT(datetime, stop_selesai_tgl + ' ' + stop_selesai_jam, 120)
+                         TRY_CONVERT(datetime,TRY_CONVERT(VARCHAR(19), CONCAT(stop_mulai_tgl ,' ' , stop_mulai_jam))),
+                         TRY_CONVERT(datetime,TRY_CONVERT(VARCHAR(19), CONCAT(stop_selesai_tgl , ' ' , stop_selesai_jam)))
                      ) / 3600.0
                  WHERE id = ?";
 
