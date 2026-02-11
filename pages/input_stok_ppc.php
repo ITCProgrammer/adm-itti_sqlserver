@@ -7,19 +7,19 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $message = '';
 
 // Ambil data bon
-$bon = mysqli_fetch_assoc(mysqli_query($cona, "SELECT * FROM tbl_bonkain WHERE id=$id"));
+$bon = sqlsrv_fetch_array(sqlsrv_query($cona, "SELECT * FROM db_adm.tbl_bonkain WHERE id=$id"), SQLSRV_FETCH_ASSOC);
 
 // Simpan pilihan stok
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Cek apakah sudah pernah diisi
-    $cek = mysqli_fetch_assoc(mysqli_query($cona, "SELECT ket_ppc, personil_ppc FROM tbl_bonkain WHERE id=$id"));
+    $cek = sqlsrv_fetch_array(sqlsrv_query($cona, "SELECT ket_ppc, personil_ppc FROM db_adm.tbl_bonkain WHERE id=$id"), SQLSRV_FETCH_ASSOC);
     if (!empty($cek['ket_ppc']) && !empty($cek['personil_ppc'])) {
         $message = '<div class="alert alert-warning">Status stok sudah pernah diinput dan tidak bisa diubah lagi.</div>';
     } else {
-        $pilihan = mysqli_real_escape_string($cona, $_POST['stok']);
-        // $personil = isset($_SESSION['nama10']) ? mysqli_real_escape_string($cona, $_SESSION['nama10']) : 'PPC';
-        $sql = "UPDATE tbl_bonkain SET ket_ppc='$pilihan' WHERE id=$id";
-        if (mysqli_query($cona, $sql)) {
+        $pilihan = $_POST['stok'];
+        // $personil = isset($_SESSION['nama10']) ? sqlsrv_real_escape_string($cona, $_SESSION['nama10']) : 'PPC';
+        $sql = "UPDATE db_adm.tbl_bonkain SET ket_ppc='$pilihan' WHERE id=$id";
+        if (sqlsrv_query($cona, $sql)) {
             $message = '<div class="alert alert-success">Pilihan berhasil disimpan!</div>';
         } else {
             $message = '<div class="alert alert-danger">Gagal menyimpan: ' . mysqli_error($cona) . '</div>';
