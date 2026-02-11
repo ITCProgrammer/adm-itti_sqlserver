@@ -7,7 +7,7 @@ if ($_SESSION['dept10'] == "CSR") {
 	$child = $r['ChildLevel'];
 	if ($demand != "") {
 	}
-	$sqlCek = sqlsrv_query($cona, "SELECT * FROM db_adm.tbl_gantikain WHERE nodemand='$demand' and nodemand<>'' ORDER BY id DESC LIMIT 1");
+	$sqlCek = sqlsrv_query($cona, "SELECT TOP 1 * FROM db_adm.tbl_gantikain WHERE nodemand='$demand' and nodemand <> '' ORDER BY id DESC");
 	// $cek = mysqli_num_rows($sqlCek);
 	$rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
 	$cek = ($rcek !== false) ? 1 : 0;
