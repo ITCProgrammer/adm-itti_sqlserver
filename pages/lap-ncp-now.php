@@ -474,23 +474,23 @@ include "koneksi.php";
                 $cond,
                 "SELECT COUNT(*) AS jml_all, SUM(berat) AS berat_all
                 FROM db_qc.tbl_ncp_qcf_now
-                WHERE tgl_buat BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120)
+                WHERE $WKategori
+                  tgl_buat BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120)
                   AND (dept IS NOT NULL AND LTRIM(RTRIM(dept)) <> '')
-                  AND [status] <> 'Cancel'
-                  AND ncp_hitung='ya'",
-                              [$start_date, $stop_date]
-                            );
+                  AND [status] <> 'Cancel'",
+                [$start_date, $stop_date]
+              );
                             $rAllDpt = sqlsrv_fetch_array($qryAllDpt, SQLSRV_FETCH_ASSOC);
 
-                            $qryAllDptDis = sqlsrv_query(
-                              $cond,
-                              "SELECT COUNT(*) AS jml_all, SUM(berat) AS berat_all
+              $qryAllDptDis = sqlsrv_query(
+                $cond,
+                "SELECT COUNT(*) AS jml_all, SUM(berat) AS berat_all
                 FROM db_qc.tbl_ncp_qcf_now
-                WHERE tgl_buat BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120)
+                WHERE $WKategori
+                  tgl_buat BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120)
                   AND (dept IS NOT NULL AND LTRIM(RTRIM(dept)) <> '')
                   AND [status] = 'Disposisi'
-                  AND [status] <> 'Cancel'
-                  AND ncp_hitung='ya'",
+                  AND [status] <> 'Cancel'",
                 [$start_date, $stop_date]
               );
               $rAllDptDis = sqlsrv_fetch_array($qryAllDptDis, SQLSRV_FETCH_ASSOC);
@@ -502,17 +502,18 @@ include "koneksi.php";
                       ROUND(
                         COUNT(dept) / NULLIF((
                           SELECT COUNT(*)
-                          FROM db_qc.tbl_ncp_qcf_now
-                          WHERE tgl_buat BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120)
-                            AND [status] <> 'Cancel'
-                            AND (dept IS NOT NULL AND LTRIM(RTRIM(dept)) <> '')
+                  FROM db_qc.tbl_ncp_qcf_now
+                  WHERE $WKategori
+                    tgl_buat BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120)
+                    AND [status] <> 'Cancel'
+                    AND (dept IS NOT NULL AND LTRIM(RTRIM(dept)) <> '')
                         ), 0) * 100, 1
                       ) AS persen,
                       dept
                   FROM db_qc.tbl_ncp_qcf_now
-                  WHERE tgl_buat BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120)
+                  WHERE $WKategori
+                    tgl_buat BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120)
                     AND (dept IS NOT NULL AND LTRIM(RTRIM(dept)) <> '')
-                    $WKategori
                     AND [status] <> 'Cancel'
                   GROUP BY dept
                   ORDER BY SUM(berat) DESC",
@@ -530,22 +531,23 @@ include "koneksi.php";
                         ROUND(
                           COUNT(dept) / NULLIF((
                             SELECT COUNT(*)
-                            FROM db_qc.tbl_ncp_qcf_now
-                            WHERE tgl_buat BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120)
-                              AND [status] = 'Disposisi'
-                              AND dept = ?
-                              AND [status] <> 'Cancel'
-                              AND (dept IS NOT NULL AND LTRIM(RTRIM(dept)) <> '')
+                          FROM db_qc.tbl_ncp_qcf_now
+                          WHERE $WKategori
+                            tgl_buat BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120)
+                            AND [status] = 'Disposisi'
+                            AND dept = ?
+                            AND [status] <> 'Cancel'
+                            AND (dept IS NOT NULL AND LTRIM(RTRIM(dept)) <> '')
                           ), 0) * 100, 1
                         ) AS persen,
                         dept
                     FROM db_qc.tbl_ncp_qcf_now
-                    WHERE tgl_buat BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120)
+                    WHERE $WKategori
+                      tgl_buat BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120)
                       AND [status] = 'Disposisi'
                       AND dept = ?
                       AND (dept IS NOT NULL AND LTRIM(RTRIM(dept)) <> '')
                       AND [status] <> 'Cancel'
-                      AND ncp_hitung='ya'
                     GROUP BY dept",
                   [$start_date, $stop_date, $deptVal, $start_date, $stop_date, $deptVal]
                 );
