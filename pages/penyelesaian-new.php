@@ -538,7 +538,7 @@ $rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
 					<div class="form-group">
 						<label for="jmlperbaikan" class="col-sm-2 control-label">Jumlah Perbaikan</label>
 						<div class="col-sm-1">
-							<input name="jmlperbaikan" type="text" class="form-control" id="jmlperbaikan" value="<?php echo $rcek['jml_perbaikan']; ?>" placeholder="0">
+							<input name="jmlperbaikan" type="number" class="form-control" id="jmlperbaikan" value="<?php echo $rcek['jml_perbaikan']; ?>" placeholder="0">
 						</div>
 					</div>
 					<div class="form-group">
