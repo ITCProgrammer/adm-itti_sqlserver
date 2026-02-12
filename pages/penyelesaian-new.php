@@ -48,8 +48,8 @@ $rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
 								a.no_mesin,
 								b.g_shift,
 								b.colorist
-							FROM db_dying.dbo.tbl_schedule a
-							LEFT JOIN db_dying.dbo.tbl_montemp b ON a.id = b.id_schedule
+							FROM db_dying.tbl_schedule a
+							LEFT JOIN db_dying.tbl_montemp b ON a.id = b.id_schedule
 							WHERE a.nokk = ? AND a.proses = ?
 							ORDER BY a.id DESC",
 							array($nokk, 'Celup Greige'),
@@ -63,7 +63,7 @@ $rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
 						$qryHC = sqlsrv_query(
 							$con1,
 							"SELECT TOP 1 *
-							FROM db_dying.dbo.tbl_hasilcelup
+							FROM db_dying.tbl_hasilcelup
 							WHERE nokk = ? AND proses = ?
 							ORDER BY id DESC",
 							array($nokk, 'Celup Greige'),
@@ -250,7 +250,7 @@ $rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
 						<div class="col-sm-2">
 							<div class="input-group">
 								<select class="form-control" name="ke" id="ke">
-									<?php $q_data_ke			= sqlsrv_query($con, "SELECT * FROM tbl_ke ORDER BY id ASC"); ?>
+									<?php $q_data_ke			= sqlsrv_query($con, "SELECT * FROM db_dying.tbl_ke ORDER BY id ASC"); ?>
 									<?php while ($row_data_ke	= sqlsrv_fetch_array($q_data_ke, SQLSRV_FETCH_ASSOC)) { ?>
 										<option value="<?= $row_data_ke['ke']; ?>" <?php if($rcek['data_ke'] == $row_data_ke['ke']){ echo "SELECTED"; } ?>><?= $row_data_ke['ke']; ?></option>
 									<?php } ?>
@@ -262,7 +262,7 @@ $rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
 						<div class="col-sm-2">
 							<div class="input-group">
 								<select class="form-control" name="acc_perbaikan" id="acc_perbaikan">
-								<?php $q_namacolorist			= sqlsrv_query($con, "SELECT * FROM tbl_nama_colorist ORDER BY id ASC"); ?>
+								<?php $q_namacolorist			= sqlsrv_query($con, "SELECT * FROM db_dying.tbl_nama_colorist ORDER BY id ASC"); ?>
 									<?php while ($row_namacolorist	= sqlsrv_fetch_array($q_namacolorist, SQLSRV_FETCH_ASSOC)) { ?>
 										<option value="<?= $row_namacolorist['nama_colorist']; ?>" <?php if($rcek['nama_colorist'] == $row_namacolorist['nama_colorist']){ echo 'SELECTED'; } ?>><?= $row_namacolorist['nama_colorist']; ?></option>
 									<?php } ?>
@@ -440,7 +440,7 @@ $rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
 								<select class="form-control select2" name="penanggung_jawab" id="penanggung_jawab">
 									<option value="">Pilih</option>
 									<?php
-									$qrytj = sqlsrv_query($conn, "SELECT nama FROM tbl_tjawab_ncp ORDER BY nama ASC");
+									$qrytj = sqlsrv_query($conn, "SELECT nama FROM  db_qc.tbl_tjawab_ncp ORDER BY nama ASC");
 									while ($rtj = sqlsrv_fetch_array($qrytj, SQLSRV_FETCH_ASSOC)) {
 									?>
 										<option value="<?php echo $rtj['nama']; ?>" <?php if ($rcek['penanggung_jawab'] == $rtj['nama']) {
@@ -814,7 +814,7 @@ if ($_POST['simpan_penyelesaian'] == "Simpan") {
 </div>
 <?php
 if ($_POST['simpan_penanggung_jawab'] == "Simpan") {
-	$sqlData2 = sqlsrv_query($cond, "INSERT INTO tbl_tjawab_ncp SET 
+	$sqlData2 = sqlsrv_query($cond, "INSERT INTO db_qc.tbl_tjawab_ncp SET 
 		  nama='" . $_POST['penanggung_jawab'] . "',dept='DYE'");
 	if ($sqlData2) {
 		echo "<script>swal({
