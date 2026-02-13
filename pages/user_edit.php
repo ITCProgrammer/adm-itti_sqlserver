@@ -2,10 +2,18 @@
 ini_set("error_reporting", 1);
 session_start();
 include("../koneksi.php");
-    $modal_id=$_GET['id'];
-	$modal=mysqli_query($con,"SELECT * FROM `tbl_user` WHERE id='$modal_id' ");
-while($r=mysqli_fetch_array($modal)){
-?>
+
+$modal_id = $_GET['id'] ?? '';
+
+$sql = "SELECT * FROM db_dying.tbl_user WHERE id = ?";
+$stmt = sqlsrv_query($con, $sql, array($modal_id));
+
+if ($stmt === false) {
+  die(print_r(sqlsrv_errors(), true));
+}
+
+while ($r = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+  ?>
           <div class="modal-dialog ">
             <div class="modal-content">
             <form class="form-horizontal" name="modal_popup" data-toggle="validator" method="post" action="?p=edit_user" enctype="multipart/form-data">

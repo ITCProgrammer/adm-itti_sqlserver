@@ -1,7 +1,7 @@
 <?php
 ini_set("error_reporting", 1);
 session_start();
-include "../koneksi.php"; // Pastikan file ini membuat dua koneksi: $cona (MySQL) dan $conn2 (DB2)
+include "../koneksi.php";
 
 // Set timezone Indonesia
 date_default_timezone_set('Asia/Jakarta');
@@ -11,15 +11,23 @@ $tgl_tutup = date('Y-m-d');
 
 // Hitung tanggal kemarin dan hari ini dalam format datetime
 $yesterday_start = date('Y-m-d 23:01:00', strtotime('-1 day'));
-$today_end       = date('Y-m-d 23:00:00');
+$today_end = date('Y-m-d 23:00:00');
 
-// 🔒 Cek apakah tanggal tutup sudah pernah di-insert di MySQL
-$cek = $cona->prepare("SELECT COUNT(*) as total FROM tbl_sisakk_brs WHERE tgl_tutup = ?");
-$cek->bind_param("s", $tgl_tutup);
-$cek->execute();
-$result = $cek->get_result()->fetch_assoc();
+// 🔒 Cek apakah tanggal tutup sudah pernah di-insert di SQL Server
+$cekSql = "SELECT COUNT(*) AS total FROM db_adm.tbl_sisakk_brs WHERE tgl_tutup = ?";
+$cekStmt = sqlsrv_query($cona, $cekSql, array($tgl_tutup));
 
-if ($result['total'] > 0) {
+if ($cekStmt === false) {
+    echo "❌ Query cek SQL Server gagal: " . print_r(sqlsrv_errors(), true);
+    echo "<br>Jendela akan ditutup dalam 5 detik...";
+    echo "<script>setTimeout(() => { window.close(); }, 5000);</script>";
+    exit;
+}
+
+$cekRow = sqlsrv_fetch_array($cekStmt, SQLSRV_FETCH_ASSOC);
+$total = (int) ($cekRow['total'] ?? 0);
+
+if ($total > 0) {
     echo "❌ Gagal: Data untuk tanggal $tgl_tutup sudah pernah ditutup.";
     echo "<br>Jendela akan ditutup dalam 5 detik...";
     echo "<script>setTimeout(() => { window.close(); }, 5000);</script>";
@@ -66,7 +74,7 @@ WITH base AS (
         )
 ),
 order_qty AS (
-    -- Ambil satu quantity unik per order per operation
+-- Ambil satu quantity unik per order per operation
     SELECT DISTINCT
         OPERATIONCODE,
         PRODUCTIONORDERCODE,
@@ -95,17 +103,30 @@ if (!$stmt) {
 }
 
 $rows_inserted = 0;
-$insert = $cona->prepare("INSERT INTO tbl_sisakk_brs (operationcode, demand_count, qty_order, tgl_tutup) VALUES (?, ?, ?, ?)");
 
-// Loop hasil DB2 dan masukkan ke MySQL
+$insertSql = "
+    INSERT INTO db_adm.tbl_sisakk_brs (operationcode, demand_count, qty_order, tgl_tutup)
+    VALUES (?, ?, ?, ?)
+";
+
 while ($row = db2_fetch_assoc($stmt)) {
-    $insert->bind_param("sids", 
-        $row['OPERATIONCODE'], 
-        $row['DEMAND_COUNT'], 
-        $row['QUANTITY'], 
+    $params = array(
+        $row['OPERATIONCODE'],
+        (int) $row['DEMAND_COUNT'],
+        (float) $row['QUANTITY'],
         $tgl_tutup
     );
-    $insert->execute();
+
+    $insertStmt = sqlsrv_query($cona, $insertSql, $params);
+
+    if ($insertStmt === false) {
+        echo "❌ Insert SQL Server gagal: " . print_r(sqlsrv_errors(), true);
+        echo "<br>Data terakhir: " . htmlspecialchars(json_encode($row));
+        echo "<br>Jendela akan ditutup dalam 5 detik...";
+        echo "<script>setTimeout(() => { window.close(); }, 5000);</script>";
+        exit;
+    }
+
     $rows_inserted++;
 }
 
@@ -117,7 +138,9 @@ if ($rows_inserted > 0) {
 
 // Tutup koneksi
 db2_close($conn2);
-$cona->close();
+
+// sqlsrv_close (bukan $cona->close())
+sqlsrv_close($cona);
 
 // Tambahkan pesan auto-close 5 detik
 echo "<br>Jendela akan ditutup dalam 5 detik...";
