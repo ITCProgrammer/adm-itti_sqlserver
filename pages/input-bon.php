@@ -896,12 +896,12 @@ if ($_POST['save'] == "save") {
 		$_POST['pelanggan'] ?? '',
 		$_POST['no_order'] ?? '',
 		$_POST['no_hanger'] ?? '',
-		$_POST['no_item'] ?? '',
+		trim($_POST['no_item']) ?? '',
 
 		$po ?? '',
 		$jns ?? '',
-		$_POST['lebar'] ?? '',
-		$_POST['grms'] ?? '',
+		(float) $_POST['lebar'],
+		(float) $_POST['grms'],
 		$lot ?? '',
 		$_POST['tgl_delivery'] ?? '',
 
@@ -909,7 +909,7 @@ if ($_POST['save'] == "save") {
 		$nowarna ?? '',
 		$masalah ?? '',
 		$chkp ?? '',
-		$_POST['qty_order'] ?? '',
+		(float) $_POST['qty_order'],
 
 		$_POST['t_jawab'] ?? '',
 		$_POST['t_jawab1'] ?? '',
@@ -917,11 +917,11 @@ if ($_POST['save'] == "save") {
 		$_POST['t_jawab3'] ?? '',
 		$_POST['t_jawab4'] ?? '',
 
-		$_POST['persen'] ?? '',
-		$_POST['persen1'] ?? '',
-		$_POST['persen2'] ?? '',
-		$_POST['persen3'] ?? '',
-		$_POST['persen4'] ?? '',
+		(float) $_POST['persen'],
+		(float) $_POST['persen1'],
+		(float) $_POST['persen2'],
+		(float) $_POST['persen3'],
+		(float) $_POST['persen4'],
 
 		$_POST['satuan_o'] ?? '',
 		$_POST['personil'] ?? '',
