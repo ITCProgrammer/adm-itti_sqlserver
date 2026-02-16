@@ -28,7 +28,7 @@ if ($stmt === false) {
 $num = 0;
 while (sqlsrv_fetch($stmt)) {
     $num++;
-}S
+}
 
 if ($num > 0) {
     sqlsrv_query($con, "UPDATE db_dying.mutasi_bs_krah_detail SET qty = '$qty' where id = '$id'");
