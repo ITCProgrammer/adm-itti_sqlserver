@@ -169,9 +169,32 @@ $rcek = sqlsrv_fetch_array($sqlCek, SQLSRV_FETCH_ASSOC);
 				<?php if($_SESSION['user_id10'] != 'adm-cqa'):?>
 				<div class="form-group">
 					<label for="akar_masalah" class="col-sm-2 control-label">Akar Masalah</label>
+					<?php if($_SESSION['user_id10'] == 'adm-dye'):?>
+					<div class="col-sm-3">
+						<select class="form-control select2" name="akar_penyebab">
+							<option value="">Pilih</option>
+							<option value="MAN" <?php if ($rcek['akar_penyebab'] == "MAN") {
+															echo "SELECTED";
+														} ?>>MAN</option>
+							<option value="MACHINE" <?php if ($rcek['akar_penyebab'] == "MACHINE") {
+																	echo "SELECTED";
+																} ?>>MACHINE</option>
+							<option value="METHODE" <?php if ($rcek['akar_penyebab'] == "METHODE") {
+														echo "SELECTED";
+													} ?>>METHODE</option>
+							<option value="MATERIAL" <?php if ($rcek['akar_penyebab'] == "MATERIAL") {
+															echo "SELECTED";
+														} ?>>MATERIAL</option>
+							<option value="ENVIRONMENT" <?php if ($rcek['akar_penyebab'] == "ENVIRONMENT") {
+															echo "SELECTED";
+														} ?>>ENVIRONMENT</option>
+						</select>
+					</div>
+					<?php else: ?>
 					<div class="col-sm-3">
 						<input name="akar_masalah" type="text" class="form-control" id="akar_masalah" value="<?php if($AkarMasalah!=""){ echo $AkarMasalah; } else { echo $rcek['akar_masalah']; } ?>" placeholder="Akar Masalah" required>
 					</div>
+					<?php endif;?>
 				</div>
 				<?php endif;?>
 				<div class="form-group">
