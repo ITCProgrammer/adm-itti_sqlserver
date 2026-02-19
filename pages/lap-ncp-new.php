@@ -858,15 +858,15 @@ include "koneksi.php";
                 } else {
                   $nokk1 = $row1['nokk'];
                 }
-                $qryckw = sqlsrv_query($cond, "SELECT * FROM db_qc.tbl_cocok_warna_dye WHERE `dept`='QCF' AND nodemand='$row1[nodemand]' ORDER BY id DESC");
+                $qryckw = sqlsrv_query($cond, "SELECT * FROM db_qc.tbl_cocok_warna_dye WHERE dept='QCF' AND nodemand='$row1[nodemand]' ORDER BY id DESC");
                 $rowckw = sqlsrv_fetch_array($qryckw, SQLSRV_FETCH_ASSOC);
-                $sqlDB2 = "SELECT
-					p.DESCRIPTION
-				FROM
-					PRODUCTIONDEMAND p
-				WHERE
-					p.CODE = '$row1[nodemand]'";
-                $stmt = db2_exec($condn1, $sqlDB2, array('cursor' => DB2_SCROLLABLE));
+                                      $sqlDB2 = "SELECT
+                                p.DESCRIPTION
+                              FROM
+                                PRODUCTIONDEMAND p
+                              WHERE
+                                p.CODE = '$row1[nodemand]'";
+                $stmt = db2_exec($conn2, $sqlDB2, array('cursor' => DB2_SCROLLABLE));
                 $rowdb2 = db2_fetch_assoc($stmt);
               ?>
                 <tr bgcolor="<?php echo $bgcolor; ?>">
@@ -874,7 +874,15 @@ include "koneksi.php";
                     <?php echo $no; ?>
                   </td>
                   <td align="center">
-                    <?php echo $row1['tgl_buat']; ?><br>
+                        <?php
+                            $value = $row1['tgl_buat'];
+
+                            if ($value instanceof DateTime) {
+                                echo $value->format('Y-m-d H:i:s');
+                            } else {
+                                echo $value;
+                            }
+                        ?><br>
                     <div class="btn-group"><a href="pages/cetak/cetak_ncp_now.php?id=<?php echo $row1['id']; ?>" class="btn btn-xs btn-danger" target="_blank"><i class="fa fa-print"></i></a><a href="pages/cetak/cetak_ncp_now_pdf.php?id=<?php echo $row1['id']; ?>" class="btn btn-xs btn-info" target="_blank"><i class="fa fa-file-pdf-o"></i></a></div>
                   </td>
                   <td>
@@ -903,7 +911,7 @@ include "koneksi.php";
                   </td>
                   <td>
                     <?php
-                    $sql_ori_pd_code = db2_exec($condn1, "SELECT p.CODE, SUBSTRING(a.VALUESTRING, 5) AS VALUESTRING 
+                    $sql_ori_pd_code = db2_exec($conn2, "SELECT p.CODE, SUBSTRING(a.VALUESTRING, 5) AS VALUESTRING 
                                                             FROM
                                                               PRODUCTIONDEMAND p
                                                             LEFT JOIN ADSTORAGE a ON a.UNIQUEID = p.ABSUNIQUEID AND a.FIELDNAME = 'OriginalPDCode'
@@ -1006,17 +1014,35 @@ include "koneksi.php";
                   </td>
                   <td align="center">
                     <?php if ($row1['tgl_rencana'] != "") {
-                      echo date("d/m/y", strtotime($row1['tgl_rencana']));
+                            $value1 = $row1['tgl_rencana'];
+
+                            if ($value1 instanceof DateTime) {
+                                echo $value1->format('d/m/Y');
+                            } else {
+                                echo $value1;
+                            }
                     } ?>
                   </td>
                   <td align="center">
                     <?php if ($row1['tgl_selesai'] != "") {
-                      echo date("d/m/y", strtotime($row1['tgl_selesai']));
+                            $value2 = $row1['tgl_selesai'];
+
+                            if ($value2 instanceof DateTime) {
+                                echo $value2->format('d/m/Y');
+                            } else {
+                                echo $value2;
+                            }
                     } ?>
                   </td>
                   <td align="center">
                     <?php if ($row1['tgl_delivery'] != "") {
-                      echo date("d/m/y", strtotime($row1['tgl_delivery']));
+                            $value3 = $row1['tgl_delivery'];
+
+                            if ($value3 instanceof DateTime) {
+                                echo $value3->format('d/m/Y');
+                            } else {
+                                echo $value3;
+                            }
                     } ?>
                   </td>
                   <td align="center">'
