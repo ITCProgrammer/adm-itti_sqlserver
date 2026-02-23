@@ -2,7 +2,7 @@
 ini_set("error_reporting", 1);
 session_start();
 include("../koneksi.php");
-    $modal_id=$_GET['id'];
+    $modal_id = isset($_GET['id']) ? $_GET['id'] : '';
 ?>
          
 <div class="modal-dialog modal-lg">
@@ -29,8 +29,12 @@ include("../koneksi.php");
                         <tbody>
                             <?php
                                 $no=1;
-                            	$sqldtl=mysqli_query($cond,"SELECT * FROM tbl_detail_roll_shading WHERE nodemand='$modal_id' ORDER BY element ASC");
-                            while($row1=mysqli_fetch_array($sqldtl)){
+                            	$sqldtl = sqlsrv_query(
+                                    $cond,
+                                    "SELECT * FROM db_qc.tbl_detail_roll_shading WHERE nodemand = ? ORDER BY element ASC",
+                                    [$modal_id]
+                                );
+                            while($row1 = sqlsrv_fetch_array($sqldtl, SQLSRV_FETCH_ASSOC)){
                             ?>
                             <tr>
                                 <td align="center" width="5%"><?php echo $no;?></td>
