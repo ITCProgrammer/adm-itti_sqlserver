@@ -718,9 +718,9 @@ if(!empty($Suffix)){
                     data-url="pages/editable/cqa/ket_recipe/update_ket_hitung.php"
                     data-title="Pilih Akar Penyebab">
                        <?php 
-                          if ($row1['ket_hitung'] === '1') {
+                          if ($row1['ket_hitung'] == '1') {
                               echo '<span style="color:green">✔️</span>';
-                          } elseif ($row1['ket_hitung'] === '0') {
+                          } elseif ($row1['ket_hitung'] == '0') {
                               echo '<span style="color:red">❌</span>';
                           } else {
                               echo 'Pilih';
