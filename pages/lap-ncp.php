@@ -258,9 +258,13 @@ include "koneksi.php";
                       AND masalah_dominan = ?
                       AND (masalah_dominan <> '' AND masalah_dominan IS NOT NULL)
                       AND [status] <> 'Cancel'
+                    GROUP BY masalah_dominan
                 ", [$Awal, $Akhir, $rd['masalah_dominan'], $Awal, $Akhir, $rd['masalah_dominan']]);
 
-                $rdDis = sqlsrv_fetch_array($qrydefDis, SQLSRV_FETCH_ASSOC);
+                $rdDis = $qrydefDis ? sqlsrv_fetch_array($qrydefDis, SQLSRV_FETCH_ASSOC) : null;
+                if (!$rdDis) {
+                  $rdDis = ['berat' => 0];
+                }
 
                 // biar gak warning kalau null
                 $beratAll   = (float)($rAll['berat_all'] ?? 0);
@@ -412,9 +416,13 @@ include "koneksi.php";
                       AND dept = ?
                       AND (dept <> '' AND dept IS NOT NULL)
                       AND [status] <> 'Cancel'
+                    GROUP BY dept
                 ", [$Awal, $Akhir, $rdpt['dept'], $Awal, $Akhir, $rdpt['dept']]);
 
-                $rdptDis = sqlsrv_fetch_array($qrydptDis, SQLSRV_FETCH_ASSOC);
+                $rdptDis = $qrydptDis ? sqlsrv_fetch_array($qrydptDis, SQLSRV_FETCH_ASSOC) : null;
+                if (!$rdptDis) {
+                  $rdptDis = ['berat' => 0];
+                }
 
                 // biar aman kalau null
                 $beratAllDpt   = (float)($rAllDpt['berat_all'] ?? 0);
@@ -614,7 +622,10 @@ $rSUM = sqlsrv_fetch_array($qrySUM, SQLSRV_FETCH_ASSOC);
               ?>
                 <tr bgcolor="<?php echo $bgcolor; ?>">
                   <td align="center"><?php echo $no; ?></td>
-                  <td align="center"><?php echo $row1['tgl_buat']; ?><br>
+                  <td align="center"><?php
+                                        $tglBuat = $row1['tgl_buat'] ?? null;
+                                        echo ($tglBuat instanceof DateTime) ? $tglBuat->format('Y-m-d H:i:s') : (string)$tglBuat;
+                                        ?><br>
                     <div class="btn-group"><a href="pages/cetak/cetak_ncp.php?id=<?php echo $row1['id']; ?>" class="btn btn-xs btn-danger" target="_blank"><i class="fa fa-print"></i></a><a href="pages/cetak/cetak_ncp_pdf.php?id=<?php echo $row1['id']; ?>" class="btn btn-xs btn-info" target="_blank"><i class="fa fa-file-pdf-o"></i></a></div>
                   </td>
                   <td><a href="#" class="btn sts_edit <?php if ($_SESSION['dept'] == "QC" or strtoupper($_SESSION['usrid']) == "TENNY" or strtoupper($_SESSION['usrid']) == "AISYAH" or strtoupper($_SESSION['usrid']) == "CRISTIN") {
@@ -655,12 +666,24 @@ $rSUM = sqlsrv_fetch_array($qrySUM, SQLSRV_FETCH_ASSOC);
                   <td><?php echo $row1['catat_verify']; ?></td>
                   <td><?php echo $row1['peninjau_akhir']; ?></td>
                   <td><?php echo $row1['nsp']; ?></td>
-                  <td align="center"><?php if ($row1['tgl_rencana'] != "") {
-                                        echo date("d/m/y", strtotime($row1['tgl_rencana']));
-                                      } ?></td>
-                  <td align="center"><?php if ($row1['tgl_selesai'] != "") {
-                                        echo date("d/m/y", strtotime($row1['tgl_selesai']));
-                                      } ?></td>
+                  <td align="center"><?php
+                                        if (!empty($row1['tgl_rencana'])) {
+                                          if ($row1['tgl_rencana'] instanceof DateTime) {
+                                            echo $row1['tgl_rencana']->format('d/m/y');
+                                          } else {
+                                            echo date("d/m/y", strtotime((string)$row1['tgl_rencana']));
+                                          }
+                                        }
+                                      ?></td>
+                  <td align="center"><?php
+                                        if (!empty($row1['tgl_selesai'])) {
+                                          if ($row1['tgl_selesai'] instanceof DateTime) {
+                                            echo $row1['tgl_selesai']->format('d/m/y');
+                                          } else {
+                                            echo date("d/m/y", strtotime((string)$row1['tgl_selesai']));
+                                          }
+                                        }
+                                      ?></td>
                   <td align="center">'<?php echo $row1['nokk']; ?></td>
                   <td><?php echo $row1['tempat']; ?></td>
                 </tr>
