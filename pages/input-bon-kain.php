@@ -40,7 +40,7 @@ if (!function_exists('sendEmailApproved')) {
       $mail->Body    = $bodyHtml;
       $mail->Hostname = 'mail.indotaichen.com';
       $mail->Helo = 'mail.indotaichen.com';
-      // $mail->send();
+      $mail->send();
       $GLOBAL_LAST_MAILER_ERROR = '';
       return true;
     } catch (Exception $e) {
@@ -294,7 +294,7 @@ if (!function_exists('sendEmailApproved')) {
       $mail->Body    = $bodyHtml;
       $mail->Hostname = 'mail.indotaichen.com';
       $mail->Helo = 'mail.indotaichen.com';
-      // $mail->send();
+      $mail->send();
       $GLOBAL_LAST_MAILER_ERROR = '';
       return true;
     } catch (Exception $e) {
