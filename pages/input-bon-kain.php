@@ -597,8 +597,8 @@ if (!function_exists('sendEmailApproved')) {
                 <td align="center"><?php echo $no; ?></td>
                 <td align="center"><a href="#" class="edit_bon" id="<?php echo $r['id'] ?>"><?php echo $r['no_bon']; ?></a></td>
                 <td align="center"><?php echo $r['alasan']; ?></td>
-                <td align="left"><a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['analisa']; ?>" class="analisa" href="javascipt:void(0)"><?php echo $r['analisa']; ?></a></td>
-                <td align="left"><a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['pencegahan']; ?>" class="pencegahan" href="javascipt:void(0)"><?php echo $r['pencegahan']; ?></a></td>
+                <td align="left"><a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['analisa']; ?>" class="analisa" href="javascript:void(0)"><?php echo $r['analisa']; ?></a></td>
+                <td align="left"><a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['pencegahan']; ?>" class="pencegahan" href="javascript:void(0)"><?php echo $r['pencegahan']; ?></a></td>
                 <td align="left"><a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo htmlspecialchars(json_encode(explode(',', $r['akar_penyebab'])), ENT_QUOTES, 'UTF-8'); ?>" class="akar_penyebab" href="javascript:void(0)"><?php echo $r['akar_penyebab']; ?></a></td>
                 <td align="left" valign="top"><?php
                                               if ($r['warna1'] != "") {
@@ -614,25 +614,25 @@ if (!function_exists('sendEmailApproved')) {
                 <td align="right"><?php
                                   if ($r['kg1'] > 0) {
                                     echo "1. "; ?>
-                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['kg1']; ?>" class="kg1" href="javascipt:void(0)"><?php echo $r['kg1']; ?></a> <?php echo " Kg "; ?>
-                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['pjg1']; ?>" class="pjg1" href="javascipt:void(0)"><?php echo $r['pjg1']; ?></a> <?php echo " " . $r['satuan1'] . "<br>";
+                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['kg1']; ?>" class="kg1" href="javascript:void(0)"><?php echo $r['kg1']; ?></a> <?php echo " Kg "; ?>
+                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['pjg1']; ?>" class="pjg1" href="javascript:void(0)"><?php echo $r['pjg1']; ?></a> <?php echo " " . $r['satuan1'] . "<br>";
                                   }
                                   if ($r['kg2'] > 0) {
                                     echo "2. "; ?>
-                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['kg2']; ?>" class="kg2" href="javascipt:void(0)"><?php echo $r['kg2']; ?></a> <?php echo " Kg "; ?>
-                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['pjg2']; ?>" class="pjg2" href="javascipt:void(0)"><?php echo $r['pjg2']; ?></a> <?php echo " " . $r['satuan2'] . "<br>";
+                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['kg2']; ?>" class="kg2" href="javascript:void(0)"><?php echo $r['kg2']; ?></a> <?php echo " Kg "; ?>
+                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['pjg2']; ?>" class="pjg2" href="javascript:void(0)"><?php echo $r['pjg2']; ?></a> <?php echo " " . $r['satuan2'] . "<br>";
                                   }
                                   if ($r['kg3'] > 0) {
                                     echo "3. " . $r['kg3'] . " Kg "; ?>
-                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['pjg3']; ?>" class="pjg3" href="javascipt:void(0)"><?php echo $r['pjg3']; ?></a> <?php echo " " . $r['satuan3'] . "<br>";
+                                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['pjg3']; ?>" class="pjg3" href="javascript:void(0)"><?php echo $r['pjg3']; ?></a> <?php echo " " . $r['satuan3'] . "<br>";
                                   }
                                   ?></td>
                 <td align="center"><?php if (strtolower($_SESSION['nama10']) == "angela" or $_SESSION['dept10'] == "RMP" or $_SESSION['dept10'] == "PPC") { ?>
-                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['kg_bruto']; ?>" class="kg_bruto" href="javascipt:void(0)"><?php echo $r['kg_bruto']; ?></a><?php } else {
+                    <a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['kg_bruto']; ?>" class="kg_bruto" href="javascript:void(0)"><?php echo $r['kg_bruto']; ?></a><?php } else {
                                                                                                                                                                               echo $r['kg_bruto'];
                                                                                                                                                                             } ?>
                 </td>
-                <td align="center"><?php if (strtolower($_SESSION['nama10']) == "aressa gasih") { ?><a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['sts']; ?>" class="sts_bon" href="javascipt:void(0)"><?php echo $r['sts']; ?></a><?php } else {
+                <td align="center"><?php if (strtolower($_SESSION['nama10']) == "aressa gasih") { ?><a data-pk="<?php echo $r['id'] ?>" data-value="<?php echo $r['sts']; ?>" class="sts_bon" href="javascript:void(0)"><?php echo $r['sts']; ?></a><?php } else {
                                                                                                                                                                                                                                                 echo $r['sts'];
                                                                                                                                                                                                                                               } ?></td>
                 <td align="center">
