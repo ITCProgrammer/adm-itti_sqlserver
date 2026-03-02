@@ -13,37 +13,36 @@ ini_set("error_reporting", 1);
 include "../../koneksi.php";
 
 function getSisakkData($conn, $tgl_tutup, $operationcode, $tipe = 'all') {
-    $stmt = $conn->prepare("
-        SELECT demand_count, qty_order
-        FROM tbl_sisakk_brs
+    $sql = "
+        SELECT TOP (1) demand_count, qty_order
+        FROM db_adm.tbl_sisakk_brs
         WHERE tgl_tutup = ? AND operationcode = ?
-        LIMIT 1
-    ");
+    ";
+    $stmt = sqlsrv_query($conn, $sql, array($tgl_tutup, $operationcode));
 
-    if (!$stmt) {
-        die("Query gagal: " . $conn->error);
+    if ($stmt === false) {
+        die("Query gagal: " . print_r(sqlsrv_errors(), true));
     }
 
-    $stmt->bind_param("ss", $tgl_tutup, $operationcode);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+    if ($row) {
+        $demandCount = (int)($row['demand_count'] ?? 0);
+        $qtyOrder = (float)($row['qty_order'] ?? 0);
 
-    if ($row = $result->fetch_assoc()) {
-        // jika hanya ingin salah satu nilai
         if ($tipe === 'demand') {
-            return (int)$row['demand_count'];
-        } elseif ($tipe === 'qty') {
-            return (float)$row['qty_order'];
-        } else {
-            // default: kembalikan array
-            return [
-                'demand_count' => (int)$row['demand_count'],
-                'qty_order'    => (float)$row['qty_order']
-            ];
+            return $demandCount;
         }
+        if ($tipe === 'qty') {
+            return $qtyOrder;
+        }
+
+        return array(
+            'demand_count' => $demandCount,
+            'qty_order' => $qtyOrder
+        );
     }
 
-    return null; // data tidak ditemukan
+    return null;
 }
 
 ?>
